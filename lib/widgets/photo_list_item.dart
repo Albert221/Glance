@@ -30,11 +30,11 @@ class PhotoListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    photo.authorName,
+                    'u/${photo.authorName}',
                     style: Theme.of(context).textTheme.title,
                   ),
                   Text(
-                    photo.subreddit.name,
+                    'r/${photo.subreddit.name}',
                     style: Theme.of(context).textTheme.title,
                   ),
                 ],
