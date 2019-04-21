@@ -8,8 +8,9 @@ class ReddigramTheme {
         textTheme: TextTheme(
           title: TextStyle(
             color: Colors.black,
-            fontSize: 18.0,
+            fontSize: 22.0,
             fontWeight: FontWeight.bold,
+            fontFamily: 'Pacifico',
           ),
         ),
       ),

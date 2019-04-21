@@ -6,6 +6,7 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reddigram'),
+        centerTitle: true,
       ),
       body: Center(
         child: Text('Content!'),
