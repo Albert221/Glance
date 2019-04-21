@@ -6,8 +6,17 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reddigram'),
+        title: Text(
+          'Reddigram',
+          style: Theme.of(context).appBarTheme.textTheme.display1,
+        ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8.0),

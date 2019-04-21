@@ -71,10 +71,10 @@ class PhotoListItem extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(
-                          upvoted ? Icons.favorite : Icons.favorite_border,
+                          Icons.arrow_upward,
                           color: upvoted ? Colors.red : Colors.black,
                         ),
-                        const SizedBox(width: 8.0),
+                        const SizedBox(width: 12.0),
                         Text(upvoted
                             ? 'You and ${upvotes - 1} others upvoted this.'
                             : '$upvotes others upvoted this.'),

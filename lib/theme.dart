@@ -2,20 +2,29 @@ import 'package:flutter/material.dart';
 
 class ReddigramTheme {
   static ThemeData theme() {
-    return ThemeData.light().copyWith(
-      primaryColor: Colors.white,
+    final lightTheme = ThemeData.light();
+
+    return lightTheme.copyWith(
       appBarTheme: AppBarTheme(
         color: Colors.white,
         textTheme: TextTheme(
-          title: TextStyle(
+          display1: TextStyle(
             color: Colors.black,
             fontSize: 22.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'Pacifico',
           ),
+          title: TextStyle(
+            color: Colors.black,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.black,
         ),
       ),
-      textTheme: TextTheme(
+      textTheme: lightTheme.textTheme.copyWith(
         title: TextStyle(
           color: Colors.black,
           fontSize: 16.0,
