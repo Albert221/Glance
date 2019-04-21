@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/widgets/widgets.dart';
 
 class MainScreen extends StatelessWidget {
@@ -14,7 +15,8 @@ class MainScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.list),
-            onPressed: () {},
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SubscribedScreen())),
           ),
         ],
       ),

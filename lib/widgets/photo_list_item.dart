@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:reddigram/widgets/widgets.dart';
 
 class PhotoListItem extends StatelessWidget {
   final String authorName;
@@ -48,18 +49,18 @@ class PhotoListItem extends StatelessWidget {
                 ],
               ),
             ),
-            CachedNetworkImage(
-              width: width,
-              height: width,
-              alignment: Alignment.center,
-              fit: BoxFit.cover,
-              imageUrl: photoUrl,
-              placeholder: (context, _) => Container(
-                    width: width,
-                    height: width,
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(),
-                  ),
+            Upvoteable(
+              child: CachedNetworkImage(
+                alignment: Alignment.center,
+                fit: BoxFit.cover,
+                imageUrl: photoUrl,
+                placeholder: (context, _) => Container(
+                      width: width,
+                      height: width,
+                      alignment: Alignment.center,
+                      child: const CircularProgressIndicator(),
+                    ),
+              ),
             ),
             Row(
               children: [
