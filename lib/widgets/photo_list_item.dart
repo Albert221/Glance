@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:reddigram/models/models.dart';
 import 'package:reddigram/widgets/widgets.dart';
 
 class PhotoListItem extends StatelessWidget {
-  final String authorName;
-  final String subredditName;
-  final String photoUrl;
-  final String description;
-  final bool upvoted;
-  final int upvotes;
+  final Photo photo;
 
-  const PhotoListItem(
-      {Key key,
-      this.authorName = '',
-      this.subredditName = '',
-      this.photoUrl = '',
-      this.description = '',
-      this.upvoted = false,
-      this.upvotes = 0})
-      : super(key: key);
+  const PhotoListItem({Key key, @required this.photo})
+      : assert(photo != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +30,11 @@ class PhotoListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    authorName,
+                    photo.authorName,
                     style: Theme.of(context).textTheme.title,
                   ),
                   Text(
-                    subredditName,
+                    photo.subreddit.name,
                     style: Theme.of(context).textTheme.title,
                   ),
                 ],
@@ -53,7 +44,7 @@ class PhotoListItem extends StatelessWidget {
               child: CachedNetworkImage(
                 alignment: Alignment.center,
                 fit: BoxFit.cover,
-                imageUrl: photoUrl,
+                imageUrl: photo.photoUrl,
                 placeholder: (context, _) => Container(
                       width: width,
                       height: width,
@@ -73,12 +64,12 @@ class PhotoListItem extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.arrow_upward,
-                          color: upvoted ? Colors.red : Colors.black,
+                          color: photo.upvoted ? Colors.red : Colors.black,
                         ),
                         const SizedBox(width: 12.0),
-                        Text(upvoted
-                            ? 'You and ${upvotes - 1} others upvoted this.'
-                            : '$upvotes others upvoted this.'),
+                        Text(photo.upvoted
+                            ? 'You and ${photo.upvotes - 1} others upvoted this.'
+                            : '${photo.upvotes} others upvoted this.'),
                       ],
                     ),
                   ),
@@ -88,7 +79,7 @@ class PhotoListItem extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Icon(Icons.exit_to_app),
                   ),
-                  onTap: () {},
+                  onTap: () async => await launch(photo.redditUrl),
                 ),
               ],
             ),
