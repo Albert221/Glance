@@ -49,7 +49,7 @@ class OauthActivity : Activity() {
             webViewClient = WebViewClient()
 
             val url = "https://www.reddit.com/api/v1/authorize?client_id=$clientId" +
-                    "&response_type=token&state=x&scope=read+mysubreddits+vote" +
+                    "&response_type=token&state=x&scope=read+mysubreddits+vote+identity" +
                     "&redirect_uri=https://reddigram.wolszon.me/redirect"
 
             loadUrl(url)

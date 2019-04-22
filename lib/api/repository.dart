@@ -1,22 +1,29 @@
-import 'dart:convert';
-
 import 'package:built_collection/built_collection.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:package_info/package_info.dart';
 import 'package:reddigram/api/api.dart';
 
 class RedditRepository {
-  static PackageInfo _packageInfo;
+  Dio client;
 
-  static Future<http.Response> _get(String url) async {
-    if (_packageInfo == null) {
-      _packageInfo = await PackageInfo.fromPlatform();
+  RedditRepository() {
+    client = Dio(BaseOptions(
+      baseUrl: 'https://reddit.com',
+    ));
+
+    PackageInfo.fromPlatform().then((info) =>
+        client.options.headers['User-Agent'] =
+            '${info.packageName}:${info.version} (by /u/Albert221)');
+  }
+
+  set accessToken(String accessToken) {
+    if (accessToken != null) {
+      client.options.headers['Authorization'] = 'bearer $accessToken';
+      client.options.baseUrl = 'https://oauth.reddit.com';
+    } else {
+      client.options.headers.remove('Authorization');
+      client.options.baseUrl = 'https://reddit.com';
     }
-
-    return http.get(url, headers: {
-      'User-Agent':
-          '${_packageInfo.packageName}:${_packageInfo.version} (by /u/Albert221)'
-    });
   }
 
   static ListingResponse _filterOnlyPhotos(ListingResponse response) {
@@ -28,11 +35,16 @@ class RedditRepository {
           .toBuilder());
   }
 
-  static Future<ListingResponse> subreddit(String name,
+  Future<ListingResponse> subreddit(String name,
       {String after = '', int limit = 25}) async {
-    return _get('https://reddit.com/r/$name.json?after=$after&limit=$limit')
+    return client
+        .get('/r/$name.json?after=$after&limit=$limit')
         .then((response) => serializers.deserializeWith(
-            ListingResponse.serializer, json.decode(response.body)))
+            ListingResponse.serializer, response.data))
         .then(_filterOnlyPhotos);
+  }
+
+  Future<String> username() async {
+    return client.get('/api/v1/me').then((response) => response.data['name']);
   }
 }
