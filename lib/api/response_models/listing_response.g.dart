@@ -170,6 +170,8 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
   Iterable serialize(Serializers serializers, ChildData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'name',
+      serializers.serialize(object.name, specifiedType: const FullType(String)),
       'title',
       serializers.serialize(object.title,
           specifiedType: const FullType(String)),
@@ -209,6 +211,10 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'name':
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'title':
           result.title = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
@@ -682,6 +688,8 @@ class ChildBuilder implements Builder<Child, ChildBuilder> {
 
 class _$ChildData extends ChildData {
   @override
+  final String name;
+  @override
   final String title;
   @override
   final String subreddit;
@@ -700,7 +708,8 @@ class _$ChildData extends ChildData {
       (new ChildDataBuilder()..update(updates)).build();
 
   _$ChildData._(
-      {this.title,
+      {this.name,
+      this.title,
       this.subreddit,
       this.permalink,
       this.author,
@@ -708,6 +717,9 @@ class _$ChildData extends ChildData {
       this.thumbnail,
       this.preview})
       : super._() {
+    if (name == null) {
+      throw new BuiltValueNullFieldError('ChildData', 'name');
+    }
     if (title == null) {
       throw new BuiltValueNullFieldError('ChildData', 'title');
     }
@@ -739,6 +751,7 @@ class _$ChildData extends ChildData {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is ChildData &&
+        name == other.name &&
         title == other.title &&
         subreddit == other.subreddit &&
         permalink == other.permalink &&
@@ -754,7 +767,9 @@ class _$ChildData extends ChildData {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, title.hashCode), subreddit.hashCode),
+                    $jc(
+                        $jc($jc($jc(0, name.hashCode), title.hashCode),
+                            subreddit.hashCode),
                         permalink.hashCode),
                     author.hashCode),
                 score.hashCode),
@@ -765,6 +780,7 @@ class _$ChildData extends ChildData {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ChildData')
+          ..add('name', name)
           ..add('title', title)
           ..add('subreddit', subreddit)
           ..add('permalink', permalink)
@@ -778,6 +794,10 @@ class _$ChildData extends ChildData {
 
 class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   _$ChildData _$v;
+
+  String _name;
+  String get name => _$this._name;
+  set name(String name) => _$this._name = name;
 
   String _title;
   String get title => _$this._title;
@@ -811,6 +831,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
 
   ChildDataBuilder get _$this {
     if (_$v != null) {
+      _name = _$v.name;
       _title = _$v.title;
       _subreddit = _$v.subreddit;
       _permalink = _$v.permalink;
@@ -842,6 +863,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
     try {
       _$result = _$v ??
           new _$ChildData._(
+              name: name,
               title: title,
               subreddit: subreddit,
               permalink: permalink,

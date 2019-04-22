@@ -5,6 +5,7 @@ class ListingPhotosMapper {
   static List<Photo> map(ListingResponse response) {
     return response.data.children
         .map((child) => Photo((b) => b
+          ..id = child.data.name
           ..authorName = child.data.author
           ..subreddit = Subreddit((b) => b
                 ..name = child.data.subreddit

@@ -4,6 +4,8 @@ import 'package:reddigram/models/models.dart';
 part 'photo.g.dart';
 
 abstract class Photo implements Built<Photo, PhotoBuilder> {
+  String get id;
+
   String get authorName;
 
   Subreddit get subreddit;

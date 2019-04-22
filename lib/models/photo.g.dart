@@ -8,6 +8,8 @@ part of 'photo.dart';
 
 class _$Photo extends Photo {
   @override
+  final String id;
+  @override
   final String authorName;
   @override
   final Subreddit subreddit;
@@ -26,7 +28,8 @@ class _$Photo extends Photo {
       (new PhotoBuilder()..update(updates)).build();
 
   _$Photo._(
-      {this.authorName,
+      {this.id,
+      this.authorName,
       this.subreddit,
       this.photoUrl,
       this.thumbnailUrl,
@@ -34,6 +37,9 @@ class _$Photo extends Photo {
       this.upvoted,
       this.redditUrl})
       : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('Photo', 'id');
+    }
     if (authorName == null) {
       throw new BuiltValueNullFieldError('Photo', 'authorName');
     }
@@ -68,6 +74,7 @@ class _$Photo extends Photo {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Photo &&
+        id == other.id &&
         authorName == other.authorName &&
         subreddit == other.subreddit &&
         photoUrl == other.photoUrl &&
@@ -83,7 +90,9 @@ class _$Photo extends Photo {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, authorName.hashCode), subreddit.hashCode),
+                    $jc(
+                        $jc($jc($jc(0, id.hashCode), authorName.hashCode),
+                            subreddit.hashCode),
                         photoUrl.hashCode),
                     thumbnailUrl.hashCode),
                 upvotes.hashCode),
@@ -94,6 +103,7 @@ class _$Photo extends Photo {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Photo')
+          ..add('id', id)
           ..add('authorName', authorName)
           ..add('subreddit', subreddit)
           ..add('photoUrl', photoUrl)
@@ -107,6 +117,10 @@ class _$Photo extends Photo {
 
 class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   _$Photo _$v;
+
+  String _id;
+  String get id => _$this._id;
+  set id(String id) => _$this._id = id;
 
   String _authorName;
   String get authorName => _$this._authorName;
@@ -141,6 +155,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
 
   PhotoBuilder get _$this {
     if (_$v != null) {
+      _id = _$v.id;
       _authorName = _$v.authorName;
       _subreddit = _$v.subreddit?.toBuilder();
       _photoUrl = _$v.photoUrl;
@@ -172,6 +187,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
     try {
       _$result = _$v ??
           new _$Photo._(
+              id: id,
               authorName: authorName,
               subreddit: subreddit.build(),
               photoUrl: photoUrl,

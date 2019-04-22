@@ -44,6 +44,8 @@ abstract class Child implements Built<Child, ChildBuilder> {
 }
 
 abstract class ChildData implements Built<ChildData, ChildDataBuilder> {
+  String get name;
+
   String get title;
 
   String get subreddit;

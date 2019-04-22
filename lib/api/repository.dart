@@ -14,12 +14,13 @@ class RedditRepository {
           .toBuilder());
   }
 
+  // FIXME: Change limit back to 25
   static Future<ListingResponse> subreddit(String name,
-      {String after = '', int limit = 25}) async {
+      {String after = '', int limit = 3}) async {
     return http
         .get('https://reddit.com/r/$name.json?after=$after&limit=$limit')
         .then((response) => serializers.deserializeWith(
             ListingResponse.serializer, json.decode(response.body)))
-        .then((listings) => _filterOnlyPhotos(listings));
+        .then(_filterOnlyPhotos);
   }
 }

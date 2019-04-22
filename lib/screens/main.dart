@@ -1,25 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:reddigram/api/api.dart';
-import 'package:reddigram/models/models.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
+import 'package:redux/redux.dart';
 
-class MainScreen extends StatefulWidget {
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  List<Photo> photos = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    RedditRepository.subreddit('EarthPorn+CitiesSkylines+InfrastructurePorn')
-        .then((response) => ListingPhotosMapper.map(response))
-        .then((photos) => setState(() => this.photos = photos));
-  }
-
+class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +21,42 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        itemCount: photos.length,
-        itemBuilder: (context, i) => PhotoListItem(photo: photos[i]),
+      body: StoreConnector<ReddigramState, _ViewModel>(
+        onInit: (store) => store.dispatch(fetchMoreFeed()),
+        converter: (store) => _ViewModel.fromStore(store),
+        builder: (context, vm) => ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              itemCount: vm.feedState.photos.length + 1,
+              itemBuilder: (context, i) {
+                // Is last?
+                if (i == vm.feedState.photos.length) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(),
+                  );
+                }
+
+                return PhotoListItem(photo: vm.feedState.photos[i]);
+              },
+            ),
       ),
+    );
+  }
+}
+
+class _ViewModel {
+  final FeedState feedState;
+  final VoidCallback fetchMore;
+
+  _ViewModel({@required this.feedState, @required this.fetchMore})
+      : assert(feedState != null),
+        assert(fetchMore != null);
+
+  factory _ViewModel.fromStore(Store<ReddigramState> store) {
+    return _ViewModel(
+      feedState: store.state.feedState,
+      fetchMore: () => store.dispatch(fetchMoreFeed()),
     );
   }
 }
