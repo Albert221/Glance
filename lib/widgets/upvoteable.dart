@@ -21,9 +21,11 @@ class _UpvoteableState extends State<Upvoteable> {
   }
 
   void onUpvote() {
-    if (widget.onUpvote != null) {
-      widget.onUpvote();
+    if (widget.onUpvote == null) {
+      return;
     }
+
+    widget.onUpvote();
 
     setState(() {
       animating = true;
