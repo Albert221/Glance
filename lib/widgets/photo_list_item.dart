@@ -65,6 +65,7 @@ class PhotoListItem extends StatelessWidget {
       children: [
         CachedNetworkImage(
           width: double.infinity,
+          height: double.infinity,
           imageUrl: photo.thumbnailUrl,
           fit: BoxFit.cover,
         ),
