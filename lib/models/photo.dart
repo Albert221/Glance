@@ -10,6 +10,8 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   String get photoUrl;
 
+  String get thumbnailUrl;
+
   int get upvotes;
 
   bool get upvoted;

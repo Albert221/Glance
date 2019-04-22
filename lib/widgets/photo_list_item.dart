@@ -13,8 +13,6 @@ class PhotoListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Material(
@@ -23,69 +21,92 @@ class PhotoListItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'u/${photo.authorName}',
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  Text(
-                    'r/${photo.subreddit.name}',
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                ],
-              ),
-            ),
-            Upvoteable(
-              child: CachedNetworkImage(
-                alignment: Alignment.center,
-                fit: BoxFit.cover,
-                imageUrl: photo.photoUrl,
-                placeholder: (context, _) => Container(
-                      width: width,
-                      height: width,
-                      alignment: Alignment.center,
-                      child: const CircularProgressIndicator(),
-                    ),
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    height: 56.0,
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_upward,
-                          color: photo.upvoted ? Colors.red : Colors.black,
-                        ),
-                        const SizedBox(width: 12.0),
-                        Text(photo.upvoted
-                            ? 'You and ${photo.upvotes - 1} others upvoted this.'
-                            : '${photo.upvotes} others upvoted this.'),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(Icons.exit_to_app),
-                  ),
-                  onTap: () async => await launch(photo.redditUrl),
-                ),
-              ],
-            ),
+            _buildTopBar(context),
+            _buildImage(context),
+            _buildBottomBar(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTopBar(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'u/${photo.authorName}',
+            style: Theme.of(context).textTheme.title,
+          ),
+          Text(
+            'r/${photo.subreddit.name}',
+            style: Theme.of(context).textTheme.title,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    return Upvoteable(
+      child: CachedNetworkImage(
+        fit: BoxFit.cover,
+        imageUrl: photo.photoUrl,
+        placeholder: (context, url) => _buildPlaceholder(context),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context) {
+    return Stack(
+      children: [
+        CachedNetworkImage(
+          width: double.infinity,
+          imageUrl: photo.thumbnailUrl,
+          fit: BoxFit.cover,
+        ),
+        const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomBar(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            width: double.infinity,
+            height: 56.0,
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.arrow_upward,
+                  color: photo.upvoted ? Colors.red : Colors.black,
+                ),
+                const SizedBox(width: 12.0),
+                Text(photo.upvoted
+                    ? 'You and ${photo.upvotes - 1} others upvoted this.'
+                    : '${photo.upvotes} others upvoted this.'),
+              ],
+            ),
+          ),
+        ),
+        InkWell(
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Icon(Icons.exit_to_app),
+          ),
+          onTap: () async => await launch(photo.redditUrl),
+        ),
+      ],
     );
   }
 }

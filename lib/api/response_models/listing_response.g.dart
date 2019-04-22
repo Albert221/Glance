@@ -184,6 +184,9 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
           specifiedType: const FullType(String)),
       'score',
       serializers.serialize(object.score, specifiedType: const FullType(int)),
+      'thumbnail',
+      serializers.serialize(object.thumbnail,
+          specifiedType: const FullType(String)),
     ];
     if (object.preview != null) {
       result
@@ -225,6 +228,10 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
         case 'score':
           result.score = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
+          break;
+        case 'thumbnail':
+          result.thumbnail = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'preview':
           result.preview.replace(serializers.deserialize(value,
@@ -685,6 +692,8 @@ class _$ChildData extends ChildData {
   @override
   final int score;
   @override
+  final String thumbnail;
+  @override
   final Preview preview;
 
   factory _$ChildData([void Function(ChildDataBuilder) updates]) =>
@@ -696,6 +705,7 @@ class _$ChildData extends ChildData {
       this.permalink,
       this.author,
       this.score,
+      this.thumbnail,
       this.preview})
       : super._() {
     if (title == null) {
@@ -712,6 +722,9 @@ class _$ChildData extends ChildData {
     }
     if (score == null) {
       throw new BuiltValueNullFieldError('ChildData', 'score');
+    }
+    if (thumbnail == null) {
+      throw new BuiltValueNullFieldError('ChildData', 'thumbnail');
     }
   }
 
@@ -731,6 +744,7 @@ class _$ChildData extends ChildData {
         permalink == other.permalink &&
         author == other.author &&
         score == other.score &&
+        thumbnail == other.thumbnail &&
         preview == other.preview;
   }
 
@@ -739,10 +753,12 @@ class _$ChildData extends ChildData {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, title.hashCode), subreddit.hashCode),
-                    permalink.hashCode),
-                author.hashCode),
-            score.hashCode),
+                $jc(
+                    $jc($jc($jc(0, title.hashCode), subreddit.hashCode),
+                        permalink.hashCode),
+                    author.hashCode),
+                score.hashCode),
+            thumbnail.hashCode),
         preview.hashCode));
   }
 
@@ -754,6 +770,7 @@ class _$ChildData extends ChildData {
           ..add('permalink', permalink)
           ..add('author', author)
           ..add('score', score)
+          ..add('thumbnail', thumbnail)
           ..add('preview', preview))
         .toString();
   }
@@ -782,6 +799,10 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   int get score => _$this._score;
   set score(int score) => _$this._score = score;
 
+  String _thumbnail;
+  String get thumbnail => _$this._thumbnail;
+  set thumbnail(String thumbnail) => _$this._thumbnail = thumbnail;
+
   PreviewBuilder _preview;
   PreviewBuilder get preview => _$this._preview ??= new PreviewBuilder();
   set preview(PreviewBuilder preview) => _$this._preview = preview;
@@ -795,6 +816,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
       _permalink = _$v.permalink;
       _author = _$v.author;
       _score = _$v.score;
+      _thumbnail = _$v.thumbnail;
       _preview = _$v.preview?.toBuilder();
       _$v = null;
     }
@@ -825,6 +847,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
               permalink: permalink,
               author: author,
               score: score,
+              thumbnail: thumbnail,
               preview: _preview?.build());
     } catch (_) {
       String _$failedField;

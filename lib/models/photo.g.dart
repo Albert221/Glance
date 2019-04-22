@@ -14,6 +14,8 @@ class _$Photo extends Photo {
   @override
   final String photoUrl;
   @override
+  final String thumbnailUrl;
+  @override
   final int upvotes;
   @override
   final bool upvoted;
@@ -27,6 +29,7 @@ class _$Photo extends Photo {
       {this.authorName,
       this.subreddit,
       this.photoUrl,
+      this.thumbnailUrl,
       this.upvotes,
       this.upvoted,
       this.redditUrl})
@@ -39,6 +42,9 @@ class _$Photo extends Photo {
     }
     if (photoUrl == null) {
       throw new BuiltValueNullFieldError('Photo', 'photoUrl');
+    }
+    if (thumbnailUrl == null) {
+      throw new BuiltValueNullFieldError('Photo', 'thumbnailUrl');
     }
     if (upvotes == null) {
       throw new BuiltValueNullFieldError('Photo', 'upvotes');
@@ -65,6 +71,7 @@ class _$Photo extends Photo {
         authorName == other.authorName &&
         subreddit == other.subreddit &&
         photoUrl == other.photoUrl &&
+        thumbnailUrl == other.thumbnailUrl &&
         upvotes == other.upvotes &&
         upvoted == other.upvoted &&
         redditUrl == other.redditUrl;
@@ -75,8 +82,10 @@ class _$Photo extends Photo {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, authorName.hashCode), subreddit.hashCode),
-                    photoUrl.hashCode),
+                $jc(
+                    $jc($jc($jc(0, authorName.hashCode), subreddit.hashCode),
+                        photoUrl.hashCode),
+                    thumbnailUrl.hashCode),
                 upvotes.hashCode),
             upvoted.hashCode),
         redditUrl.hashCode));
@@ -88,6 +97,7 @@ class _$Photo extends Photo {
           ..add('authorName', authorName)
           ..add('subreddit', subreddit)
           ..add('photoUrl', photoUrl)
+          ..add('thumbnailUrl', thumbnailUrl)
           ..add('upvotes', upvotes)
           ..add('upvoted', upvoted)
           ..add('redditUrl', redditUrl))
@@ -111,6 +121,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   String get photoUrl => _$this._photoUrl;
   set photoUrl(String photoUrl) => _$this._photoUrl = photoUrl;
 
+  String _thumbnailUrl;
+  String get thumbnailUrl => _$this._thumbnailUrl;
+  set thumbnailUrl(String thumbnailUrl) => _$this._thumbnailUrl = thumbnailUrl;
+
   int _upvotes;
   int get upvotes => _$this._upvotes;
   set upvotes(int upvotes) => _$this._upvotes = upvotes;
@@ -130,6 +144,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _authorName = _$v.authorName;
       _subreddit = _$v.subreddit?.toBuilder();
       _photoUrl = _$v.photoUrl;
+      _thumbnailUrl = _$v.thumbnailUrl;
       _upvotes = _$v.upvotes;
       _upvoted = _$v.upvoted;
       _redditUrl = _$v.redditUrl;
@@ -160,6 +175,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               authorName: authorName,
               subreddit: subreddit.build(),
               photoUrl: photoUrl,
+              thumbnailUrl: thumbnailUrl,
               upvotes: upvotes,
               upvoted: upvoted,
               redditUrl: redditUrl);

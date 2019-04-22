@@ -11,8 +11,9 @@ class ListingPhotosMapper {
                 ..subscribed = false
                 ..redditUrl = 'https://reddit.com/r/${child.data.subreddit}')
               .toBuilder()
-          ..photoUrl = child.data.preview.images.first.source.url
+          ..photoUrl = child.data.preview.images.first.resolutions.last.url
               .replaceAll('&amp;', '&')
+          ..thumbnailUrl = child.data.thumbnail
           ..upvotes = child.data.score
           ..upvoted = false
           ..redditUrl = 'https://reddit.com${child.data.permalink}'))

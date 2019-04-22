@@ -54,6 +54,8 @@ abstract class ChildData implements Built<ChildData, ChildDataBuilder> {
 
   int get score;
 
+  String get thumbnail;
+
   @nullable
   Preview get preview;
 
