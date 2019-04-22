@@ -33,49 +33,114 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  void _connectToReddit() {
+    debugPrint('Connecting!');
+  }
+
   @override
   Widget build(BuildContext context) {
     _offsetToLoad = () => MediaQuery.of(context).size.height * 3;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Reddigram',
-          style: Theme.of(context).appBarTheme.textTheme.display1,
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.list),
-            onPressed: () => Navigator.pushNamed(context, '/subscribed'),
+      appBar: _buildAppBar(context),
+      drawer: _buildDrawer(context),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Text(
+        'Reddigram',
+        style: Theme.of(context).appBarTheme.textTheme.display1,
+      ),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: [
+                StoreConnector<ReddigramState, AuthState>(
+                  converter: (store) => store.state.authState,
+                  builder: (context, authState) => DrawerHeader(
+                        decoration: BoxDecoration(
+                          color: Colors.tealAccent.shade100,
+                        ),
+                        child: Text(
+                          authState.authenticated
+                              ? authState.username
+                              : 'Guest',
+                          style: Theme.of(context).textTheme.title,
+                        ),
+                      ),
+                ),
+                ListTile(
+                  title: const Text('Some empty space (temporarily).'),
+                ),
+              ],
+            ),
+          ),
+          Material(
+            elevation: 4.0,
+            child: Column(
+              children: [
+                StoreConnector<ReddigramState, AuthState>(
+                  converter: (store) => store.state.authState,
+                  builder: (context, authState) => authState.authenticated
+                      ? ListTile(
+                          title: const Text('Sign out'),
+                          leading: const Icon(Icons.power_settings_new),
+                          onTap: () {},
+                        )
+                      : ListTile(
+                          title: const Text('Connect to Reddit'),
+                          leading: const Icon(Icons.account_circle),
+                          onTap: _connectToReddit,
+                        ),
+                ),
+                ListTile(
+                  title: const Text('Settings'),
+                  leading: const Icon(Icons.settings),
+//                  onTap: () => Navigator.pushNamed(context, '/settings'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      body: StoreConnector<ReddigramState, _ViewModel>(
-        onInit: (store) => store.dispatch(fetchMoreFeed()),
-        converter: (store) => _ViewModel.fromStore(store),
-        builder: (context, vm) {
-          _fetchMore = vm.fetchMore;
+    );
+  }
 
-          return ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            itemCount: vm.feedState.photos.length + 1,
-            itemBuilder: (context, i) {
-              // Is last?
-              if (i == vm.feedState.photos.length) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(),
-                );
-              }
+  Widget _buildBody(BuildContext context) {
+    return StoreConnector<ReddigramState, _ViewModel>(
+      onInit: (store) => store.dispatch(fetchMoreFeed()),
+      converter: (store) => _ViewModel.fromStore(store),
+      builder: (context, vm) {
+        _fetchMore = vm.fetchMore;
 
-              return PhotoListItem(photo: vm.feedState.photos[i]);
-            },
-          );
-        },
-      ),
+        return ListView.builder(
+          controller: _scrollController,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          itemCount: vm.feedState.photos.length + 1,
+          itemBuilder: (context, i) {
+            // Is last?
+            if (i == vm.feedState.photos.length) {
+              return Container(
+                padding: const EdgeInsets.symmetric(vertical: 32.0),
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator(),
+              );
+            }
+
+            return PhotoListItem(photo: vm.feedState.photos[i]);
+          },
+        );
+      },
     );
   }
 }

@@ -8,12 +8,17 @@ part of 'app_state.dart';
 
 class _$ReddigramState extends ReddigramState {
   @override
+  final AuthState authState;
+  @override
   final FeedState feedState;
 
   factory _$ReddigramState([void Function(ReddigramStateBuilder) updates]) =>
       (new ReddigramStateBuilder()..update(updates)).build();
 
-  _$ReddigramState._({this.feedState}) : super._() {
+  _$ReddigramState._({this.authState, this.feedState}) : super._() {
+    if (authState == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'authState');
+    }
     if (feedState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'feedState');
     }
@@ -30,17 +35,20 @@ class _$ReddigramState extends ReddigramState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ReddigramState && feedState == other.feedState;
+    return other is ReddigramState &&
+        authState == other.authState &&
+        feedState == other.feedState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, feedState.hashCode));
+    return $jf($jc($jc(0, authState.hashCode), feedState.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ReddigramState')
+          ..add('authState', authState)
           ..add('feedState', feedState))
         .toString();
   }
@@ -49,6 +57,11 @@ class _$ReddigramState extends ReddigramState {
 class ReddigramStateBuilder
     implements Builder<ReddigramState, ReddigramStateBuilder> {
   _$ReddigramState _$v;
+
+  AuthStateBuilder _authState;
+  AuthStateBuilder get authState =>
+      _$this._authState ??= new AuthStateBuilder();
+  set authState(AuthStateBuilder authState) => _$this._authState = authState;
 
   FeedStateBuilder _feedState;
   FeedStateBuilder get feedState =>
@@ -59,6 +72,7 @@ class ReddigramStateBuilder
 
   ReddigramStateBuilder get _$this {
     if (_$v != null) {
+      _authState = _$v.authState?.toBuilder();
       _feedState = _$v.feedState?.toBuilder();
       _$v = null;
     }
@@ -82,10 +96,14 @@ class ReddigramStateBuilder
   _$ReddigramState build() {
     _$ReddigramState _$result;
     try {
-      _$result = _$v ?? new _$ReddigramState._(feedState: feedState.build());
+      _$result = _$v ??
+          new _$ReddigramState._(
+              authState: authState.build(), feedState: feedState.build());
     } catch (_) {
       String _$failedField;
       try {
+        _$failedField = 'authState';
+        authState.build();
         _$failedField = 'feedState';
         feedState.build();
       } catch (e) {
