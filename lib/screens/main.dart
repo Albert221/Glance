@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/store/store.dart';
@@ -79,8 +81,8 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                 ),
-                ListTile(
-                  title: const Text('Some empty space (temporarily).'),
+                const ListTile(
+                  title: Text('Some empty space (temporarily).'),
                 ),
               ],
             ),
@@ -118,27 +120,35 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBody(BuildContext context) {
     return StoreConnector<ReddigramState, _ViewModel>(
-      onInit: (store) => store.dispatch(fetchMoreFeed()),
+      onInit: (store) => store.dispatch(fetchFreshFeed()),
       converter: (store) => _ViewModel.fromStore(store),
       builder: (context, vm) {
         _fetchMore = vm.fetchMore;
 
-        return ListView.builder(
-          controller: _scrollController,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          itemCount: vm.feedState.photos.length + 1,
-          itemBuilder: (context, i) {
-            // Is last?
-            if (i == vm.feedState.photos.length) {
-              return Container(
-                padding: const EdgeInsets.symmetric(vertical: 32.0),
-                alignment: Alignment.center,
-                child: const CircularProgressIndicator(),
-              );
-            }
-
-            return PhotoListItem(photo: vm.feedState.photos[i]);
+        return RefreshIndicator(
+          onRefresh: () {
+            final completer = Completer();
+            vm.fetchFresh(completer);
+            return completer.future;
           },
+          child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            itemCount: vm.feedState.photos.length + 1,
+            itemBuilder: (context, i) {
+              // Last item is a loading indicator.
+              if (i == vm.feedState.photos.length) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(),
+                );
+              }
+
+              return PhotoListItem(photo: vm.feedState.photos[i]);
+            },
+          ),
         );
       },
     );
@@ -147,15 +157,25 @@ class _MainScreenState extends State<MainScreen> {
 
 class _ViewModel {
   final FeedState feedState;
+  final void Function(Completer) fetchFresh;
   final VoidCallback fetchMore;
 
-  _ViewModel({@required this.feedState, @required this.fetchMore})
+  _ViewModel(
+      {@required this.feedState,
+      @required this.fetchFresh,
+      @required this.fetchMore})
       : assert(feedState != null),
+        assert(fetchFresh != null),
         assert(fetchMore != null);
 
   factory _ViewModel.fromStore(Store<ReddigramState> store) {
     return _ViewModel(
       feedState: store.state.feedState,
+      fetchFresh: (completer) {
+        if (!store.state.feedState.fetching) {
+          store.dispatch(fetchFreshFeed(completer));
+        }
+      },
       fetchMore: () {
         if (!store.state.feedState.fetching) {
           store.dispatch(fetchMoreFeed());
