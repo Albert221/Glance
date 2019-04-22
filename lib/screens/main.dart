@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/models/models.dart';
-import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/widgets/widgets.dart';
 
 class MainScreen extends StatefulWidget {
@@ -33,8 +32,7 @@ class _MainScreenState extends State<MainScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.list),
-            onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SubscribedScreen())),
+            onPressed: () => Navigator.pushNamed(context, '/subscribed'),
           ),
         ],
       ),

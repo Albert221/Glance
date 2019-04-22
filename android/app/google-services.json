@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "564944230037",
+    "firebase_url": "https://reddigram-a9b2a.firebaseio.com",
+    "project_id": "reddigram-a9b2a",
+    "storage_bucket": "reddigram-a9b2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564944230037:android:8ee4e4deed841a5e",
+        "android_client_info": {
+          "package_name": "me.wolszon.reddigram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564944230037-lq9kksm95knu219m526a7fk6mte91pgi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM_tlWshli1nv58I4m-vUYduH3oLrP7DM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564944230037-lq9kksm95knu219m526a7fk6mte91pgi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
