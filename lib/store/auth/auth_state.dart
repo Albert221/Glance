@@ -3,7 +3,7 @@ import 'package:built_value/built_value.dart';
 part 'auth_state.g.dart';
 
 abstract class AuthState implements Built<AuthState, AuthStateBuilder> {
-  bool get authenticated => accessToken != null;
+  bool get authenticated => username != null;
 
   @nullable
   String get accessToken;

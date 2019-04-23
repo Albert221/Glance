@@ -8,8 +8,6 @@ import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
-typedef OnConnectCallback = void Function(String);
-
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -44,16 +42,16 @@ class _MainScreenState extends State<MainScreen> {
 
   void _connectToReddit(OnConnectCallback onConnect) async {
     setState(() => authInProgress = true);
+    final completer = Completer()
+      ..future.then((_) => setState(() => authInProgress = false));
 
     try {
       final response = await _methodChannel.invokeMethod(
           'showOauthScreen', {'clientId': ReddigramConsts.oauthClientId});
-
-      onConnect(response['accessToken']);
+      onConnect(response['accessToken'], completer);
     } on PlatformException catch (e) {
       debugPrint(e.toString());
-    } finally {
-      setState(() => authInProgress = false);
+      completer.complete();
     }
   }
 
@@ -178,6 +176,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
+typedef OnConnectCallback = void Function(String, Completer);
+
 class _ConnectViewModel {
   final AuthState authState;
   final OnConnectCallback authenticate;
@@ -189,8 +189,8 @@ class _ConnectViewModel {
   factory _ConnectViewModel.fromStore(Store<ReddigramState> store) {
     return _ConnectViewModel(
       authState: store.state.authState,
-      authenticate: (accessToken) =>
-          store.dispatch(authenticateUser(accessToken)),
+      authenticate: (accessToken, completer) =>
+          store.dispatch(authenticateUser(accessToken, completer)),
     );
   }
 }

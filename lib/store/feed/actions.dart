@@ -6,14 +6,12 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-// FIXME: Use repositories from somewhere.
-
 ThunkAction<ReddigramState> fetchFreshFeed([Completer completer]) {
   return (Store<ReddigramState> store) {
     store.dispatch(SetFeedFetching(true));
 
-    RedditRepository().subreddit(
-            'EarthPorn+CitiesSkylines+InfrastructurePorn')
+    apiRepository
+        .subreddit('EarthPorn+CitiesSkylines+InfrastructurePorn')
         .then(ListingPhotosMapper.map)
         .then((photos) => store.dispatch(SetFeed(photos)))
         .whenComplete(() {
@@ -32,9 +30,8 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
       after = store.state.feedState.photos.last.id;
     }
 
-    RedditRepository().subreddit(
-            'EarthPorn+CitiesSkylines+InfrastructurePorn',
-            after: after)
+    apiRepository
+        .subreddit('EarthPorn+CitiesSkylines+InfrastructurePorn', after: after)
         .then(ListingPhotosMapper.map)
         .then((photos) => store.dispatch(AddMoreFeed(photos)))
         .whenComplete(() => store.dispatch(SetFeedFetching(false)));

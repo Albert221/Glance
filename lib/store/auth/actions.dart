@@ -1,16 +1,20 @@
+import 'dart:async';
+
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-ThunkAction<ReddigramState> authenticateUser(String accessToken) {
+ThunkAction<ReddigramState> authenticateUser(String accessToken,
+    [Completer completer]) {
   return (Store<ReddigramState> store) async {
     store.dispatch(SetAccessToken(accessToken));
 
-    final repo = RedditRepository();
-    repo.accessToken = accessToken;
-
-    repo.username().then((username) => store.dispatch(SetUsername(username)));
+    apiRepository.accessToken = accessToken;
+    apiRepository
+        .username()
+        .then((username) => store.dispatch(SetUsername(username)))
+        .whenComplete(() => completer?.complete());
   };
 }
 
