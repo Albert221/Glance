@@ -231,7 +231,7 @@ class _ConnectViewModel {
     return _ConnectViewModel(
       authState: store.state.authState,
       authenticate: (accessToken, completer) =>
-          store.dispatch(authenticateUser(accessToken, completer)),
+          store.dispatch(authenticateUserFromCode(accessToken, completer)),
       signOut: (completer) => store.dispatch(signUserOut(completer)),
     );
   }

@@ -20,12 +20,10 @@ class RedditRepository {
       onError: (DioError e) {
         if (e.response.statusCode == 401 &&
             !e.request.path.contains('access_token')) {
-          _refreshAccessToken();
+          refreshAccessToken();
         }
       },
     ));
-
-    // todo(Albert221): Load refresh token from some storage if it exists
 
     PackageInfo.fromPlatform().then((info) =>
         _client.options.headers['User-Agent'] =
@@ -42,18 +40,19 @@ class RedditRepository {
     }
   }
 
-  Future<void> _refreshAccessToken() async {
+  Future<void> refreshAccessToken([String refreshToken]) {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
-    post(
+    return post(
       '/api/v1/access_token',
-      data: 'grant_type=refresh_token&refresh_token=$_refreshToken',
+      data:
+          'grant_type=refresh_token&refresh_token=${refreshToken ?? _refreshToken}',
       headers: {'Authorization': basicAuth},
     ).then((response) => _accessToken = response.data['access_token']);
   }
 
-  Future<void> clearTokens() async {
+  void clearTokens() {
     _accessToken = null;
     _refreshToken = null;
   }
@@ -84,7 +83,7 @@ class RedditRepository {
     );
   }
 
-  Future<void> retrieveAccessToken(String code) async {
+  Future<String> retrieveTokens(String code) async {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
@@ -95,7 +94,7 @@ class RedditRepository {
       headers: {'Authorization': basicAuth},
     ).then((response) {
       _accessToken = response.data['access_token'];
-      _refreshToken = response.data['refresh_token'];
+      return _refreshToken = response.data['refresh_token'];
     });
   }
 

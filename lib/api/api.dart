@@ -1,4 +1,4 @@
-export 'repository.dart';
+export 'reddit_repository.dart';
 
 export 'response_models/listing_response.dart';
 export 'response_models/serializers.dart';

@@ -13,9 +13,11 @@ class ReddigramApp extends StatelessWidget {
 
   final Store<ReddigramState> store;
 
-  const ReddigramApp({Key key, @required this.store})
+  ReddigramApp({Key key, @required this.store})
       : assert(store != null),
-        super(key: key);
+        super(key: key) {
+    store.dispatch(authenticateUserFromStorage());
+  }
 
   @override
   Widget build(BuildContext context) {

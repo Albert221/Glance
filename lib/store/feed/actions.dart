@@ -52,8 +52,9 @@ ThunkAction<ReddigramState> upvote(Photo photo) {
 
 ThunkAction<ReddigramState> cancelUpvote(Photo photo) {
   return (Store<ReddigramState> store) {
-    store.dispatch(PhotoUpvoteCanceled(photo.id));
-    redditRepository.cancelUpvote(photo.id);
+    redditRepository
+        .cancelUpvote(photo.id)
+        .then((_) => store.dispatch(PhotoUpvoteCanceled(photo.id)));
   };
 }
 
