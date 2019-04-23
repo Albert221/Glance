@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dio/dio.dart';
 import 'package:package_info/package_info.dart';
 import 'package:reddigram/api/api.dart';
+import 'package:reddigram/models/models.dart';
 
 class RedditRepository {
   Dio client;
@@ -35,6 +36,11 @@ class RedditRepository {
           .toBuilder());
   }
 
+  void _assertAuthorized() {
+    assert(
+        client.options.headers.containsKey('Authorization'), 'User required.');
+  }
+
   Future<ListingResponse> subreddit(String name,
       {String after = '', int limit = 25}) async {
     return client
@@ -45,6 +51,8 @@ class RedditRepository {
   }
 
   Future<String> username() async {
+    _assertAuthorized();
+
     return client.get('/api/v1/me').then((response) => response.data['name']);
   }
 }
