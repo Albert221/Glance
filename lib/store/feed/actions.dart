@@ -9,13 +9,23 @@ import 'package:redux_thunk/redux_thunk.dart';
 String _concatenateSubreddits(Iterable<String> subreddits) =>
     subreddits.join('+');
 
+Future<List<Photo>> _fetchProperFeed(Store<ReddigramState> store,
+    {String after = ''}) {
+  if (store.state.authState.authenticated) {
+    return redditRepository
+        .subreddit(_concatenateSubreddits(store.state.subscriptions),
+            after: after)
+        .then(ListingPhotosMapper.map);
+  }
+
+  return redditRepository.best(after: after).then(ListingPhotosMapper.map);
+}
+
 ThunkAction<ReddigramState> fetchFreshFeed([Completer completer]) {
   return (Store<ReddigramState> store) {
     store.dispatch(SetFeedFetching(true));
 
-    redditRepository
-        .subreddit(_concatenateSubreddits(store.state.subscriptions))
-        .then(ListingPhotosMapper.map)
+    _fetchProperFeed(store)
         .then((photos) => store.dispatch(FetchedFeed(photos)))
         .whenComplete(() {
       store.dispatch(SetFeedFetching(false));
@@ -33,10 +43,7 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
       after = store.state.feedState.photos.last.id;
     }
 
-    redditRepository
-        .subreddit(_concatenateSubreddits(store.state.subscriptions),
-            after: after)
-        .then(ListingPhotosMapper.map)
+    _fetchProperFeed(store, after: after)
         .then((photos) => store.dispatch(FetchedMoreFeed(photos)))
         .whenComplete(() => store.dispatch(SetFeedFetching(false)));
   };

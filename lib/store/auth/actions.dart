@@ -11,16 +11,13 @@ const _refreshTokenKey = 'reddit_refresh_token';
 void _loadUserData(Store<ReddigramState> store, [Completer completer]) {
   final futures = <Future>[];
 
-  futures.add(redditRepository
-      .username()
-      .then((username) => store.dispatch(SetUsername(username))));
+  futures.add(redditRepository.username().then((username) {
+    store.dispatch(SetUsername(username));
+    store.dispatch(fetchFreshFeed());
+  }));
 
   // todo(Albert221): authenticate to subscriptions database and then fetch:
   store.dispatch(fetchSubscribedSubreddits());
-
-  final freshFeedCompleter = Completer();
-  futures.add(freshFeedCompleter.future);
-  store.dispatch(fetchFreshFeed(freshFeedCompleter));
 
   Future.wait(futures).whenComplete(() => completer?.complete());
 }

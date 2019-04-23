@@ -98,6 +98,14 @@ class RedditRepository {
     });
   }
 
+  Future<ListingResponse> best({String after = '', int limit = 25}) async {
+    return _client
+        .get('/best.json?after=$after&limit=$limit')
+        .then((response) => serializers.deserializeWith(
+            ListingResponse.serializer, response.data))
+        .then(_filterOnlyPhotos);
+  }
+
   Future<ListingResponse> subreddit(String name,
       {String after = '', int limit = 25}) async {
     return _client

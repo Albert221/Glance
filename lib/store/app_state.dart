@@ -18,8 +18,7 @@ abstract class ReddigramState
     return _$ReddigramState._(
       authState: AuthState(),
       feedState: FeedState(),
-      subscriptions:
-          BuiltSet(['aww']),
+      subscriptions: BuiltSet(),
     );
   }
 }
