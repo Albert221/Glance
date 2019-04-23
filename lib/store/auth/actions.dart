@@ -8,11 +8,11 @@ import 'package:redux_thunk/redux_thunk.dart';
 ThunkAction<ReddigramState> authenticateUser(String code,
     [Completer completer]) {
   return (Store<ReddigramState> store) async {
-    await apiRepository.retrieveAccessToken(code);
+    await redditRepository.retrieveAccessToken(code);
 
     final futures = <Future>[];
 
-    futures.add(apiRepository
+    futures.add(redditRepository
         .username()
         .then((username) => store.dispatch(SetUsername(username))));
 
@@ -29,7 +29,7 @@ ThunkAction<ReddigramState> authenticateUser(String code,
 
 ThunkAction<ReddigramState> signUserOut([Completer completer]) {
   return (Store<ReddigramState> store) {
-    apiRepository.clearTokens().then((_) {
+    redditRepository.clearTokens().then((_) {
       store.dispatch(SetUsername(null));
       store.dispatch(FetchedSubscribedSubreddits(['aww']));
       store.dispatch(fetchFreshFeed(completer));

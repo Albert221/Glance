@@ -13,7 +13,7 @@ ThunkAction<ReddigramState> fetchFreshFeed([Completer completer]) {
   return (Store<ReddigramState> store) {
     store.dispatch(SetFeedFetching(true));
 
-    apiRepository
+    redditRepository
         .subreddit(_concatenateSubreddits(store.state.subscriptions))
         .then(ListingPhotosMapper.map)
         .then((photos) => store.dispatch(FetchedFeed(photos)))
@@ -33,7 +33,7 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
       after = store.state.feedState.photos.last.id;
     }
 
-    apiRepository
+    redditRepository
         .subreddit(_concatenateSubreddits(store.state.subscriptions),
             after: after)
         .then(ListingPhotosMapper.map)
@@ -44,7 +44,7 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
 
 ThunkAction<ReddigramState> upvote(Photo photo) {
   return (Store<ReddigramState> store) {
-    apiRepository
+    redditRepository
         .upvote(photo.id)
         .then((_) => store.dispatch(PhotoUpvoted(photo.id)));
   };
@@ -53,7 +53,7 @@ ThunkAction<ReddigramState> upvote(Photo photo) {
 ThunkAction<ReddigramState> cancelUpvote(Photo photo) {
   return (Store<ReddigramState> store) {
     store.dispatch(PhotoUpvoteCanceled(photo.id));
-    apiRepository.cancelUpvote(photo.id);
+    redditRepository.cancelUpvote(photo.id);
   };
 }
 

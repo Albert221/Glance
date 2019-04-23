@@ -7,4 +7,4 @@ export 'mappers/listing_photos_mapper.dart';
 
 import 'package:reddigram/api/api.dart';
 
-final apiRepository = RedditRepository();
+final redditRepository = RedditRepository();
