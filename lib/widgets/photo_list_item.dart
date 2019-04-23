@@ -55,6 +55,7 @@ class PhotoListItem extends StatelessWidget {
       child: CachedNetworkImage(
         fit: BoxFit.cover,
         imageUrl: photo.photoUrl,
+        fadeInDuration: Duration.zero,
         placeholder: (context, url) => _buildPlaceholder(context),
       ),
     );
