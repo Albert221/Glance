@@ -14,6 +14,7 @@ ThunkAction<ReddigramState> fetchSubscribedSubreddits() {
 ThunkAction<ReddigramState> subscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     store.dispatch(SubscribedSubreddit(name));
+    store.dispatch(fetchFreshFeed());
 
     // todo: save to database
   };
@@ -22,6 +23,7 @@ ThunkAction<ReddigramState> subscribeSubreddit(String name) {
 ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     store.dispatch(UnsubscribedSubreddit(name));
+    store.dispatch(fetchFreshFeed());
 
     // todo: save to database
   };
