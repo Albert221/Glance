@@ -9,7 +9,7 @@ import 'package:reddigram/consts.dart';
 
 class RedditRepository {
   Dio _client;
-  String refreshToken;
+  String _refreshToken;
 
   RedditRepository() {
     _client = Dio(BaseOptions(
@@ -20,7 +20,7 @@ class RedditRepository {
       onError: (DioError e) {
         if (e.response.statusCode == 401 &&
             !e.request.path.contains('access_token')) {
-          _refreshToken();
+          _refreshAccessToken();
         }
       },
     ));
@@ -32,25 +32,30 @@ class RedditRepository {
             '${info.packageName}:${info.version} (by /u/Albert221)');
   }
 
-  set accessToken(String accessToken) {
+  set _accessToken(String accessToken) {
     if (accessToken != null) {
-      _client.options.headers['Authorization'] = 'bearer $accessToken';
+      _client.options.headers['Authorization'] = 'Bearer $accessToken';
       _client.options.baseUrl = 'https://oauth.reddit.com';
     } else {
       _client.options.headers.remove('Authorization');
-      _client.options.baseUrl = 'https://reddit.com';
+      _client.options.baseUrl = 'https://www.reddit.com';
     }
   }
 
-  Future<void> _refreshToken() async {
+  Future<void> _refreshAccessToken() async {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
     post(
       '/api/v1/access_token',
-      data: 'grant_type=refresh_token&refresh_token=$refreshToken',
+      data: 'grant_type=refresh_token&refresh_token=$_refreshToken',
       headers: {'Authorization': basicAuth},
-    ).then((response) => accessToken = response.data['access_token']);
+    ).then((response) => _accessToken = response.data['access_token']);
+  }
+
+  Future<void> clearTokens() async {
+    _accessToken = null;
+    _refreshToken = null;
   }
 
   static ListingResponse _filterOnlyPhotos(ListingResponse response) {
@@ -89,8 +94,8 @@ class RedditRepository {
           '&redirect_uri=https://reddigram.wolszon.me/redirect',
       headers: {'Authorization': basicAuth},
     ).then((response) {
-      accessToken = response.data['access_token'];
-      refreshToken = response.data['refresh_token'];
+      _accessToken = response.data['access_token'];
+      _refreshToken = response.data['refresh_token'];
     });
   }
 

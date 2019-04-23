@@ -140,7 +140,13 @@ class _MainScreenState extends State<MainScreen> {
                       ? ListTile(
                           title: const Text('Sign out'),
                           leading: const Icon(Icons.power_settings_new),
-                          onTap: () {},
+                          onTap: () {
+                            setState(() => authInProgress = true);
+                            final completer = Completer()
+                              ..future.then((_) =>
+                                  setState(() => authInProgress = false));
+                            vm.signOut(completer);
+                          },
                         )
                       : ListTile(
                           title: const Text('Connect to Reddit'),
@@ -206,27 +212,34 @@ class _MainScreenState extends State<MainScreen> {
 }
 
 typedef OnConnectCallback = void Function(String, Completer);
+typedef CompleterCallback = void Function(Completer);
 
 class _ConnectViewModel {
   final AuthState authState;
   final OnConnectCallback authenticate;
+  final CompleterCallback signOut;
 
-  _ConnectViewModel({@required this.authState, @required this.authenticate})
+  _ConnectViewModel(
+      {@required this.authState,
+      @required this.authenticate,
+      @required this.signOut})
       : assert(authState != null),
-        assert(authenticate != null);
+        assert(authenticate != null),
+        assert(signOut != null);
 
   factory _ConnectViewModel.fromStore(Store<ReddigramState> store) {
     return _ConnectViewModel(
       authState: store.state.authState,
       authenticate: (accessToken, completer) =>
           store.dispatch(authenticateUser(accessToken, completer)),
+      signOut: (completer) => store.dispatch(signUserOut(completer)),
     );
   }
 }
 
 class _BodyViewModel {
   final FeedState feedState;
-  final void Function(Completer) fetchFresh;
+  final CompleterCallback fetchFresh;
   final VoidCallback fetchMore;
 
   _BodyViewModel(

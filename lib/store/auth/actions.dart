@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:reddigram/api/api.dart';
-import 'package:reddigram/models/models.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
@@ -28,14 +27,18 @@ ThunkAction<ReddigramState> authenticateUser(String code,
   };
 }
 
+ThunkAction<ReddigramState> signUserOut([Completer completer]) {
+  return (Store<ReddigramState> store) {
+    apiRepository.clearTokens().then((_) {
+      store.dispatch(SetUsername(null));
+      store.dispatch(FetchedSubscribedSubreddits(['aww']));
+      store.dispatch(fetchFreshFeed(completer));
+    });
+  };
+}
+
 class SetUsername {
   final String username;
 
   SetUsername(this.username);
-}
-
-class SetSubscribedSubreddits {
-  final List<Subreddit> subreddits;
-
-  SetSubscribedSubreddits(this.subreddits);
 }
