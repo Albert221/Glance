@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:reddigram/store/store.dart';
 
@@ -9,12 +10,16 @@ abstract class ReddigramState
 
   FeedState get feedState;
 
+  BuiltSet<String> get subscriptions;
+
   ReddigramState._();
 
   factory ReddigramState([updates(ReddigramStateBuilder b)]) {
     return _$ReddigramState._(
       authState: AuthState(),
       feedState: FeedState(),
+      subscriptions:
+          BuiltSet(['aww']),
     );
   }
 }

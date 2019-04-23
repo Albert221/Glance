@@ -11,16 +11,22 @@ class _$ReddigramState extends ReddigramState {
   final AuthState authState;
   @override
   final FeedState feedState;
+  @override
+  final BuiltSet<String> subscriptions;
 
   factory _$ReddigramState([void Function(ReddigramStateBuilder) updates]) =>
       (new ReddigramStateBuilder()..update(updates)).build();
 
-  _$ReddigramState._({this.authState, this.feedState}) : super._() {
+  _$ReddigramState._({this.authState, this.feedState, this.subscriptions})
+      : super._() {
     if (authState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'authState');
     }
     if (feedState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'feedState');
+    }
+    if (subscriptions == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'subscriptions');
     }
   }
 
@@ -37,19 +43,22 @@ class _$ReddigramState extends ReddigramState {
     if (identical(other, this)) return true;
     return other is ReddigramState &&
         authState == other.authState &&
-        feedState == other.feedState;
+        feedState == other.feedState &&
+        subscriptions == other.subscriptions;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, authState.hashCode), feedState.hashCode));
+    return $jf($jc($jc($jc(0, authState.hashCode), feedState.hashCode),
+        subscriptions.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ReddigramState')
           ..add('authState', authState)
-          ..add('feedState', feedState))
+          ..add('feedState', feedState)
+          ..add('subscriptions', subscriptions))
         .toString();
   }
 }
@@ -68,12 +77,19 @@ class ReddigramStateBuilder
       _$this._feedState ??= new FeedStateBuilder();
   set feedState(FeedStateBuilder feedState) => _$this._feedState = feedState;
 
+  SetBuilder<String> _subscriptions;
+  SetBuilder<String> get subscriptions =>
+      _$this._subscriptions ??= new SetBuilder<String>();
+  set subscriptions(SetBuilder<String> subscriptions) =>
+      _$this._subscriptions = subscriptions;
+
   ReddigramStateBuilder();
 
   ReddigramStateBuilder get _$this {
     if (_$v != null) {
       _authState = _$v.authState?.toBuilder();
       _feedState = _$v.feedState?.toBuilder();
+      _subscriptions = _$v.subscriptions?.toBuilder();
       _$v = null;
     }
     return this;
@@ -98,7 +114,9 @@ class ReddigramStateBuilder
     try {
       _$result = _$v ??
           new _$ReddigramState._(
-              authState: authState.build(), feedState: feedState.build());
+              authState: authState.build(),
+              feedState: feedState.build(),
+              subscriptions: subscriptions.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -106,6 +124,8 @@ class ReddigramStateBuilder
         authState.build();
         _$failedField = 'feedState';
         feedState.build();
+        _$failedField = 'subscriptions';
+        subscriptions.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'ReddigramState', _$failedField, e.toString());

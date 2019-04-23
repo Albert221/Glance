@@ -18,12 +18,12 @@ ThunkAction<ReddigramState> authenticateUser(String accessToken,
         .username()
         .then((username) => store.dispatch(SetUsername(username))));
 
-//    futures.add(
-//        apiRepository.subscribedSubreddits().then((subreddits) =>
-//            store.dispatch(
-//                SetSubscribedSubreddits(subreddits)));
+    // todo: authenticate to subscriptions database and then fetch:
+    store.dispatch(fetchSubscribedSubreddits());
 
-        Future.wait(futures).whenComplete(() => completer?.complete());
+    store.dispatch(fetchFreshFeed());
+
+    Future.wait(futures).whenComplete(() => completer?.complete());
   };
 }
 

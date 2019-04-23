@@ -103,7 +103,28 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                 ),
                 const ListTile(
-                  title: Text('Some empty space (temporarily).'),
+                  title: Text('Subreddits'),
+                  trailing: Icon(Icons.add),
+                ),
+                StoreConnector<ReddigramState, List<String>>(
+                  converter: (store) => store.state.subscriptions.toList(),
+                  builder: (context, subreddits) {
+                    if (subreddits.isEmpty) {
+                      return const ListTile(
+                        title: Text('No subreddits'),
+                        dense: true,
+                      );
+                    }
+
+                    return Column(
+                      children: subreddits
+                          .map((subreddit) => ListTile(
+                                dense: true,
+                                title: Text('r/$subreddit'),
+                              ))
+                          .toList(),
+                    );
+                  },
                 ),
               ],
             ),

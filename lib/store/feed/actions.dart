@@ -6,12 +6,15 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
+String _concatenateSubreddits(Iterable<String> subreddits) =>
+    subreddits.join('+');
+
 ThunkAction<ReddigramState> fetchFreshFeed([Completer completer]) {
   return (Store<ReddigramState> store) {
     store.dispatch(SetFeedFetching(true));
 
     apiRepository
-        .subreddit('EarthPorn+CitiesSkylines+InfrastructurePorn')
+        .subreddit(_concatenateSubreddits(store.state.subscriptions))
         .then(ListingPhotosMapper.map)
         .then((photos) => store.dispatch(SetFeed(photos)))
         .whenComplete(() {
@@ -31,7 +34,8 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
     }
 
     apiRepository
-        .subreddit('EarthPorn+CitiesSkylines+InfrastructurePorn', after: after)
+        .subreddit(_concatenateSubreddits(store.state.subscriptions),
+            after: after)
         .then(ListingPhotosMapper.map)
         .then((photos) => store.dispatch(AddMoreFeed(photos)))
         .whenComplete(() => store.dispatch(SetFeedFetching(false)));
