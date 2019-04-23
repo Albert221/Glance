@@ -49,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
     try {
       final response = await _methodChannel.invokeMethod(
           'showOauthScreen', {'clientId': ReddigramConsts.oauthClientId});
-      onConnect(response['accessToken'], completer);
+      onConnect(response['code'], completer);
     } on PlatformException catch (e) {
       debugPrint(e.toString());
       completer.complete();

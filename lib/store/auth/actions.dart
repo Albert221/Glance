@@ -6,31 +6,26 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-ThunkAction<ReddigramState> authenticateUser(String accessToken,
+ThunkAction<ReddigramState> authenticateUser(String code,
     [Completer completer]) {
   return (Store<ReddigramState> store) async {
-    store.dispatch(SetAccessToken(accessToken));
+    await apiRepository.retrieveAccessToken(code);
 
-    apiRepository.accessToken = accessToken;
     final futures = <Future>[];
 
     futures.add(apiRepository
         .username()
         .then((username) => store.dispatch(SetUsername(username))));
 
-    // todo: authenticate to subscriptions database and then fetch:
+    // todo(Albert221): authenticate to subscriptions database and then fetch:
     store.dispatch(fetchSubscribedSubreddits());
 
-    store.dispatch(fetchFreshFeed());
+    final freshFeedCompleter = Completer();
+    futures.add(freshFeedCompleter.future);
+    store.dispatch(fetchFreshFeed(freshFeedCompleter));
 
     Future.wait(futures).whenComplete(() => completer?.complete());
   };
-}
-
-class SetAccessToken {
-  final String accessToken;
-
-  SetAccessToken(this.accessToken);
 }
 
 class SetUsername {

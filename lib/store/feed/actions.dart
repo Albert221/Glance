@@ -44,8 +44,9 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
 
 ThunkAction<ReddigramState> upvote(Photo photo) {
   return (Store<ReddigramState> store) {
-    store.dispatch(PhotoUpvoted(photo.id));
-    apiRepository.upvote(photo.id);
+    apiRepository
+        .upvote(photo.id)
+        .then((_) => store.dispatch(PhotoUpvoted(photo.id)));
   };
 }
 

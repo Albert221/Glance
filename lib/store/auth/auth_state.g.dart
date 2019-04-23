@@ -8,14 +8,12 @@ part of 'auth_state.dart';
 
 class _$AuthState extends AuthState {
   @override
-  final String accessToken;
-  @override
   final String username;
 
   factory _$AuthState([void Function(AuthStateBuilder) updates]) =>
       (new AuthStateBuilder()..update(updates)).build();
 
-  _$AuthState._({this.accessToken, this.username}) : super._();
+  _$AuthState._({this.username}) : super._();
 
   @override
   AuthState rebuild(void Function(AuthStateBuilder) updates) =>
@@ -27,31 +25,23 @@ class _$AuthState extends AuthState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AuthState &&
-        accessToken == other.accessToken &&
-        username == other.username;
+    return other is AuthState && username == other.username;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, accessToken.hashCode), username.hashCode));
+    return $jf($jc(0, username.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AuthState')
-          ..add('accessToken', accessToken)
-          ..add('username', username))
+    return (newBuiltValueToStringHelper('AuthState')..add('username', username))
         .toString();
   }
 }
 
 class AuthStateBuilder implements Builder<AuthState, AuthStateBuilder> {
   _$AuthState _$v;
-
-  String _accessToken;
-  String get accessToken => _$this._accessToken;
-  set accessToken(String accessToken) => _$this._accessToken = accessToken;
 
   String _username;
   String get username => _$this._username;
@@ -61,7 +51,6 @@ class AuthStateBuilder implements Builder<AuthState, AuthStateBuilder> {
 
   AuthStateBuilder get _$this {
     if (_$v != null) {
-      _accessToken = _$v.accessToken;
       _username = _$v.username;
       _$v = null;
     }
@@ -83,8 +72,7 @@ class AuthStateBuilder implements Builder<AuthState, AuthStateBuilder> {
 
   @override
   _$AuthState build() {
-    final _$result =
-        _$v ?? new _$AuthState._(accessToken: accessToken, username: username);
+    final _$result = _$v ?? new _$AuthState._(username: username);
     replace(_$result);
     return _$result;
   }

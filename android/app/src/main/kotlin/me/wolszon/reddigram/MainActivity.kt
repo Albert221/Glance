@@ -41,8 +41,8 @@ class MainActivity : FlutterActivity() {
         when (requestCode) {
             OAUTH_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val accessToken = data?.getStringExtra(OauthActivity.ACCESS_TOKEN_EXTRA)
-                    oauthResult?.success(hashMapOf("accessToken" to accessToken))
+                    val code = data?.getStringExtra(OauthActivity.CODE_EXTRA)
+                    oauthResult?.success(hashMapOf("code" to code))
                 } else {
                     oauthResult?.error("No response", null, null)
                 }

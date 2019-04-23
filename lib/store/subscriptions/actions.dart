@@ -4,7 +4,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<ReddigramState> fetchSubscribedSubreddits() {
   return (Store<ReddigramState> store) {
-    // todo: fetch subreddits from database
+    // todo(Albert221): fetch subreddits from database
 
     store.dispatch(FetchedSubscribedSubreddits(
         ['EarthPorn', 'InfrastructurePorn', 'photography', 'Minecraft']));
@@ -16,7 +16,7 @@ ThunkAction<ReddigramState> subscribeSubreddit(String name) {
     store.dispatch(SubscribedSubreddit(name));
     store.dispatch(fetchFreshFeed());
 
-    // todo: save to database
+    // todo(Albert221): save to database
   };
 }
 
@@ -25,7 +25,7 @@ ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
     store.dispatch(UnsubscribedSubreddit(name));
     store.dispatch(fetchFreshFeed());
 
-    // todo: save to database
+    // todo(Albert221): save to database
   };
 }
 

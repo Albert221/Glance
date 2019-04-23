@@ -18,7 +18,7 @@ class OauthActivity : Activity() {
     private val clientId by lazy { intent.getStringExtra(CLIENT_ID_EXTRA) }
 
     companion object {
-        const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN"
+        const val CODE_EXTRA = "CODE"
         private const val CLIENT_ID_EXTRA = "CLIENT_ID"
 
         fun createIntent(context: Context, clientId: String): Intent {
@@ -35,7 +35,6 @@ class OauthActivity : Activity() {
         setupWebView()
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
         webView.apply {
             if (BuildConfig.DEBUG) {
@@ -49,8 +48,8 @@ class OauthActivity : Activity() {
             webViewClient = WebViewClient()
 
             val url = "https://www.reddit.com/api/v1/authorize?client_id=$clientId" +
-                    "&response_type=token&state=x&scope=read+mysubreddits+vote+identity" +
-                    "&redirect_uri=https://reddigram.wolszon.me/redirect"
+                    "&response_type=code&state=x&scope=read+mysubreddits+vote+identity" +
+                    "&redirect_uri=https://reddigram.wolszon.me/redirect&duration=permanent"
 
             loadUrl(url)
         }
@@ -65,16 +64,8 @@ class OauthActivity : Activity() {
         override fun onPageFinished(view: WebView?, url: String?) {
             val uri = Uri.parse(url)
             if (uri.host?.contains("reddigram.wolszon.me") == true) {
-                val decodedData = URLDecoder.decode(uri.fragment, "UTF-8")
-
-                val data = decodedData
-                        .split('&')
-                        .map { it.split('=') }
-                        .map { it[0] to it[1] }
-                        .toMap()
-
                 val resultIntent = Intent().apply {
-                    putExtra(ACCESS_TOKEN_EXTRA, data["access_token"])
+                    putExtra(CODE_EXTRA, uri.getQueryParameter("code"))
                 }
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()

@@ -6,16 +6,12 @@ abstract class AuthState implements Built<AuthState, AuthStateBuilder> {
   bool get authenticated => username != null;
 
   @nullable
-  String get accessToken;
-
-  @nullable
   String get username;
 
   AuthState._();
 
   factory AuthState([updates(AuthStateBuilder b)]) {
     return _$AuthState._(
-      accessToken: null,
       username: null,
     );
   }
