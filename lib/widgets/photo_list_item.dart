@@ -55,7 +55,7 @@ class PhotoListItem extends StatelessWidget {
 
   Widget _buildImage(BuildContext context) {
     return Upvoteable(
-      onUpvote: onUpvote,
+      onUpvote: photo.upvoted ? null : onUpvote,
       child: CachedNetworkImage(
         fit: BoxFit.cover,
         imageUrl: photo.photoUrl,
