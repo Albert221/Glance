@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:dio/dio.dart';
 import 'package:package_info/package_info.dart';
 import 'package:reddigram/api/api.dart';
-import 'package:reddigram/models/models.dart';
 
 class RedditRepository {
   Dio client;
@@ -54,5 +55,25 @@ class RedditRepository {
     _assertAuthorized();
 
     return client.get('/api/v1/me').then((response) => response.data['name']);
+  }
+
+  Future<void> upvote(String id) async {
+    _assertAuthorized();
+
+    return client.post('/api/vote',
+        data: 'dir=1&id=$id',
+        options: Options(
+            contentType:
+                ContentType.parse('application/x-www-form-urlencoded')));
+  }
+
+  Future<void> cancelUpvote(String id) async {
+    _assertAuthorized();
+
+    return client.post('/api/vote',
+        data: 'dir=0&id=$id',
+        options: Options(
+            contentType:
+                ContentType.parse('application/x-www-form-urlencoded')));
   }
 }

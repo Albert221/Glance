@@ -16,7 +16,7 @@ class ListingPhotosMapper {
               .replaceAll('&amp;', '&')
           ..thumbnailUrl = child.data.thumbnail
           ..upvotes = child.data.score
-          ..upvoted = false
+          ..upvoted = child.data.likes ?? false
           ..redditUrl = 'https://reddit.com${child.data.permalink}'))
         .toList();
   }

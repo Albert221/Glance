@@ -16,7 +16,7 @@ ThunkAction<ReddigramState> fetchFreshFeed([Completer completer]) {
     apiRepository
         .subreddit(_concatenateSubreddits(store.state.subscriptions))
         .then(ListingPhotosMapper.map)
-        .then((photos) => store.dispatch(SetFeed(photos)))
+        .then((photos) => store.dispatch(FetchedFeed(photos)))
         .whenComplete(() {
       store.dispatch(SetFeedFetching(false));
       completer?.complete();
@@ -37,8 +37,22 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
         .subreddit(_concatenateSubreddits(store.state.subscriptions),
             after: after)
         .then(ListingPhotosMapper.map)
-        .then((photos) => store.dispatch(AddMoreFeed(photos)))
+        .then((photos) => store.dispatch(FetchedMoreFeed(photos)))
         .whenComplete(() => store.dispatch(SetFeedFetching(false)));
+  };
+}
+
+ThunkAction<ReddigramState> upvote(Photo photo) {
+  return (Store<ReddigramState> store) {
+    store.dispatch(PhotoUpvoted(photo.id));
+    apiRepository.upvote(photo.id);
+  };
+}
+
+ThunkAction<ReddigramState> cancelUpvote(Photo photo) {
+  return (Store<ReddigramState> store) {
+    store.dispatch(PhotoUpvoteCanceled(photo.id));
+    apiRepository.cancelUpvote(photo.id);
   };
 }
 
@@ -48,14 +62,26 @@ class SetFeedFetching {
   SetFeedFetching(this.fetching);
 }
 
-class SetFeed {
+class FetchedFeed {
   final List<Photo> photos;
 
-  SetFeed(this.photos);
+  FetchedFeed(this.photos);
 }
 
-class AddMoreFeed {
+class FetchedMoreFeed {
   final List<Photo> photos;
 
-  AddMoreFeed(this.photos);
+  FetchedMoreFeed(this.photos);
+}
+
+class PhotoUpvoted {
+  final String id;
+
+  PhotoUpvoted(this.id);
+}
+
+class PhotoUpvoteCanceled {
+  final String id;
+
+  PhotoUpvoteCanceled(this.id);
 }

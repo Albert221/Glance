@@ -190,6 +190,12 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
       serializers.serialize(object.thumbnail,
           specifiedType: const FullType(String)),
     ];
+    if (object.likes != null) {
+      result
+        ..add('likes')
+        ..add(serializers.serialize(object.likes,
+            specifiedType: const FullType(bool)));
+    }
     if (object.preview != null) {
       result
         ..add('preview')
@@ -234,6 +240,10 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
         case 'score':
           result.score = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
+          break;
+        case 'likes':
+          result.likes = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
         case 'thumbnail':
           result.thumbnail = serializers.deserialize(value,
@@ -700,6 +710,8 @@ class _$ChildData extends ChildData {
   @override
   final int score;
   @override
+  final bool likes;
+  @override
   final String thumbnail;
   @override
   final Preview preview;
@@ -714,6 +726,7 @@ class _$ChildData extends ChildData {
       this.permalink,
       this.author,
       this.score,
+      this.likes,
       this.thumbnail,
       this.preview})
       : super._() {
@@ -757,6 +770,7 @@ class _$ChildData extends ChildData {
         permalink == other.permalink &&
         author == other.author &&
         score == other.score &&
+        likes == other.likes &&
         thumbnail == other.thumbnail &&
         preview == other.preview;
   }
@@ -768,11 +782,13 @@ class _$ChildData extends ChildData {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc($jc(0, name.hashCode), title.hashCode),
-                            subreddit.hashCode),
-                        permalink.hashCode),
-                    author.hashCode),
-                score.hashCode),
+                        $jc(
+                            $jc($jc($jc(0, name.hashCode), title.hashCode),
+                                subreddit.hashCode),
+                            permalink.hashCode),
+                        author.hashCode),
+                    score.hashCode),
+                likes.hashCode),
             thumbnail.hashCode),
         preview.hashCode));
   }
@@ -786,6 +802,7 @@ class _$ChildData extends ChildData {
           ..add('permalink', permalink)
           ..add('author', author)
           ..add('score', score)
+          ..add('likes', likes)
           ..add('thumbnail', thumbnail)
           ..add('preview', preview))
         .toString();
@@ -819,6 +836,10 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   int get score => _$this._score;
   set score(int score) => _$this._score = score;
 
+  bool _likes;
+  bool get likes => _$this._likes;
+  set likes(bool likes) => _$this._likes = likes;
+
   String _thumbnail;
   String get thumbnail => _$this._thumbnail;
   set thumbnail(String thumbnail) => _$this._thumbnail = thumbnail;
@@ -837,6 +858,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
       _permalink = _$v.permalink;
       _author = _$v.author;
       _score = _$v.score;
+      _likes = _$v.likes;
       _thumbnail = _$v.thumbnail;
       _preview = _$v.preview?.toBuilder();
       _$v = null;
@@ -869,6 +891,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
               permalink: permalink,
               author: author,
               score: score,
+              likes: likes,
               thumbnail: thumbnail,
               preview: _preview?.build());
     } catch (_) {

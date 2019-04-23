@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/consts.dart';
+import 'package:reddigram/models/models.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
@@ -188,7 +189,14 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
 
-              return PhotoListItem(photo: vm.feedState.photos[i]);
+              return StoreConnector<ReddigramState, _PhotoViewModel>(
+                converter: (store) => _PhotoViewModel.fromStore(store, i),
+                builder: (context, vm) => PhotoListItem(
+                      photo: vm.photo,
+                      onUpvote: vm.onUpvote,
+                      onUpvoteCanceled: vm.onUpvoteCanceled,
+                    ),
+              );
             },
           ),
         );
@@ -242,6 +250,30 @@ class _BodyViewModel {
           store.dispatch(fetchMoreFeed());
         }
       },
+    );
+  }
+}
+
+class _PhotoViewModel {
+  final Photo photo;
+  final VoidCallback onUpvote;
+  final VoidCallback onUpvoteCanceled;
+
+  _PhotoViewModel(
+      {@required this.photo,
+      @required this.onUpvote,
+      @required this.onUpvoteCanceled})
+      : assert(photo != null),
+        assert(onUpvote != null),
+        assert(onUpvoteCanceled != null);
+
+  factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int i) {
+    final photo = store.state.feedState.photos[i];
+
+    return _PhotoViewModel(
+      photo: photo,
+      onUpvote: () => store.dispatch(upvote(photo)),
+      onUpvoteCanceled: () => store.dispatch(cancelUpvote(photo)),
     );
   }
 }

@@ -6,8 +6,11 @@ import 'package:reddigram/widgets/widgets.dart';
 
 class PhotoListItem extends StatelessWidget {
   final Photo photo;
+  final VoidCallback onUpvote;
+  final VoidCallback onUpvoteCanceled;
 
-  const PhotoListItem({Key key, @required this.photo})
+  const PhotoListItem(
+      {Key key, @required this.photo, this.onUpvote, this.onUpvoteCanceled})
       : assert(photo != null),
         super(key: key);
 
@@ -52,6 +55,7 @@ class PhotoListItem extends StatelessWidget {
 
   Widget _buildImage(BuildContext context) {
     return Upvoteable(
+      onUpvote: onUpvote,
       child: CachedNetworkImage(
         fit: BoxFit.cover,
         imageUrl: photo.photoUrl,
@@ -89,9 +93,12 @@ class PhotoListItem extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Icon(
-                  Icons.arrow_upward,
-                  color: photo.upvoted ? Colors.red : Colors.black,
+                GestureDetector(
+                  onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
+                  child: Icon(
+                    Icons.arrow_upward,
+                    color: photo.upvoted ? Colors.red : Colors.black,
+                  ),
                 ),
                 const SizedBox(width: 12.0),
                 Text(photo.upvoted
