@@ -16,6 +16,8 @@ class _$Photo extends Photo {
   @override
   final String photoUrl;
   @override
+  final double aspectRatio;
+  @override
   final String thumbnailUrl;
   @override
   final int upvotes;
@@ -32,6 +34,7 @@ class _$Photo extends Photo {
       this.authorName,
       this.subreddit,
       this.photoUrl,
+      this.aspectRatio,
       this.thumbnailUrl,
       this.upvotes,
       this.upvoted,
@@ -48,6 +51,9 @@ class _$Photo extends Photo {
     }
     if (photoUrl == null) {
       throw new BuiltValueNullFieldError('Photo', 'photoUrl');
+    }
+    if (aspectRatio == null) {
+      throw new BuiltValueNullFieldError('Photo', 'aspectRatio');
     }
     if (thumbnailUrl == null) {
       throw new BuiltValueNullFieldError('Photo', 'thumbnailUrl');
@@ -78,6 +84,7 @@ class _$Photo extends Photo {
         authorName == other.authorName &&
         subreddit == other.subreddit &&
         photoUrl == other.photoUrl &&
+        aspectRatio == other.aspectRatio &&
         thumbnailUrl == other.thumbnailUrl &&
         upvotes == other.upvotes &&
         upvoted == other.upvoted &&
@@ -91,9 +98,11 @@ class _$Photo extends Photo {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc($jc(0, id.hashCode), authorName.hashCode),
-                            subreddit.hashCode),
-                        photoUrl.hashCode),
+                        $jc(
+                            $jc($jc($jc(0, id.hashCode), authorName.hashCode),
+                                subreddit.hashCode),
+                            photoUrl.hashCode),
+                        aspectRatio.hashCode),
                     thumbnailUrl.hashCode),
                 upvotes.hashCode),
             upvoted.hashCode),
@@ -107,6 +116,7 @@ class _$Photo extends Photo {
           ..add('authorName', authorName)
           ..add('subreddit', subreddit)
           ..add('photoUrl', photoUrl)
+          ..add('aspectRatio', aspectRatio)
           ..add('thumbnailUrl', thumbnailUrl)
           ..add('upvotes', upvotes)
           ..add('upvoted', upvoted)
@@ -135,6 +145,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   String get photoUrl => _$this._photoUrl;
   set photoUrl(String photoUrl) => _$this._photoUrl = photoUrl;
 
+  double _aspectRatio;
+  double get aspectRatio => _$this._aspectRatio;
+  set aspectRatio(double aspectRatio) => _$this._aspectRatio = aspectRatio;
+
   String _thumbnailUrl;
   String get thumbnailUrl => _$this._thumbnailUrl;
   set thumbnailUrl(String thumbnailUrl) => _$this._thumbnailUrl = thumbnailUrl;
@@ -159,6 +173,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _authorName = _$v.authorName;
       _subreddit = _$v.subreddit?.toBuilder();
       _photoUrl = _$v.photoUrl;
+      _aspectRatio = _$v.aspectRatio;
       _thumbnailUrl = _$v.thumbnailUrl;
       _upvotes = _$v.upvotes;
       _upvoted = _$v.upvoted;
@@ -191,6 +206,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               authorName: authorName,
               subreddit: subreddit.build(),
               photoUrl: photoUrl,
+              aspectRatio: aspectRatio,
               thumbnailUrl: thumbnailUrl,
               upvotes: upvotes,
               upvoted: upvoted,

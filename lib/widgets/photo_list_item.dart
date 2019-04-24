@@ -54,7 +54,11 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final pictureHeight = width / photo.aspectRatio;
+
     return Upvoteable(
+      height: pictureHeight > width ? width : pictureHeight,
       onUpvote: photo.upvoted ? null : onUpvote,
       child: CachedNetworkImage(
         fit: BoxFit.cover,

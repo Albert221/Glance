@@ -14,6 +14,8 @@ class ListingPhotosMapper {
               .toBuilder()
           ..photoUrl = child.data.preview.images.first.resolutions.last.url
               .replaceAll('&amp;', '&')
+          ..aspectRatio = child.data.preview.images.first.source.width /
+              child.data.preview.images.first.source.height
           ..thumbnailUrl = child.data.thumbnail
           ..upvotes = child.data.score
           ..upvoted = child.data.likes ?? false

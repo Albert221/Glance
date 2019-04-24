@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 class Upvoteable extends StatefulWidget {
   final Widget child;
+  final double height;
   final VoidCallback onUpvote;
 
-  const Upvoteable({Key key, this.onUpvote, @required this.child})
+  const Upvoteable(
+      {Key key, @required this.child, @required this.height, this.onUpvote})
       : assert(child != null),
+        assert(height != null),
         super(key: key);
 
   @override
@@ -37,12 +40,10 @@ class _UpvoteableState extends State<Upvoteable> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return GestureDetector(
       onDoubleTap: onUpvote,
       child: ConstrainedBox(
-        constraints: BoxConstraints.tightFor(height: width),
+        constraints: BoxConstraints.tightFor(height: widget.height),
         child: Stack(
           fit: StackFit.expand,
           children: [

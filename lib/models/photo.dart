@@ -12,6 +12,8 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   String get photoUrl;
 
+  double get aspectRatio;
+
   String get thumbnailUrl;
 
   int get upvotes;
