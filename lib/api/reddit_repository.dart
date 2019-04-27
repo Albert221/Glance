@@ -9,6 +9,8 @@ import 'package:reddigram/consts.dart';
 
 class RedditRepository {
   Dio _client;
+
+  DateTime _tokenExpiration;
   String _refreshToken;
 
   RedditRepository() {
@@ -16,14 +18,20 @@ class RedditRepository {
       baseUrl: 'https://www.reddit.com',
     ));
 
-    _client.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) {
-        if (e.response.statusCode == 401 &&
-            !e.request.path.contains('access_token')) {
-          refreshAccessToken();
-        }
-      },
-    ));
+    // Refreshment of access token
+    _client.interceptors.add(InterceptorsWrapper(onRequest: (options) async {
+      if (_tokenExpiration == null || options.path.contains('access_token')) {
+        // skip if we aren't authorized
+        return options;
+      }
+
+      final minuteAgo = DateTime.now().subtract(Duration(minutes: 1));
+      if (_tokenExpiration.isBefore(minuteAgo)) {
+        await refreshAccessToken();
+      }
+
+      return options;
+    }));
 
     PackageInfo.fromPlatform().then((info) =>
         _client.options.headers['User-Agent'] =
@@ -49,11 +57,16 @@ class RedditRepository {
       data:
           'grant_type=refresh_token&refresh_token=${refreshToken ?? _refreshToken}',
       headers: {'Authorization': basicAuth},
-    ).then((response) => _accessToken = response.data['access_token']);
+    ).then((response) {
+      _tokenExpiration =
+          DateTime.now().add(Duration(seconds: response.data['expires_in']));
+      return _accessToken = response.data['access_token'];
+    });
   }
 
   void clearTokens() {
     _accessToken = null;
+    _tokenExpiration = null;
     _refreshToken = null;
   }
 
@@ -93,7 +106,8 @@ class RedditRepository {
           '&redirect_uri=https://reddigram.wolszon.me/redirect',
       headers: {'Authorization': basicAuth},
     ).then((response) {
-      _accessToken = response.data['access_token'];
+      _tokenExpiration =
+          DateTime.now().add(Duration(seconds: response.data['expires_in']));
       return _refreshToken = response.data['refresh_token'];
     });
   }
