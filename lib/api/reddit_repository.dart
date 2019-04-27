@@ -10,6 +10,7 @@ import 'package:reddigram/consts.dart';
 class RedditRepository {
   Dio _client;
 
+  String _accessToken;
   DateTime _tokenExpiration;
   String _refreshToken;
 
@@ -17,6 +18,13 @@ class RedditRepository {
     _client = Dio(BaseOptions(
       baseUrl: 'https://www.reddit.com',
     ));
+
+    _client.interceptors.add(InterceptorsWrapper(onRequest: (options) {
+      if (_accessToken != null) {
+        options.headers['Authorization'] = 'Bearer $_accessToken';
+        options.baseUrl = 'https://oauth.reddit.com';
+      }
+    }));
 
     // Refreshment of access token
     _client.interceptors.add(InterceptorsWrapper(onRequest: (options) async {
@@ -38,14 +46,16 @@ class RedditRepository {
             '${info.packageName}:${info.version} (by /u/Albert221)');
   }
 
-  set _accessToken(String accessToken) {
-    if (accessToken != null) {
-      _client.options.headers['Authorization'] = 'Bearer $accessToken';
-      _client.options.baseUrl = 'https://oauth.reddit.com';
-    } else {
-      _client.options.headers.remove('Authorization');
-      _client.options.baseUrl = 'https://www.reddit.com';
-    }
+  Future<Response> post(String path,
+      {String data, Map<String, dynamic> headers}) async {
+    return _client.post(
+      path,
+      data: data,
+      options: Options(
+        headers: headers,
+        contentType: ContentType.parse('application/x-www-form-urlencoded'),
+      ),
+    );
   }
 
   Future<void> refreshAccessToken([String refreshToken]) {
@@ -70,30 +80,8 @@ class RedditRepository {
     _refreshToken = null;
   }
 
-  static ListingResponse _filterOnlyPhotos(ListingResponse response) {
-    return response.rebuild((b) => b
-      ..data = response.data
-          .rebuild((b) => b
-            ..children = ListBuilder(response.data.children
-                .where((child) => child.data.preview != null)))
-          .toBuilder());
-  }
-
   void _assertAuthorized() {
-    assert(
-        _client.options.headers.containsKey('Authorization'), 'User required.');
-  }
-
-  Future<Response> post(String path,
-      {String data, Map<String, dynamic> headers}) async {
-    return _client.post(
-      path,
-      data: data,
-      options: Options(
-        headers: headers,
-        contentType: ContentType.parse('application/x-www-form-urlencoded'),
-      ),
-    );
+    assert(_accessToken != null, 'User required.');
   }
 
   Future<String> retrieveTokens(String code) async {
@@ -110,6 +98,15 @@ class RedditRepository {
           DateTime.now().add(Duration(seconds: response.data['expires_in']));
       return _refreshToken = response.data['refresh_token'];
     });
+  }
+
+  static ListingResponse _filterOnlyPhotos(ListingResponse response) {
+    return response.rebuild((b) => b
+      ..data = response.data
+          .rebuild((b) => b
+            ..children = ListBuilder(response.data.children
+                .where((child) => child.data.preview != null)))
+          .toBuilder());
   }
 
   Future<ListingResponse> best({String after = '', int limit = 25}) async {
