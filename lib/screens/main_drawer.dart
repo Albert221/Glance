@@ -1,9 +1,11 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/consts.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainDrawer extends StatelessWidget {
   final _methodChannel = MethodChannel('me.wolszon.reddigram/oauth');
@@ -181,6 +183,29 @@ class MainDrawer extends StatelessWidget {
             secondary: const Icon(Icons.invert_colors),
             value: false,
             onChanged: (x) {},
+          ),
+          ListTile(
+            title: RichText(
+              text: TextSpan(
+                style: Theme.of(context)
+                    .textTheme
+                    .body2
+                    .copyWith(color: Theme.of(context).disabledColor),
+                children: [
+                  const TextSpan(text: 'Reddigram • '),
+                  TextSpan(
+                    text: 'Privacy policy',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => launch('https://google.com'),
+                  ),
+                ],
+              ),
+            ),
+            enabled: false,
+            dense: true,
           ),
         ],
       ),
