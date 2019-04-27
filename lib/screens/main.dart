@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:reddigram/consts.dart';
 import 'package:reddigram/models/models.dart';
+import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
@@ -15,13 +14,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final _methodChannel = MethodChannel('me.wolszon.reddigram/oauth');
   final _scrollController = ScrollController();
 
   double Function() _offsetToLoad = () => 0;
   VoidCallback _fetchMore = () {};
-
-  bool authInProgress = false;
 
   @override
   void initState() {
@@ -41,34 +37,24 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
-  void _connectToReddit(OnConnectCallback onConnect) async {
-    setState(() => authInProgress = true);
-    final completer = Completer()
-      ..future.then((_) => setState(() => authInProgress = false));
-
-    try {
-      final response = await _methodChannel.invokeMethod(
-          'showOauthScreen', {'clientId': ReddigramConsts.oauthClientId});
-      onConnect(response['code'], completer);
-    } on PlatformException catch (e) {
-      debugPrint(e.toString());
-      completer.complete();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     _offsetToLoad = () => MediaQuery.of(context).size.height * 3;
 
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: _buildAppBar(context),
-          drawer: _buildDrawer(context),
-          body: _buildBody(context),
-        ),
-        authInProgress ? const FullscreenProgressIndicator() : const SizedBox(),
-      ],
+    return StoreConnector<ReddigramState, bool>(
+      converter: (store) => store.state.authState.inProgress,
+      builder: (context, authInProgress) => Stack(
+            children: [
+              Scaffold(
+                appBar: _buildAppBar(context),
+                drawer: MainDrawer(),
+                body: _buildBody(context),
+              ),
+              authInProgress
+                  ? const FullscreenProgressIndicator()
+                  : const SizedBox(),
+            ],
+          ),
     );
   }
 
@@ -79,91 +65,6 @@ class _MainScreenState extends State<MainScreen> {
         style: Theme.of(context).appBarTheme.textTheme.display1,
       ),
       centerTitle: true,
-    );
-  }
-
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                StoreConnector<ReddigramState, AuthState>(
-                  converter: (store) => store.state.authState,
-                  builder: (context, authState) => DrawerHeader(
-                        decoration: BoxDecoration(
-                          color: Colors.tealAccent.shade100,
-                        ),
-                        child: Text(
-                          authState.authenticated
-                              ? authState.username ?? 'No username'
-                              : 'Guest',
-                          style: Theme.of(context).textTheme.title,
-                        ),
-                      ),
-                ),
-                const ListTile(
-                  title: Text('Subreddits'),
-                  trailing: Icon(Icons.add),
-                ),
-                StoreConnector<ReddigramState, List<String>>(
-                  converter: (store) => store.state.subscriptions.toList(),
-                  builder: (context, subreddits) {
-                    if (subreddits.isEmpty) {
-                      return const ListTile(
-                        title: Text('No subreddits'),
-                        dense: true,
-                      );
-                    }
-
-                    return Column(
-                      children: subreddits
-                          .map((subreddit) => ListTile(
-                                dense: true,
-                                title: Text('r/$subreddit'),
-                              ))
-                          .toList(),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          Material(
-            elevation: 4.0,
-            child: Column(
-              children: [
-                StoreConnector<ReddigramState, _ConnectViewModel>(
-                  converter: (store) => _ConnectViewModel.fromStore(store),
-                  builder: (context, vm) => vm.authState.authenticated
-                      ? ListTile(
-                          title: const Text('Sign out'),
-                          leading: const Icon(Icons.power_settings_new),
-                          onTap: () {
-                            setState(() => authInProgress = true);
-                            final completer = Completer()
-                              ..future.then((_) =>
-                                  setState(() => authInProgress = false));
-                            vm.signOut(completer);
-                          },
-                        )
-                      : ListTile(
-                          title: const Text('Connect to Reddit'),
-                          leading: const Icon(Icons.account_circle),
-                          onTap: () => _connectToReddit(vm.authenticate),
-                        ),
-                ),
-                ListTile(
-                  title: const Text('Settings'),
-                  leading: const Icon(Icons.settings),
-//                  onTap: () => Navigator.pushNamed(context, '/settings'),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -211,31 +112,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-typedef OnConnectCallback = void Function(String, Completer);
 typedef CompleterCallback = void Function(Completer);
-
-class _ConnectViewModel {
-  final AuthState authState;
-  final OnConnectCallback authenticate;
-  final CompleterCallback signOut;
-
-  _ConnectViewModel(
-      {@required this.authState,
-      @required this.authenticate,
-      @required this.signOut})
-      : assert(authState != null),
-        assert(authenticate != null),
-        assert(signOut != null);
-
-  factory _ConnectViewModel.fromStore(Store<ReddigramState> store) {
-    return _ConnectViewModel(
-      authState: store.state.authState,
-      authenticate: (accessToken, completer) =>
-          store.dispatch(authenticateUserFromCode(accessToken, completer)),
-      signOut: (completer) => store.dispatch(signUserOut(completer)),
-    );
-  }
-}
 
 class _BodyViewModel {
   final FeedState feedState;

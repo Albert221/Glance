@@ -8,19 +8,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _refreshTokenKey = 'reddit_refresh_token';
 
-void _loadUserData(Store<ReddigramState> store, String redditAccessToken,
-    [Completer completer]) {
+void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
+  store.dispatch(SetInProgress(true));
+
   final futures = <Future>[];
 
   futures.add(redditRepository
       .username()
       .then((username) => store.dispatch(SetUsername(username))));
 
-  futures.add(reddigramRepository
-      .authenticate(redditAccessToken)
-      .then((_) => store.dispatch(fetchSubscribedSubreddits())));
+  final completer = Completer();
+  futures.add(completer.future);
+  futures.add(reddigramRepository.authenticate(redditAccessToken).then(
+        (_) => store.dispatch(fetchSubscribedSubreddits(completer)),
+        onError: (_) => completer.complete(),
+      ));
 
-  Future.wait(futures).whenComplete(() => completer?.complete());
+  Future.wait(futures).whenComplete(() => store.dispatch(SetInProgress(false)));
 }
 
 ThunkAction<ReddigramState> authenticateUserFromStorage() {
@@ -36,19 +40,20 @@ ThunkAction<ReddigramState> authenticateUserFromStorage() {
   };
 }
 
-ThunkAction<ReddigramState> authenticateUserFromCode(String code,
-    [Completer completer]) {
+ThunkAction<ReddigramState> authenticateUserFromCode(String code) {
   return (Store<ReddigramState> store) async {
     final tokens = await redditRepository.retrieveTokens(code);
     SharedPreferences.getInstance().then(
         (prefs) => prefs.setString(_refreshTokenKey, tokens.refreshToken));
 
-    _loadUserData(store, tokens.accessToken, completer);
+    _loadUserData(store, tokens.accessToken);
   };
 }
 
-ThunkAction<ReddigramState> signUserOut([Completer completer]) {
+ThunkAction<ReddigramState> signUserOut() {
   return (Store<ReddigramState> store) {
+    store.dispatch(SetInProgress(true));
+
     redditRepository.clearTokens();
     SharedPreferences.getInstance()
         .then((prefs) => prefs.remove(_refreshTokenKey));
@@ -57,6 +62,9 @@ ThunkAction<ReddigramState> signUserOut([Completer completer]) {
 
     store.dispatch(SetUsername(null));
     store.dispatch(FetchedSubscribedSubreddits(['aww']));
+
+    final completer = Completer()
+      ..future.whenComplete(() => store.dispatch(SetInProgress(false)));
     store.dispatch(fetchFreshFeed(completer));
   };
 }
@@ -65,4 +73,10 @@ class SetUsername {
   final String username;
 
   SetUsername(this.username);
+}
+
+class SetInProgress {
+  final bool inProgress;
+
+  SetInProgress(this.inProgress);
 }

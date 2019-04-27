@@ -8,11 +8,14 @@ abstract class AuthState implements Built<AuthState, AuthStateBuilder> {
   @nullable
   String get username;
 
+  bool get inProgress;
+
   AuthState._();
 
   factory AuthState([updates(AuthStateBuilder b)]) {
     return _$AuthState._(
       username: null,
+      inProgress: false,
     );
   }
 }

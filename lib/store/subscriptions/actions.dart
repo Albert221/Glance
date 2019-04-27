@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-ThunkAction<ReddigramState> fetchSubscribedSubreddits() {
+ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
   return (Store<ReddigramState> store) {
     reddigramRepository.fetchSubscribedSubreddits().then((subreddits) {
       store.dispatch(FetchedSubscribedSubreddits(subreddits));
-      store.dispatch(fetchFreshFeed());
+      store.dispatch(fetchFreshFeed(completer));
     });
   };
 }
