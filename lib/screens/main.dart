@@ -92,7 +92,12 @@ class _MainScreenState extends State<MainScreen> {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 32.0),
                   alignment: Alignment.center,
-                  child: const CircularProgressIndicator(),
+                  child: vm.feedState.photos.isEmpty
+                      ? const Text(
+                          'There is no feed! 😲\n\nTry subscribing to some subreddits.',
+                          textAlign: TextAlign.center,
+                        )
+                      : const CircularProgressIndicator(),
                 );
               }
 

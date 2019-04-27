@@ -12,9 +12,14 @@ String _concatenateSubreddits(Iterable<String> subreddits) =>
 Future<List<Photo>> _fetchProperFeed(Store<ReddigramState> store,
     {String after = ''}) {
   if (store.state.authState.authenticated) {
+    final concatenatedSubreddits =
+        _concatenateSubreddits(store.state.subscriptions);
+    if (concatenatedSubreddits.isEmpty) {
+      return Future.value([]);
+    }
+
     return redditRepository
-        .subreddit(_concatenateSubreddits(store.state.subscriptions),
-            after: after)
+        .subreddit(concatenatedSubreddits, after: after)
         .then(ListingPhotosMapper.map);
   }
 
