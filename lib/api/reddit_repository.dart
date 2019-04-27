@@ -159,12 +159,8 @@ class RedditRepository {
 
     return _client
         .get('/r/$name.json?after=$after&limit=$limit')
-        .then((response) {
-          final x = serializers.deserializeWith(
-            ListingResponse.serializer, response.data);
-
-          return x;
-        })
+        .then((response) => serializers.deserializeWith(
+            ListingResponse.serializer, response.data))
         .then(_filterOnlyPhotos);
   }
 
