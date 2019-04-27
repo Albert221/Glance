@@ -3,16 +3,38 @@ import 'dart:io';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:dio/dio.dart';
+import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/consts.dart';
 
+class RedditTokens {
+  final String accessToken;
+  final String refreshToken;
+  final DateTime expirationTime;
+
+  RedditTokens(
+      {@required this.accessToken,
+      @required this.refreshToken,
+      @required this.expirationTime})
+      : assert(accessToken != null),
+        assert(refreshToken != null),
+        assert(expirationTime != null);
+
+  RedditTokens copyWith(
+      {String accessToken, String refreshToken, DateTime expirationTime}) {
+    return RedditTokens(
+      accessToken: accessToken ?? this.accessToken,
+      refreshToken: refreshToken ?? this.refreshToken,
+      expirationTime: expirationTime ?? this.expirationTime,
+    );
+  }
+}
+
 class RedditRepository {
   Dio _client;
 
-  String _accessToken;
-  DateTime _tokenExpiration;
-  String _refreshToken;
+  RedditTokens _tokens;
 
   RedditRepository() {
     _client = Dio(BaseOptions(
@@ -20,21 +42,23 @@ class RedditRepository {
     ));
 
     _client.interceptors.add(InterceptorsWrapper(onRequest: (options) {
-      if (_accessToken != null) {
-        options.headers['Authorization'] = 'Bearer $_accessToken';
+      if (_tokens != null) {
+        options.headers['Authorization'] = 'Bearer ${_tokens.accessToken}';
         options.baseUrl = 'https://oauth.reddit.com';
       }
+
+      return options;
     }));
 
     // Refreshment of access token
     _client.interceptors.add(InterceptorsWrapper(onRequest: (options) async {
-      if (_tokenExpiration == null || options.path.contains('access_token')) {
+      if (_tokens == null || options.path.contains('access_token')) {
         // skip if we aren't authorized
         return options;
       }
 
       final minuteAgo = DateTime.now().subtract(Duration(minutes: 1));
-      if (_tokenExpiration.isBefore(minuteAgo)) {
+      if (_tokens.expirationTime.isBefore(minuteAgo)) {
         await refreshAccessToken();
       }
 
@@ -58,33 +82,42 @@ class RedditRepository {
     );
   }
 
-  Future<void> refreshAccessToken([String refreshToken]) {
+  Future<RedditTokens> refreshAccessToken([String refreshToken]) {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
     return post(
       '/api/v1/access_token',
       data:
-          'grant_type=refresh_token&refresh_token=${refreshToken ?? _refreshToken}',
+          'grant_type=refresh_token&refresh_token=${refreshToken ?? _tokens.refreshToken}',
       headers: {'Authorization': basicAuth},
     ).then((response) {
-      _tokenExpiration =
-          DateTime.now().add(Duration(seconds: response.data['expires_in']));
-      return _accessToken = response.data['access_token'];
+      if (_tokens == null && refreshToken != null) {
+        // we will populate it with correct data in a second
+        _tokens = RedditTokens(
+          accessToken: '',
+          refreshToken: refreshToken,
+          expirationTime: DateTime.now(),
+        );
+      }
+
+      return _tokens = _tokens.copyWith(
+        accessToken: response.data['access_token'],
+        expirationTime:
+            DateTime.now().add(Duration(seconds: response.data['expires_in'])),
+      );
     });
   }
 
   void clearTokens() {
-    _accessToken = null;
-    _tokenExpiration = null;
-    _refreshToken = null;
+    _tokens = null;
   }
 
   void _assertAuthorized() {
-    assert(_accessToken != null, 'User required.');
+    assert(_tokens != null, 'User required.');
   }
 
-  Future<String> retrieveTokens(String code) async {
+  Future<RedditTokens> retrieveTokens(String code) async {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
@@ -94,9 +127,12 @@ class RedditRepository {
           '&redirect_uri=https://reddigram.wolszon.me/redirect',
       headers: {'Authorization': basicAuth},
     ).then((response) {
-      _tokenExpiration =
-          DateTime.now().add(Duration(seconds: response.data['expires_in']));
-      return _refreshToken = response.data['refresh_token'];
+      return _tokens = RedditTokens(
+        accessToken: response.data['access_token'],
+        refreshToken: response.data['refresh_token'],
+        expirationTime:
+            DateTime.now().add(Duration(seconds: response.data['expires_in'])),
+      );
     });
   }
 
@@ -119,10 +155,16 @@ class RedditRepository {
 
   Future<ListingResponse> subreddit(String name,
       {String after = '', int limit = 25}) async {
+    assert(name.isNotEmpty);
+
     return _client
         .get('/r/$name.json?after=$after&limit=$limit')
-        .then((response) => serializers.deserializeWith(
-            ListingResponse.serializer, response.data))
+        .then((response) {
+          final x = serializers.deserializeWith(
+            ListingResponse.serializer, response.data);
+
+          return x;
+        })
         .then(_filterOnlyPhotos);
   }
 

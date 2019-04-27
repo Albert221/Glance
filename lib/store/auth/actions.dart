@@ -8,16 +8,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _refreshTokenKey = 'reddit_refresh_token';
 
-void _loadUserData(Store<ReddigramState> store, [Completer completer]) {
+void _loadUserData(Store<ReddigramState> store, String redditAccessToken,
+    [Completer completer]) {
   final futures = <Future>[];
 
-  futures.add(redditRepository.username().then((username) {
-    store.dispatch(SetUsername(username));
-    store.dispatch(fetchFreshFeed());
-  }));
+  futures.add(redditRepository
+      .username()
+      .then((username) => store.dispatch(SetUsername(username))));
 
-  // todo(Albert221): authenticate to subscriptions database and then fetch:
-  store.dispatch(fetchSubscribedSubreddits());
+  futures.add(reddigramRepository
+      .authenticate(redditAccessToken)
+      .then((_) => store.dispatch(fetchSubscribedSubreddits())));
 
   Future.wait(futures).whenComplete(() => completer?.complete());
 }
@@ -28,8 +29,8 @@ ThunkAction<ReddigramState> authenticateUserFromStorage() {
       final refreshToken = prefs.getString(_refreshTokenKey);
 
       if (refreshToken != null) {
-        await redditRepository.refreshAccessToken(refreshToken);
-        _loadUserData(store);
+        final tokens = await redditRepository.refreshAccessToken(refreshToken);
+        _loadUserData(store, tokens.accessToken);
       }
     });
   };
@@ -38,11 +39,11 @@ ThunkAction<ReddigramState> authenticateUserFromStorage() {
 ThunkAction<ReddigramState> authenticateUserFromCode(String code,
     [Completer completer]) {
   return (Store<ReddigramState> store) async {
-    final refreshToken = await redditRepository.retrieveTokens(code);
-    SharedPreferences.getInstance()
-        .then((prefs) => prefs.setString(_refreshTokenKey, refreshToken));
+    final tokens = await redditRepository.retrieveTokens(code);
+    SharedPreferences.getInstance().then(
+        (prefs) => prefs.setString(_refreshTokenKey, tokens.refreshToken));
 
-    _loadUserData(store, completer);
+    _loadUserData(store, tokens.accessToken, completer);
   };
 }
 
@@ -51,6 +52,8 @@ ThunkAction<ReddigramState> signUserOut([Completer completer]) {
     redditRepository.clearTokens();
     SharedPreferences.getInstance()
         .then((prefs) => prefs.remove(_refreshTokenKey));
+
+    reddigramRepository.clearToken();
 
     store.dispatch(SetUsername(null));
     store.dispatch(FetchedSubscribedSubreddits(['aww']));

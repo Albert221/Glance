@@ -1,31 +1,32 @@
+import 'package:reddigram/api/api.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<ReddigramState> fetchSubscribedSubreddits() {
   return (Store<ReddigramState> store) {
-    // todo(Albert221): fetch subreddits from database
-
-    store.dispatch(FetchedSubscribedSubreddits(
-        ['EarthPorn', 'InfrastructurePorn', 'photography', 'Minecraft']));
+    reddigramRepository.fetchSubscribedSubreddits().then((subreddits) {
+      store.dispatch(FetchedSubscribedSubreddits(subreddits));
+      store.dispatch(fetchFreshFeed());
+    });
   };
 }
 
 ThunkAction<ReddigramState> subscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
-    store.dispatch(SubscribedSubreddit(name));
-    store.dispatch(fetchFreshFeed());
-
-    // todo(Albert221): save to database
+    reddigramRepository.subscribeSubreddit(name).then((_) {
+      store.dispatch(SubscribedSubreddit(name));
+      store.dispatch(fetchFreshFeed());
+    });
   };
 }
 
 ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
-    store.dispatch(UnsubscribedSubreddit(name));
-    store.dispatch(fetchFreshFeed());
-
-    // todo(Albert221): save to database
+    reddigramRepository.unsubscribeSubreddit(name).then((_) {
+      store.dispatch(UnsubscribedSubreddit(name));
+      store.dispatch(fetchFreshFeed());
+    });
   };
 }
 

@@ -175,9 +175,6 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
       'title',
       serializers.serialize(object.title,
           specifiedType: const FullType(String)),
-      'subreddit',
-      serializers.serialize(object.subreddit,
-          specifiedType: const FullType(String)),
       'permalink',
       serializers.serialize(object.permalink,
           specifiedType: const FullType(String)),
@@ -190,6 +187,12 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
       serializers.serialize(object.thumbnail,
           specifiedType: const FullType(String)),
     ];
+    if (object.subreddit != null) {
+      result
+        ..add('subreddit')
+        ..add(serializers.serialize(object.subreddit,
+            specifiedType: const FullType(String)));
+    }
     if (object.likes != null) {
       result
         ..add('likes')
@@ -735,9 +738,6 @@ class _$ChildData extends ChildData {
     }
     if (title == null) {
       throw new BuiltValueNullFieldError('ChildData', 'title');
-    }
-    if (subreddit == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'subreddit');
     }
     if (permalink == null) {
       throw new BuiltValueNullFieldError('ChildData', 'permalink');
