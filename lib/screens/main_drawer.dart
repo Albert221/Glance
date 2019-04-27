@@ -71,7 +71,7 @@ class MainDrawer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Unsubscribing'),
+          title: const Text('Unsubscribing'),
           content: Text('Do you really want to unsubscribe from r/$subreddit?'),
           actions: [
             FlatButton(
@@ -95,14 +95,11 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          _buildHeader(context),
           Expanded(
-            child: ListView(
-              children: [
-                _buildHeader(context),
-                _buildSubredditsList(context),
-              ],
-            ),
+            child: _buildSubredditsList(context),
           ),
           _buildActions(context),
         ],
@@ -114,6 +111,7 @@ class MainDrawer extends StatelessWidget {
     return StoreConnector<ReddigramState, AuthState>(
       converter: (store) => store.state.authState,
       builder: (context, authState) => DrawerHeader(
+            margin: EdgeInsets.zero,
             decoration: BoxDecoration(
               color: Colors.tealAccent.shade100,
             ),
@@ -130,7 +128,8 @@ class MainDrawer extends StatelessWidget {
   Widget _buildSubredditsList(BuildContext context) {
     return StoreConnector<ReddigramState, _SubredditsViewModel>(
       converter: (store) => _SubredditsViewModel.fromStore(store),
-      builder: (context, vm) => Column(
+      builder: (context, vm) => ListView(
+            padding: EdgeInsets.zero,
             children: [
               ListTile(
                 title: const Text('Subreddits'),
