@@ -113,7 +113,7 @@ class MainDrawer extends StatelessWidget {
       builder: (context, authState) => DrawerHeader(
             margin: EdgeInsets.zero,
             decoration: BoxDecoration(
-              color: Colors.tealAccent.shade100,
+              color: Theme.of(context).appBarTheme.color,
             ),
             child: Text(
               authState.authenticated
@@ -177,11 +177,14 @@ class MainDrawer extends StatelessWidget {
                     onTap: () => _connectToReddit(vm.onConnect),
                   ),
           ),
-          SwitchListTile(
-            title: const Text('Dark theme'),
-            secondary: const Icon(Icons.invert_colors),
-            value: false,
-            onChanged: (x) {},
+          StoreConnector<ReddigramState, _ThemeViewModel>(
+            converter: (store) => _ThemeViewModel.fromStore(store),
+            builder: (context, vm) => SwitchListTile(
+                  title: const Text('Dark theme'),
+                  secondary: const Icon(Icons.invert_colors),
+                  value: vm.theme == AppTheme.dark,
+                  onChanged: (value) => vm.onSwitch(value),
+                ),
           ),
           ListTile(
             title: RichText(
@@ -258,6 +261,23 @@ class _ConnectViewModel {
       onConnect: (accessToken) =>
           store.dispatch(authenticateUserFromCode(accessToken)),
       signOut: () => store.dispatch(signUserOut()),
+    );
+  }
+}
+
+class _ThemeViewModel {
+  final AppTheme theme;
+  final void Function(bool) onSwitch;
+
+  _ThemeViewModel({@required this.theme, @required this.onSwitch})
+      : assert(theme != null),
+        assert(onSwitch != null);
+
+  factory _ThemeViewModel.fromStore(Store<ReddigramState> store) {
+    return _ThemeViewModel(
+      theme: store.state.theme,
+      onSwitch: (dark) =>
+          store.dispatch(setTheme(dark ? AppTheme.dark : AppTheme.light)),
     );
   }
 }

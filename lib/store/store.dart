@@ -11,3 +11,7 @@ export 'feed/actions.dart';
 
 export 'subscriptions/reducer.dart';
 export 'subscriptions/actions.dart';
+
+export 'theme/theme.dart';
+export 'theme/reducer.dart';
+export 'theme/actions.dart';

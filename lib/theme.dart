@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ReddigramTheme {
-  static ThemeData theme() {
+  static ThemeData light() {
     final lightTheme = ThemeData.light();
 
     return lightTheme.copyWith(
@@ -35,6 +35,36 @@ class ReddigramTheme {
           fontSize: 15.0,
         ),
       ),
+    );
+  }
+
+  static ThemeData dark() {
+    final lightTheme = ThemeData.dark();
+
+    return lightTheme.copyWith(
+      appBarTheme: AppBarTheme(
+        color: Colors.black,
+        textTheme: TextTheme(
+          display1: TextStyle(
+            color: Colors.white,
+            fontSize: 22.0,
+            fontWeight: FontWeight.normal,
+            fontFamily: 'Pacifico',
+          ),
+        ),
+      ),
+      textTheme: lightTheme.textTheme.copyWith(
+        title: TextStyle(
+          color: Colors.white,
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
+        body1: TextStyle(
+          color: Colors.white,
+          fontSize: 15.0,
+        ),
+      ),
+      cardColor: Colors.black,
     );
   }
 }

@@ -20,7 +20,7 @@ class PhotoListItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Material(
         elevation: 2.0,
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -101,7 +101,9 @@ class PhotoListItem extends StatelessWidget {
                   onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
                   child: Icon(
                     Icons.arrow_upward,
-                    color: photo.upvoted ? Colors.red : Colors.black,
+                    color: photo.upvoted
+                        ? Colors.red
+                        : Theme.of(context).textTheme.body1.color,
                   ),
                 ),
                 const SizedBox(width: 12.0),

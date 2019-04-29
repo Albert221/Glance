@@ -10,6 +10,8 @@ class _$ReddigramState extends ReddigramState {
   @override
   final AuthState authState;
   @override
+  final AppTheme theme;
+  @override
   final FeedState feedState;
   @override
   final BuiltSet<String> subscriptions;
@@ -17,10 +19,14 @@ class _$ReddigramState extends ReddigramState {
   factory _$ReddigramState([void Function(ReddigramStateBuilder) updates]) =>
       (new ReddigramStateBuilder()..update(updates)).build();
 
-  _$ReddigramState._({this.authState, this.feedState, this.subscriptions})
+  _$ReddigramState._(
+      {this.authState, this.theme, this.feedState, this.subscriptions})
       : super._() {
     if (authState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'authState');
+    }
+    if (theme == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'theme');
     }
     if (feedState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'feedState');
@@ -43,13 +49,16 @@ class _$ReddigramState extends ReddigramState {
     if (identical(other, this)) return true;
     return other is ReddigramState &&
         authState == other.authState &&
+        theme == other.theme &&
         feedState == other.feedState &&
         subscriptions == other.subscriptions;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, authState.hashCode), feedState.hashCode),
+    return $jf($jc(
+        $jc($jc($jc(0, authState.hashCode), theme.hashCode),
+            feedState.hashCode),
         subscriptions.hashCode));
   }
 
@@ -57,6 +66,7 @@ class _$ReddigramState extends ReddigramState {
   String toString() {
     return (newBuiltValueToStringHelper('ReddigramState')
           ..add('authState', authState)
+          ..add('theme', theme)
           ..add('feedState', feedState)
           ..add('subscriptions', subscriptions))
         .toString();
@@ -71,6 +81,10 @@ class ReddigramStateBuilder
   AuthStateBuilder get authState =>
       _$this._authState ??= new AuthStateBuilder();
   set authState(AuthStateBuilder authState) => _$this._authState = authState;
+
+  AppTheme _theme;
+  AppTheme get theme => _$this._theme;
+  set theme(AppTheme theme) => _$this._theme = theme;
 
   FeedStateBuilder _feedState;
   FeedStateBuilder get feedState =>
@@ -88,6 +102,7 @@ class ReddigramStateBuilder
   ReddigramStateBuilder get _$this {
     if (_$v != null) {
       _authState = _$v.authState?.toBuilder();
+      _theme = _$v.theme;
       _feedState = _$v.feedState?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
       _$v = null;
@@ -115,6 +130,7 @@ class ReddigramStateBuilder
       _$result = _$v ??
           new _$ReddigramState._(
               authState: authState.build(),
+              theme: theme,
               feedState: feedState.build(),
               subscriptions: subscriptions.build());
     } catch (_) {
@@ -122,6 +138,7 @@ class ReddigramStateBuilder
       try {
         _$failedField = 'authState';
         authState.build();
+
         _$failedField = 'feedState';
         feedState.build();
         _$failedField = 'subscriptions';

@@ -23,14 +23,20 @@ class ReddigramApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<ReddigramState>(
       store: store,
-      child: MaterialApp(
-        title: 'Reddigram',
-        theme: ReddigramTheme.theme(),
-        routes: {
-          '/': (context) => MainScreen(),
-          '/subscribed': (context) => SubscribedScreen(),
-        },
-        navigatorObservers: [navObserver],
+      child: StoreConnector<ReddigramState, AppTheme>(
+        onInit: (store) => store.dispatch(loadTheme()),
+        converter: (store) => store.state.theme,
+        builder: (context, theme) => MaterialApp(
+              title: 'Reddigram',
+              theme: theme == AppTheme.light
+                  ? ReddigramTheme.light()
+                  : ReddigramTheme.dark(),
+              routes: {
+                '/': (context) => MainScreen(),
+                '/subscribed': (context) => SubscribedScreen(),
+              },
+              navigatorObservers: [navObserver],
+            ),
       ),
     );
   }

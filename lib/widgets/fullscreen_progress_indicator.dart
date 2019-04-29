@@ -11,7 +11,7 @@ class FullscreenProgressIndicator extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(24.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: const CircularProgressIndicator(),
