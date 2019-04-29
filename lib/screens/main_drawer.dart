@@ -201,7 +201,8 @@ class MainDrawer extends StatelessWidget {
                       decoration: TextDecoration.underline,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => launch('https://google.com'),
+                      ..onTap = () =>
+                          launch('https://reddigram.wolszon.me/privacy.html'),
                   ),
                 ],
               ),
