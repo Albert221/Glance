@@ -158,17 +158,19 @@ class _PhotoViewModel {
       {@required this.photo,
       @required this.onUpvote,
       @required this.onUpvoteCanceled})
-      : assert(photo != null),
-        assert(onUpvote != null),
-        assert(onUpvoteCanceled != null);
+      : assert(photo != null);
 
   factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int i) {
     final photo = store.state.feedState.photos[i];
 
     return _PhotoViewModel(
       photo: photo,
-      onUpvote: () => store.dispatch(upvote(photo)),
-      onUpvoteCanceled: () => store.dispatch(cancelUpvote(photo)),
+      onUpvote: store.state.authState.authenticated
+          ? () => store.dispatch(upvote(photo))
+          : null,
+      onUpvoteCanceled: store.state.authState.authenticated
+          ? () => store.dispatch(cancelUpvote(photo))
+          : null,
     );
   }
 }
