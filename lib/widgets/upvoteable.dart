@@ -15,12 +15,50 @@ class Upvoteable extends StatefulWidget {
   _UpvoteableState createState() => _UpvoteableState();
 }
 
-class _UpvoteableState extends State<Upvoteable> {
-  bool animating = false;
+class _UpvoteableState extends State<Upvoteable>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<double> _opacityFirst;
+  Animation<double> _opacitySecond;
+  Animation<Alignment> _alignmentFirst;
+  Animation<Alignment> _alignmentSecond;
 
   @override
   void initState() {
     super.initState();
+
+    _controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1500));
+
+    _opacityFirst = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Interval(0, 1 / 4, curve: Curves.ease),
+    ))
+      ..addListener(() => setState(() {}));
+
+    _opacitySecond = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Interval(3 / 4, 1, curve: Curves.ease),
+    ));
+
+    _alignmentFirst =
+        Tween(begin: Alignment.bottomCenter, end: Alignment.center)
+            .animate(CurvedAnimation(
+      parent: _controller,
+      curve: Interval(0, 1 / 3, curve: Curves.ease),
+    ));
+
+    _alignmentSecond =
+        Tween(begin: Alignment.center, end: Alignment.bottomCenter).animate(
+            CurvedAnimation(
+                parent: _controller,
+                curve: Interval(2 / 3, 1, curve: Curves.ease)));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   void onUpvote() {
@@ -29,13 +67,8 @@ class _UpvoteableState extends State<Upvoteable> {
     }
 
     widget.onUpvote();
-
-    setState(() {
-      animating = true;
-    });
-
-    Future.delayed(
-        Duration(milliseconds: 600), () => setState(() => animating = false));
+    _controller.reset();
+    _controller.forward();
   }
 
   @override
@@ -48,16 +81,11 @@ class _UpvoteableState extends State<Upvoteable> {
           fit: StackFit.expand,
           children: [
             widget.child,
-            AnimatedOpacity(
-              curve: Curves.ease,
-              opacity: animating ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 300),
-              child: AnimatedContainer(
-                curve: Curves.ease,
-                duration: Duration(milliseconds: 300),
+            Opacity(
+              opacity: _opacityFirst.value - _opacitySecond.value,
+              child: Container(
                 color: Colors.black45,
-                alignment:
-                    animating ? Alignment.center : Alignment.bottomCenter,
+                alignment: _alignmentFirst.value - _alignmentSecond.value,
                 child: Icon(
                   Icons.arrow_upward,
                   color: Colors.white54,
