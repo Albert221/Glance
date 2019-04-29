@@ -27,15 +27,19 @@ FeedState _fetchedMoreFeed(FeedState state, FetchedMoreFeed action) {
 }
 
 FeedState _photoUpvoted(FeedState state, PhotoUpvoted action) {
-  return state.rebuild((b) => b.photos.replace(state.photos.map((photo) =>
-      photo.id == action.id
-          ? photo.rebuild((b) => b..upvoted = true)
+  return state.rebuild(
+      (b) => b.photos.replace(state.photos.map((photo) => photo.id == action.id
+          ? photo.rebuild((b) => b
+            ..upvoted = true
+            ..upvotes = photo.upvotes + 1)
           : photo)));
 }
 
 FeedState _photoUpvoteCanceled(FeedState state, PhotoUpvoteCanceled action) {
-  return state.rebuild((b) => b.photos.replace(state.photos.map((photo) =>
-      photo.id == action.id
-          ? photo.rebuild((b) => b..upvoted = false)
+  return state.rebuild(
+      (b) => b.photos.replace(state.photos.map((photo) => photo.id == action.id
+          ? photo.rebuild((b) => b
+            ..upvoted = false
+            ..upvotes = photo.upvotes - 1)
           : photo)));
 }
