@@ -13,6 +13,19 @@ class PhotoPreviewScreen extends StatelessWidget {
     final minScale = MediaQuery.of(context).size.width / photo.source.width;
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+                  icon: Icon(Icons.file_download),
+                  onPressed: () => Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('Work in progress'),
+                        duration: Duration(seconds: 1),
+                      )),
+                ),
+          ),
+        ],
+      ),
       body: PhotoView(
         heroTag: 'photo-${photo.id}',
         transitionOnUserGestures: true,
