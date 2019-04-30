@@ -12,6 +12,12 @@ class ListingPhotosMapper {
                 ..subscribed = false
                 ..redditUrl = 'https://reddit.com/r/${child.data.subreddit}')
               .toBuilder()
+          ..source = PhotoMedia((b) => b
+                ..url = child.data.preview.images.first.source.url
+                    .replaceAll('&amp;', '&')
+                ..width = child.data.preview.images.first.source.width
+                ..height = child.data.preview.images.first.source.height)
+              .toBuilder()
           ..fullImage = PhotoMedia((b) => b
                 ..url = child.data.preview.images.first.resolutions.last.url
                     .replaceAll('&amp;', '&')

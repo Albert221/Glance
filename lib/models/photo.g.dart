@@ -14,6 +14,8 @@ class _$Photo extends Photo {
   @override
   final Subreddit subreddit;
   @override
+  final PhotoMedia source;
+  @override
   final PhotoMedia fullImage;
   @override
   final PhotoMedia thumbnail;
@@ -31,6 +33,7 @@ class _$Photo extends Photo {
       {this.id,
       this.authorName,
       this.subreddit,
+      this.source,
       this.fullImage,
       this.thumbnail,
       this.upvotes,
@@ -45,6 +48,9 @@ class _$Photo extends Photo {
     }
     if (subreddit == null) {
       throw new BuiltValueNullFieldError('Photo', 'subreddit');
+    }
+    if (source == null) {
+      throw new BuiltValueNullFieldError('Photo', 'source');
     }
     if (fullImage == null) {
       throw new BuiltValueNullFieldError('Photo', 'fullImage');
@@ -77,6 +83,7 @@ class _$Photo extends Photo {
         id == other.id &&
         authorName == other.authorName &&
         subreddit == other.subreddit &&
+        source == other.source &&
         fullImage == other.fullImage &&
         thumbnail == other.thumbnail &&
         upvotes == other.upvotes &&
@@ -91,8 +98,10 @@ class _$Photo extends Photo {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc($jc(0, id.hashCode), authorName.hashCode),
-                            subreddit.hashCode),
+                        $jc(
+                            $jc($jc($jc(0, id.hashCode), authorName.hashCode),
+                                subreddit.hashCode),
+                            source.hashCode),
                         fullImage.hashCode),
                     thumbnail.hashCode),
                 upvotes.hashCode),
@@ -106,6 +115,7 @@ class _$Photo extends Photo {
           ..add('id', id)
           ..add('authorName', authorName)
           ..add('subreddit', subreddit)
+          ..add('source', source)
           ..add('fullImage', fullImage)
           ..add('thumbnail', thumbnail)
           ..add('upvotes', upvotes)
@@ -130,6 +140,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   SubredditBuilder get subreddit =>
       _$this._subreddit ??= new SubredditBuilder();
   set subreddit(SubredditBuilder subreddit) => _$this._subreddit = subreddit;
+
+  PhotoMediaBuilder _source;
+  PhotoMediaBuilder get source => _$this._source ??= new PhotoMediaBuilder();
+  set source(PhotoMediaBuilder source) => _$this._source = source;
 
   PhotoMediaBuilder _fullImage;
   PhotoMediaBuilder get fullImage =>
@@ -160,6 +174,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _id = _$v.id;
       _authorName = _$v.authorName;
       _subreddit = _$v.subreddit?.toBuilder();
+      _source = _$v.source?.toBuilder();
       _fullImage = _$v.fullImage?.toBuilder();
       _thumbnail = _$v.thumbnail?.toBuilder();
       _upvotes = _$v.upvotes;
@@ -192,6 +207,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               id: id,
               authorName: authorName,
               subreddit: subreddit.build(),
+              source: source.build(),
               fullImage: fullImage.build(),
               thumbnail: thumbnail.build(),
               upvotes: upvotes,
@@ -202,6 +218,8 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       try {
         _$failedField = 'subreddit';
         subreddit.build();
+        _$failedField = 'source';
+        source.build();
         _$failedField = 'fullImage';
         fullImage.build();
         _$failedField = 'thumbnail';

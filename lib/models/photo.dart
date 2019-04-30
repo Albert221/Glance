@@ -10,6 +10,8 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   Subreddit get subreddit;
 
+  PhotoMedia get source;
+
   PhotoMedia get fullImage;
 
   PhotoMedia get thumbnail;
