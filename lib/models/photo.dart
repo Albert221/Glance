@@ -10,11 +10,9 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   Subreddit get subreddit;
 
-  String get photoUrl;
+  PhotoMedia get fullImage;
 
-  double get aspectRatio;
-
-  String get thumbnailUrl;
+  PhotoMedia get thumbnail;
 
   int get upvotes;
 
@@ -25,4 +23,18 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
   Photo._();
 
   factory Photo([updates(PhotoBuilder b)]) = _$Photo;
+}
+
+abstract class PhotoMedia implements Built<PhotoMedia, PhotoMediaBuilder> {
+  String get url;
+
+  int get width;
+
+  int get height;
+
+  double get aspectRatio => width / height;
+
+  PhotoMedia._();
+
+  factory PhotoMedia([updates(PhotoMediaBuilder b)]) = _$PhotoMedia;
 }

@@ -14,11 +14,9 @@ class _$Photo extends Photo {
   @override
   final Subreddit subreddit;
   @override
-  final String photoUrl;
+  final PhotoMedia fullImage;
   @override
-  final double aspectRatio;
-  @override
-  final String thumbnailUrl;
+  final PhotoMedia thumbnail;
   @override
   final int upvotes;
   @override
@@ -33,9 +31,8 @@ class _$Photo extends Photo {
       {this.id,
       this.authorName,
       this.subreddit,
-      this.photoUrl,
-      this.aspectRatio,
-      this.thumbnailUrl,
+      this.fullImage,
+      this.thumbnail,
       this.upvotes,
       this.upvoted,
       this.redditUrl})
@@ -49,14 +46,11 @@ class _$Photo extends Photo {
     if (subreddit == null) {
       throw new BuiltValueNullFieldError('Photo', 'subreddit');
     }
-    if (photoUrl == null) {
-      throw new BuiltValueNullFieldError('Photo', 'photoUrl');
+    if (fullImage == null) {
+      throw new BuiltValueNullFieldError('Photo', 'fullImage');
     }
-    if (aspectRatio == null) {
-      throw new BuiltValueNullFieldError('Photo', 'aspectRatio');
-    }
-    if (thumbnailUrl == null) {
-      throw new BuiltValueNullFieldError('Photo', 'thumbnailUrl');
+    if (thumbnail == null) {
+      throw new BuiltValueNullFieldError('Photo', 'thumbnail');
     }
     if (upvotes == null) {
       throw new BuiltValueNullFieldError('Photo', 'upvotes');
@@ -83,9 +77,8 @@ class _$Photo extends Photo {
         id == other.id &&
         authorName == other.authorName &&
         subreddit == other.subreddit &&
-        photoUrl == other.photoUrl &&
-        aspectRatio == other.aspectRatio &&
-        thumbnailUrl == other.thumbnailUrl &&
+        fullImage == other.fullImage &&
+        thumbnail == other.thumbnail &&
         upvotes == other.upvotes &&
         upvoted == other.upvoted &&
         redditUrl == other.redditUrl;
@@ -98,12 +91,10 @@ class _$Photo extends Photo {
             $jc(
                 $jc(
                     $jc(
-                        $jc(
-                            $jc($jc($jc(0, id.hashCode), authorName.hashCode),
-                                subreddit.hashCode),
-                            photoUrl.hashCode),
-                        aspectRatio.hashCode),
-                    thumbnailUrl.hashCode),
+                        $jc($jc($jc(0, id.hashCode), authorName.hashCode),
+                            subreddit.hashCode),
+                        fullImage.hashCode),
+                    thumbnail.hashCode),
                 upvotes.hashCode),
             upvoted.hashCode),
         redditUrl.hashCode));
@@ -115,9 +106,8 @@ class _$Photo extends Photo {
           ..add('id', id)
           ..add('authorName', authorName)
           ..add('subreddit', subreddit)
-          ..add('photoUrl', photoUrl)
-          ..add('aspectRatio', aspectRatio)
-          ..add('thumbnailUrl', thumbnailUrl)
+          ..add('fullImage', fullImage)
+          ..add('thumbnail', thumbnail)
           ..add('upvotes', upvotes)
           ..add('upvoted', upvoted)
           ..add('redditUrl', redditUrl))
@@ -141,17 +131,15 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _$this._subreddit ??= new SubredditBuilder();
   set subreddit(SubredditBuilder subreddit) => _$this._subreddit = subreddit;
 
-  String _photoUrl;
-  String get photoUrl => _$this._photoUrl;
-  set photoUrl(String photoUrl) => _$this._photoUrl = photoUrl;
+  PhotoMediaBuilder _fullImage;
+  PhotoMediaBuilder get fullImage =>
+      _$this._fullImage ??= new PhotoMediaBuilder();
+  set fullImage(PhotoMediaBuilder fullImage) => _$this._fullImage = fullImage;
 
-  double _aspectRatio;
-  double get aspectRatio => _$this._aspectRatio;
-  set aspectRatio(double aspectRatio) => _$this._aspectRatio = aspectRatio;
-
-  String _thumbnailUrl;
-  String get thumbnailUrl => _$this._thumbnailUrl;
-  set thumbnailUrl(String thumbnailUrl) => _$this._thumbnailUrl = thumbnailUrl;
+  PhotoMediaBuilder _thumbnail;
+  PhotoMediaBuilder get thumbnail =>
+      _$this._thumbnail ??= new PhotoMediaBuilder();
+  set thumbnail(PhotoMediaBuilder thumbnail) => _$this._thumbnail = thumbnail;
 
   int _upvotes;
   int get upvotes => _$this._upvotes;
@@ -172,9 +160,8 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _id = _$v.id;
       _authorName = _$v.authorName;
       _subreddit = _$v.subreddit?.toBuilder();
-      _photoUrl = _$v.photoUrl;
-      _aspectRatio = _$v.aspectRatio;
-      _thumbnailUrl = _$v.thumbnailUrl;
+      _fullImage = _$v.fullImage?.toBuilder();
+      _thumbnail = _$v.thumbnail?.toBuilder();
       _upvotes = _$v.upvotes;
       _upvoted = _$v.upvoted;
       _redditUrl = _$v.redditUrl;
@@ -205,9 +192,8 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               id: id,
               authorName: authorName,
               subreddit: subreddit.build(),
-              photoUrl: photoUrl,
-              aspectRatio: aspectRatio,
-              thumbnailUrl: thumbnailUrl,
+              fullImage: fullImage.build(),
+              thumbnail: thumbnail.build(),
               upvotes: upvotes,
               upvoted: upvoted,
               redditUrl: redditUrl);
@@ -216,12 +202,119 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       try {
         _$failedField = 'subreddit';
         subreddit.build();
+        _$failedField = 'fullImage';
+        fullImage.build();
+        _$failedField = 'thumbnail';
+        thumbnail.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Photo', _$failedField, e.toString());
       }
       rethrow;
     }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$PhotoMedia extends PhotoMedia {
+  @override
+  final String url;
+  @override
+  final int width;
+  @override
+  final int height;
+
+  factory _$PhotoMedia([void Function(PhotoMediaBuilder) updates]) =>
+      (new PhotoMediaBuilder()..update(updates)).build();
+
+  _$PhotoMedia._({this.url, this.width, this.height}) : super._() {
+    if (url == null) {
+      throw new BuiltValueNullFieldError('PhotoMedia', 'url');
+    }
+    if (width == null) {
+      throw new BuiltValueNullFieldError('PhotoMedia', 'width');
+    }
+    if (height == null) {
+      throw new BuiltValueNullFieldError('PhotoMedia', 'height');
+    }
+  }
+
+  @override
+  PhotoMedia rebuild(void Function(PhotoMediaBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  PhotoMediaBuilder toBuilder() => new PhotoMediaBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is PhotoMedia &&
+        url == other.url &&
+        width == other.width &&
+        height == other.height;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc($jc(0, url.hashCode), width.hashCode), height.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('PhotoMedia')
+          ..add('url', url)
+          ..add('width', width)
+          ..add('height', height))
+        .toString();
+  }
+}
+
+class PhotoMediaBuilder implements Builder<PhotoMedia, PhotoMediaBuilder> {
+  _$PhotoMedia _$v;
+
+  String _url;
+  String get url => _$this._url;
+  set url(String url) => _$this._url = url;
+
+  int _width;
+  int get width => _$this._width;
+  set width(int width) => _$this._width = width;
+
+  int _height;
+  int get height => _$this._height;
+  set height(int height) => _$this._height = height;
+
+  PhotoMediaBuilder();
+
+  PhotoMediaBuilder get _$this {
+    if (_$v != null) {
+      _url = _$v.url;
+      _width = _$v.width;
+      _height = _$v.height;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(PhotoMedia other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$PhotoMedia;
+  }
+
+  @override
+  void update(void Function(PhotoMediaBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$PhotoMedia build() {
+    final _$result =
+        _$v ?? new _$PhotoMedia._(url: url, width: width, height: height);
     replace(_$result);
     return _$result;
   }

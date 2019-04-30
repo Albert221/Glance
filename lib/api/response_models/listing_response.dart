@@ -61,6 +61,14 @@ abstract class ChildData implements Built<ChildData, ChildDataBuilder> {
 
   String get thumbnail;
 
+  @BuiltValueField(wireName: 'thumbnail_width')
+  @nullable
+  int get thumbnailWidth;
+
+  @BuiltValueField(wireName: 'thumbnail_height')
+  @nullable
+  int get thumbnailHeight;
+
   @nullable
   Preview get preview;
 

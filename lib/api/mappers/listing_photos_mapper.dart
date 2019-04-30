@@ -12,11 +12,17 @@ class ListingPhotosMapper {
                 ..subscribed = false
                 ..redditUrl = 'https://reddit.com/r/${child.data.subreddit}')
               .toBuilder()
-          ..photoUrl = child.data.preview.images.first.resolutions.last.url
-              .replaceAll('&amp;', '&')
-          ..aspectRatio = child.data.preview.images.first.source.width /
-              child.data.preview.images.first.source.height
-          ..thumbnailUrl = child.data.thumbnail
+          ..fullImage = PhotoMedia((b) => b
+                ..url = child.data.preview.images.first.resolutions.last.url
+                    .replaceAll('&amp;', '&')
+                ..width = child.data.preview.images.first.resolutions.last.width
+                ..height =
+                    child.data.preview.images.first.resolutions.last.height)
+              .toBuilder()
+          ..thumbnail = PhotoMedia((b) => b
+            ..url = child.data.thumbnail
+            ..width = child.data.thumbnailWidth ?? 1
+            ..height = child.data.thumbnailHeight ?? 1).toBuilder()
           ..upvotes = child.data.score
           ..upvoted = child.data.likes ?? false
           ..redditUrl = 'https://reddit.com${child.data.permalink}'))

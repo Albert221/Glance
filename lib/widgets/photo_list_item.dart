@@ -8,9 +8,14 @@ class PhotoListItem extends StatelessWidget {
   final Photo photo;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
+  final VoidCallback onTap;
 
   const PhotoListItem(
-      {Key key, @required this.photo, this.onUpvote, this.onUpvoteCanceled})
+      {Key key,
+      @required this.photo,
+      this.onUpvote,
+      this.onUpvoteCanceled,
+      this.onTap})
       : assert(photo != null),
         super(key: key);
 
@@ -55,16 +60,23 @@ class PhotoListItem extends StatelessWidget {
 
   Widget _buildImage(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final pictureHeight = width / photo.aspectRatio;
+    final pictureHeight = width / photo.fullImage.aspectRatio;
 
-    return Upvoteable(
-      height: pictureHeight > width ? width : pictureHeight,
-      onUpvote: photo.upvoted ? null : onUpvote,
-      child: CachedNetworkImage(
-        fit: BoxFit.cover,
-        imageUrl: photo.photoUrl,
-        fadeInDuration: Duration.zero,
-        placeholder: (context, url) => _buildPlaceholder(context),
+    return GestureDetector(
+      onTap: onTap,
+      child: Upvoteable(
+        height: pictureHeight > width ? width : pictureHeight,
+        onUpvote: photo.upvoted ? null : onUpvote,
+        child: Hero(
+          tag: 'photo-${photo.id}',
+          transitionOnUserGestures: true,
+          child: CachedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: photo.fullImage.url,
+            fadeInDuration: Duration.zero,
+            placeholder: (context, url) => _buildPlaceholder(context),
+          ),
+        ),
       ),
     );
   }
@@ -75,7 +87,7 @@ class PhotoListItem extends StatelessWidget {
         CachedNetworkImage(
           width: double.infinity,
           height: double.infinity,
-          imageUrl: photo.thumbnailUrl,
+          imageUrl: photo.thumbnail.url,
           fit: BoxFit.cover,
         ),
         const Center(

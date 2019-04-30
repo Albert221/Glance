@@ -196,6 +196,18 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
         ..add(serializers.serialize(object.likes,
             specifiedType: const FullType(bool)));
     }
+    if (object.thumbnailWidth != null) {
+      result
+        ..add('thumbnail_width')
+        ..add(serializers.serialize(object.thumbnailWidth,
+            specifiedType: const FullType(int)));
+    }
+    if (object.thumbnailHeight != null) {
+      result
+        ..add('thumbnail_height')
+        ..add(serializers.serialize(object.thumbnailHeight,
+            specifiedType: const FullType(int)));
+    }
     if (object.preview != null) {
       result
         ..add('preview')
@@ -248,6 +260,14 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
         case 'thumbnail':
           result.thumbnail = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
+          break;
+        case 'thumbnail_width':
+          result.thumbnailWidth = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'thumbnail_height':
+          result.thumbnailHeight = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
           break;
         case 'preview':
           result.preview.replace(serializers.deserialize(value,
@@ -714,6 +734,10 @@ class _$ChildData extends ChildData {
   @override
   final String thumbnail;
   @override
+  final int thumbnailWidth;
+  @override
+  final int thumbnailHeight;
+  @override
   final Preview preview;
 
   factory _$ChildData([void Function(ChildDataBuilder) updates]) =>
@@ -728,6 +752,8 @@ class _$ChildData extends ChildData {
       this.score,
       this.likes,
       this.thumbnail,
+      this.thumbnailWidth,
+      this.thumbnailHeight,
       this.preview})
       : super._() {
     if (name == null) {
@@ -772,6 +798,8 @@ class _$ChildData extends ChildData {
         score == other.score &&
         likes == other.likes &&
         thumbnail == other.thumbnail &&
+        thumbnailWidth == other.thumbnailWidth &&
+        thumbnailHeight == other.thumbnailHeight &&
         preview == other.preview;
   }
 
@@ -783,13 +811,19 @@ class _$ChildData extends ChildData {
                 $jc(
                     $jc(
                         $jc(
-                            $jc($jc($jc(0, name.hashCode), title.hashCode),
-                                subreddit.hashCode),
-                            permalink.hashCode),
-                        author.hashCode),
-                    score.hashCode),
-                likes.hashCode),
-            thumbnail.hashCode),
+                            $jc(
+                                $jc(
+                                    $jc(
+                                        $jc($jc(0, name.hashCode),
+                                            title.hashCode),
+                                        subreddit.hashCode),
+                                    permalink.hashCode),
+                                author.hashCode),
+                            score.hashCode),
+                        likes.hashCode),
+                    thumbnail.hashCode),
+                thumbnailWidth.hashCode),
+            thumbnailHeight.hashCode),
         preview.hashCode));
   }
 
@@ -804,6 +838,8 @@ class _$ChildData extends ChildData {
           ..add('score', score)
           ..add('likes', likes)
           ..add('thumbnail', thumbnail)
+          ..add('thumbnailWidth', thumbnailWidth)
+          ..add('thumbnailHeight', thumbnailHeight)
           ..add('preview', preview))
         .toString();
   }
@@ -844,6 +880,16 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   String get thumbnail => _$this._thumbnail;
   set thumbnail(String thumbnail) => _$this._thumbnail = thumbnail;
 
+  int _thumbnailWidth;
+  int get thumbnailWidth => _$this._thumbnailWidth;
+  set thumbnailWidth(int thumbnailWidth) =>
+      _$this._thumbnailWidth = thumbnailWidth;
+
+  int _thumbnailHeight;
+  int get thumbnailHeight => _$this._thumbnailHeight;
+  set thumbnailHeight(int thumbnailHeight) =>
+      _$this._thumbnailHeight = thumbnailHeight;
+
   PreviewBuilder _preview;
   PreviewBuilder get preview => _$this._preview ??= new PreviewBuilder();
   set preview(PreviewBuilder preview) => _$this._preview = preview;
@@ -860,6 +906,8 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
       _score = _$v.score;
       _likes = _$v.likes;
       _thumbnail = _$v.thumbnail;
+      _thumbnailWidth = _$v.thumbnailWidth;
+      _thumbnailHeight = _$v.thumbnailHeight;
       _preview = _$v.preview?.toBuilder();
       _$v = null;
     }
@@ -893,6 +941,8 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
               score: score,
               likes: likes,
               thumbnail: thumbnail,
+              thumbnailWidth: thumbnailWidth,
+              thumbnailHeight: thumbnailHeight,
               preview: _preview?.build());
     } catch (_) {
       String _$failedField;

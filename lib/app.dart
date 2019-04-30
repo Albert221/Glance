@@ -33,7 +33,6 @@ class ReddigramApp extends StatelessWidget {
                   : ReddigramTheme.dark(),
               routes: {
                 '/': (context) => MainScreen(),
-                '/subscribed': (context) => SubscribedScreen(),
               },
               navigatorObservers: [navObserver],
             ),

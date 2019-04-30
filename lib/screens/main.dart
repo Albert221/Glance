@@ -107,6 +107,11 @@ class _MainScreenState extends State<MainScreen> {
                       photo: vm.photo,
                       onUpvote: vm.onUpvote,
                       onUpvoteCanceled: vm.onUpvoteCanceled,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PhotoPreviewScreen(photo: vm.photo))),
                     ),
               );
             },
