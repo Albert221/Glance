@@ -9,6 +9,8 @@ import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
 class MainScreen extends StatefulWidget {
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -47,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, authInProgress) => Stack(
             children: [
               Scaffold(
+                key: MainScreen.scaffoldKey,
                 appBar: _buildAppBar(context),
                 drawer: MainDrawer(),
                 body: _buildBody(context),

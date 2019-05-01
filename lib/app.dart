@@ -8,8 +8,8 @@ import 'package:reddigram/screens/screens.dart';
 import 'package:redux/redux.dart';
 
 class ReddigramApp extends StatelessWidget {
-  static final analytics = FirebaseAnalytics();
-  static final navObserver = FirebaseAnalyticsObserver(analytics: analytics);
+  static final _analytics = FirebaseAnalytics();
+  static final _navObserver = FirebaseAnalyticsObserver(analytics: _analytics);
 
   final Store<ReddigramState> store;
 
@@ -34,7 +34,7 @@ class ReddigramApp extends StatelessWidget {
               routes: {
                 '/': (context) => MainScreen(),
               },
-              navigatorObservers: [navObserver],
+              navigatorObservers: [_navObserver],
             ),
       ),
     );
