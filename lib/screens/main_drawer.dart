@@ -276,7 +276,7 @@ class _ThemeViewModel {
 
   factory _ThemeViewModel.fromStore(Store<ReddigramState> store) {
     return _ThemeViewModel(
-      theme: store.state.theme,
+      theme: store.state.preferences.theme,
       onSwitch: (dark) =>
           store.dispatch(setTheme(dark ? AppTheme.dark : AppTheme.light)),
     );

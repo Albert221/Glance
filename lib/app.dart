@@ -25,7 +25,7 @@ class ReddigramApp extends StatelessWidget {
       store: store,
       child: StoreConnector<ReddigramState, AppTheme>(
         onInit: (store) => store.dispatch(loadTheme()),
-        converter: (store) => store.state.theme,
+        converter: (store) => store.state.preferences.theme,
         builder: (context, theme) => MaterialApp(
               title: 'Reddigram',
               theme: theme == AppTheme.light

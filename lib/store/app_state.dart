@@ -8,8 +8,6 @@ abstract class ReddigramState
     implements Built<ReddigramState, ReddigramStateBuilder> {
   AuthState get authState;
 
-  AppTheme get theme;
-
   PreferencesState get preferences;
 
   FeedState get feedState;
@@ -21,7 +19,6 @@ abstract class ReddigramState
   factory ReddigramState([updates(ReddigramStateBuilder b)]) {
     return _$ReddigramState._(
       authState: AuthState(),
-      theme: AppTheme.light,
       preferences: PreferencesState(),
       feedState: FeedState(),
       subscriptions: BuiltSet(),
