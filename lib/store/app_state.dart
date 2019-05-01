@@ -10,6 +10,8 @@ abstract class ReddigramState
 
   AppTheme get theme;
 
+  PreferencesState get preferences;
+
   FeedState get feedState;
 
   BuiltSet<String> get subscriptions;
@@ -20,6 +22,7 @@ abstract class ReddigramState
     return _$ReddigramState._(
       authState: AuthState(),
       theme: AppTheme.light,
+      preferences: PreferencesState(),
       feedState: FeedState(),
       subscriptions: BuiltSet(),
     );

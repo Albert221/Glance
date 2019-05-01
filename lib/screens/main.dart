@@ -18,6 +18,7 @@ class _MainScreenState extends State<MainScreen> {
 
   double Function() _offsetToLoad = () => 0;
   VoidCallback _fetchMore = () {};
+  Set<String> _shownNsfwIds = Set();
 
   @override
   void initState() {
@@ -107,6 +108,9 @@ class _MainScreenState extends State<MainScreen> {
                       photo: vm.photo,
                       onUpvote: vm.onUpvote,
                       onUpvoteCanceled: vm.onUpvoteCanceled,
+                      showNsfw: _shownNsfwIds.contains(vm.photo.id),
+                      onShowNsfw: () =>
+                          setState(() => _shownNsfwIds.add(vm.photo.id)),
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(

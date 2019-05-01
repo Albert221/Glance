@@ -24,6 +24,8 @@ class _$Photo extends Photo {
   @override
   final bool upvoted;
   @override
+  final bool nsfw;
+  @override
   final String redditUrl;
 
   factory _$Photo([void Function(PhotoBuilder) updates]) =>
@@ -38,6 +40,7 @@ class _$Photo extends Photo {
       this.thumbnail,
       this.upvotes,
       this.upvoted,
+      this.nsfw,
       this.redditUrl})
       : super._() {
     if (id == null) {
@@ -64,6 +67,9 @@ class _$Photo extends Photo {
     if (upvoted == null) {
       throw new BuiltValueNullFieldError('Photo', 'upvoted');
     }
+    if (nsfw == null) {
+      throw new BuiltValueNullFieldError('Photo', 'nsfw');
+    }
     if (redditUrl == null) {
       throw new BuiltValueNullFieldError('Photo', 'redditUrl');
     }
@@ -88,6 +94,7 @@ class _$Photo extends Photo {
         thumbnail == other.thumbnail &&
         upvotes == other.upvotes &&
         upvoted == other.upvoted &&
+        nsfw == other.nsfw &&
         redditUrl == other.redditUrl;
   }
 
@@ -99,13 +106,17 @@ class _$Photo extends Photo {
                 $jc(
                     $jc(
                         $jc(
-                            $jc($jc($jc(0, id.hashCode), authorName.hashCode),
-                                subreddit.hashCode),
-                            source.hashCode),
-                        fullImage.hashCode),
-                    thumbnail.hashCode),
-                upvotes.hashCode),
-            upvoted.hashCode),
+                            $jc(
+                                $jc(
+                                    $jc($jc(0, id.hashCode),
+                                        authorName.hashCode),
+                                    subreddit.hashCode),
+                                source.hashCode),
+                            fullImage.hashCode),
+                        thumbnail.hashCode),
+                    upvotes.hashCode),
+                upvoted.hashCode),
+            nsfw.hashCode),
         redditUrl.hashCode));
   }
 
@@ -120,6 +131,7 @@ class _$Photo extends Photo {
           ..add('thumbnail', thumbnail)
           ..add('upvotes', upvotes)
           ..add('upvoted', upvoted)
+          ..add('nsfw', nsfw)
           ..add('redditUrl', redditUrl))
         .toString();
   }
@@ -163,6 +175,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   bool get upvoted => _$this._upvoted;
   set upvoted(bool upvoted) => _$this._upvoted = upvoted;
 
+  bool _nsfw;
+  bool get nsfw => _$this._nsfw;
+  set nsfw(bool nsfw) => _$this._nsfw = nsfw;
+
   String _redditUrl;
   String get redditUrl => _$this._redditUrl;
   set redditUrl(String redditUrl) => _$this._redditUrl = redditUrl;
@@ -179,6 +195,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _thumbnail = _$v.thumbnail?.toBuilder();
       _upvotes = _$v.upvotes;
       _upvoted = _$v.upvoted;
+      _nsfw = _$v.nsfw;
       _redditUrl = _$v.redditUrl;
       _$v = null;
     }
@@ -212,6 +229,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               thumbnail: thumbnail.build(),
               upvotes: upvotes,
               upvoted: upvoted,
+              nsfw: nsfw,
               redditUrl: redditUrl);
     } catch (_) {
       String _$failedField;

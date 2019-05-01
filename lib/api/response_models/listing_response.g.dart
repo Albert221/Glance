@@ -189,6 +189,8 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
       'thumbnail',
       serializers.serialize(object.thumbnail,
           specifiedType: const FullType(String)),
+      'over_18',
+      serializers.serialize(object.over18, specifiedType: const FullType(bool)),
     ];
     if (object.likes != null) {
       result
@@ -268,6 +270,10 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
         case 'thumbnail_height':
           result.thumbnailHeight = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
+          break;
+        case 'over_18':
+          result.over18 = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
         case 'preview':
           result.preview.replace(serializers.deserialize(value,
@@ -738,6 +744,8 @@ class _$ChildData extends ChildData {
   @override
   final int thumbnailHeight;
   @override
+  final bool over18;
+  @override
   final Preview preview;
 
   factory _$ChildData([void Function(ChildDataBuilder) updates]) =>
@@ -754,6 +762,7 @@ class _$ChildData extends ChildData {
       this.thumbnail,
       this.thumbnailWidth,
       this.thumbnailHeight,
+      this.over18,
       this.preview})
       : super._() {
     if (name == null) {
@@ -776,6 +785,9 @@ class _$ChildData extends ChildData {
     }
     if (thumbnail == null) {
       throw new BuiltValueNullFieldError('ChildData', 'thumbnail');
+    }
+    if (over18 == null) {
+      throw new BuiltValueNullFieldError('ChildData', 'over18');
     }
   }
 
@@ -800,6 +812,7 @@ class _$ChildData extends ChildData {
         thumbnail == other.thumbnail &&
         thumbnailWidth == other.thumbnailWidth &&
         thumbnailHeight == other.thumbnailHeight &&
+        over18 == other.over18 &&
         preview == other.preview;
   }
 
@@ -814,16 +827,18 @@ class _$ChildData extends ChildData {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc(0, name.hashCode),
-                                            title.hashCode),
-                                        subreddit.hashCode),
-                                    permalink.hashCode),
-                                author.hashCode),
-                            score.hashCode),
-                        likes.hashCode),
-                    thumbnail.hashCode),
-                thumbnailWidth.hashCode),
-            thumbnailHeight.hashCode),
+                                        $jc(
+                                            $jc($jc(0, name.hashCode),
+                                                title.hashCode),
+                                            subreddit.hashCode),
+                                        permalink.hashCode),
+                                    author.hashCode),
+                                score.hashCode),
+                            likes.hashCode),
+                        thumbnail.hashCode),
+                    thumbnailWidth.hashCode),
+                thumbnailHeight.hashCode),
+            over18.hashCode),
         preview.hashCode));
   }
 
@@ -840,6 +855,7 @@ class _$ChildData extends ChildData {
           ..add('thumbnail', thumbnail)
           ..add('thumbnailWidth', thumbnailWidth)
           ..add('thumbnailHeight', thumbnailHeight)
+          ..add('over18', over18)
           ..add('preview', preview))
         .toString();
   }
@@ -890,6 +906,10 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   set thumbnailHeight(int thumbnailHeight) =>
       _$this._thumbnailHeight = thumbnailHeight;
 
+  bool _over18;
+  bool get over18 => _$this._over18;
+  set over18(bool over18) => _$this._over18 = over18;
+
   PreviewBuilder _preview;
   PreviewBuilder get preview => _$this._preview ??= new PreviewBuilder();
   set preview(PreviewBuilder preview) => _$this._preview = preview;
@@ -908,6 +928,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
       _thumbnail = _$v.thumbnail;
       _thumbnailWidth = _$v.thumbnailWidth;
       _thumbnailHeight = _$v.thumbnailHeight;
+      _over18 = _$v.over18;
       _preview = _$v.preview?.toBuilder();
       _$v = null;
     }
@@ -943,6 +964,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
               thumbnail: thumbnail,
               thumbnailWidth: thumbnailWidth,
               thumbnailHeight: thumbnailHeight,
+              over18: over18,
               preview: _preview?.build());
     } catch (_) {
       String _$failedField;

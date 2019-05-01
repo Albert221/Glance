@@ -9,13 +9,17 @@ class PhotoListItem extends StatelessWidget {
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
   final VoidCallback onTap;
+  final bool showNsfw;
+  final VoidCallback onShowNsfw;
 
   const PhotoListItem(
       {Key key,
       @required this.photo,
       this.onUpvote,
       this.onUpvoteCanceled,
-      this.onTap})
+      this.onTap,
+      this.showNsfw = false,
+      this.onShowNsfw})
       : assert(photo != null),
         super(key: key);
 
@@ -61,23 +65,56 @@ class PhotoListItem extends StatelessWidget {
   Widget _buildImage(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final pictureHeight = width / photo.fullImage.aspectRatio;
+    final height = pictureHeight > width ? width : pictureHeight;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Upvoteable(
-        height: pictureHeight > width ? width : pictureHeight,
-        onUpvote: photo.upvoted ? null : onUpvote,
-        child: Hero(
-          tag: 'photo-${photo.id}',
-          transitionOnUserGestures: true,
-          child: CachedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: photo.fullImage.url,
-            fadeInDuration: Duration.zero,
-            placeholder: (context, url) => _buildPlaceholder(context),
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Upvoteable(
+            height: height,
+            onUpvote: photo.upvoted ? null : onUpvote,
+            child: Hero(
+              tag: 'photo-${photo.id}',
+              transitionOnUserGestures: true,
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: photo.fullImage.url,
+                fadeInDuration: Duration.zero,
+                placeholder: (context, url) => _buildPlaceholder(context),
+              ),
+            ),
           ),
         ),
-      ),
+        if (!showNsfw && photo.nsfw)
+          GestureDetector(
+            onTap: () => onShowNsfw != null ? onShowNsfw() : null,
+            child: Container(
+              width: double.infinity,
+              height: height,
+              color: Colors.black,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'NSFW',
+                    style: Theme.of(context)
+                        .textTheme
+                        .title
+                        .copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(height: 12.0),
+                  const Icon(
+                    Icons.child_care,
+                    size: 48.0,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 

@@ -20,6 +20,8 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   bool get upvoted;
 
+  bool get nsfw;
+
   String get redditUrl;
 
   Photo._();

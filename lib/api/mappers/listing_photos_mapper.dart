@@ -31,6 +31,7 @@ class ListingPhotosMapper {
             ..height = child.data.thumbnailHeight ?? 1).toBuilder()
           ..upvotes = child.data.score
           ..upvoted = child.data.likes ?? false
+          ..nsfw = child.data.over18
           ..redditUrl = 'https://reddit.com${child.data.permalink}'))
         .toList();
   }
