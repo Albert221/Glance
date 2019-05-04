@@ -5,6 +5,8 @@ class ReddigramTheme {
     final lightTheme = ThemeData.light();
 
     return lightTheme.copyWith(
+      primaryColor: Colors.black,
+      accentColor: Colors.black,
       appBarTheme: AppBarTheme(
         color: Colors.white,
         textTheme: TextTheme(
@@ -42,6 +44,7 @@ class ReddigramTheme {
     final lightTheme = ThemeData.dark();
 
     return lightTheme.copyWith(
+      accentColor: Colors.white,
       appBarTheme: AppBarTheme(
         color: Colors.black,
         textTheme: TextTheme(
