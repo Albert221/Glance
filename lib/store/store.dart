@@ -14,5 +14,8 @@ export 'feed/feed_state.dart';
 export 'feed/reducer.dart';
 export 'feed/actions.dart';
 
+export 'subreddit_feeds/reducer.dart';
+export 'subreddit_feeds/actions.dart';
+
 export 'subscriptions/reducer.dart';
 export 'subscriptions/actions.dart';

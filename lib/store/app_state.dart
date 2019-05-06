@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
+import 'package:reddigram/models/models.dart';
 import 'package:reddigram/store/store.dart';
 
 part 'app_state.g.dart';
@@ -12,6 +13,8 @@ abstract class ReddigramState
 
   FeedState get feedState;
 
+  BuiltList<Subreddit> get subredditFeeds;
+
   BuiltSet<String> get subscriptions;
 
   ReddigramState._();
@@ -21,6 +24,7 @@ abstract class ReddigramState
       authState: AuthState(),
       preferences: PreferencesState(),
       feedState: FeedState(),
+      subredditFeeds: BuiltList<Subreddit>(),
       subscriptions: BuiltSet(),
     );
   }

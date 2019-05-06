@@ -8,7 +8,10 @@ class PhotoListItem extends StatelessWidget {
   final Photo photo;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
-  final VoidCallback onTap;
+
+  final VoidCallback onPhotoTap;
+  final VoidCallback onSubredditTap;
+
   final bool showNsfw;
   final VoidCallback onShowNsfw;
 
@@ -17,7 +20,8 @@ class PhotoListItem extends StatelessWidget {
       @required this.photo,
       this.onUpvote,
       this.onUpvoteCanceled,
-      this.onTap,
+      this.onPhotoTap,
+      this.onSubredditTap,
       this.showNsfw = false,
       this.onShowNsfw})
       : assert(photo != null),
@@ -43,22 +47,27 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildTopBar(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
             'u/${photo.authorName}',
             style: Theme.of(context).textTheme.title,
           ),
-          Text(
-            'r/${photo.subreddit.name}',
-            style: Theme.of(context).textTheme.title,
+        ),
+        InkWell(
+          onTap: onSubredditTap,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'r/${photo.subredditName}',
+              style: Theme.of(context).textTheme.title,
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -70,7 +79,7 @@ class PhotoListItem extends StatelessWidget {
     return Stack(
       children: [
         GestureDetector(
-          onTap: onTap,
+          onTap: onPhotoTap,
           child: Upvoteable(
             height: height,
             onUpvote: photo.upvoted ? null : onUpvote,
@@ -176,8 +185,8 @@ class PhotoListItem extends StatelessWidget {
         ),
         InkWell(
           child: const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Icon(Icons.exit_to_app),
+            padding: const EdgeInsets.all(16.0),
+            child: const Icon(Icons.exit_to_app),
           ),
           onTap: () async => await launch(photo.redditUrl),
         ),

@@ -39,7 +39,7 @@ ThunkAction<ReddigramState> fetchFreshFeed([Completer completer]) {
   };
 }
 
-ThunkAction<ReddigramState> fetchMoreFeed() {
+ThunkAction<ReddigramState> fetchMoreFeed([Completer completer]) {
   return (Store<ReddigramState> store) {
     store.dispatch(SetFeedFetching(true));
 
@@ -50,7 +50,10 @@ ThunkAction<ReddigramState> fetchMoreFeed() {
 
     _fetchProperFeed(store, after: after)
         .then((photos) => store.dispatch(FetchedMoreFeed(photos)))
-        .whenComplete(() => store.dispatch(SetFeedFetching(false)));
+        .whenComplete(() {
+          store.dispatch(SetFeedFetching(false));
+          completer?.complete();
+        });
   };
 }
 

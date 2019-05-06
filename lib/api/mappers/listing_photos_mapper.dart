@@ -7,11 +7,7 @@ class ListingPhotosMapper {
         .map((child) => Photo((b) => b
           ..id = child.data.name
           ..authorName = child.data.author
-          ..subreddit = Subreddit((b) => b
-                ..name = child.data.subreddit
-                ..subscribed = false
-                ..redditUrl = 'https://reddit.com/r/${child.data.subreddit}')
-              .toBuilder()
+          ..subredditName = child.data.subreddit
           ..source = PhotoMedia((b) => b
                 ..url = child.data.preview.images.first.source.url
                     .replaceAll('&amp;', '&')

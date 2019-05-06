@@ -12,7 +12,7 @@ class _$Photo extends Photo {
   @override
   final String authorName;
   @override
-  final Subreddit subreddit;
+  final String subredditName;
   @override
   final PhotoMedia source;
   @override
@@ -34,7 +34,7 @@ class _$Photo extends Photo {
   _$Photo._(
       {this.id,
       this.authorName,
-      this.subreddit,
+      this.subredditName,
       this.source,
       this.fullImage,
       this.thumbnail,
@@ -49,8 +49,8 @@ class _$Photo extends Photo {
     if (authorName == null) {
       throw new BuiltValueNullFieldError('Photo', 'authorName');
     }
-    if (subreddit == null) {
-      throw new BuiltValueNullFieldError('Photo', 'subreddit');
+    if (subredditName == null) {
+      throw new BuiltValueNullFieldError('Photo', 'subredditName');
     }
     if (source == null) {
       throw new BuiltValueNullFieldError('Photo', 'source');
@@ -88,7 +88,7 @@ class _$Photo extends Photo {
     return other is Photo &&
         id == other.id &&
         authorName == other.authorName &&
-        subreddit == other.subreddit &&
+        subredditName == other.subredditName &&
         source == other.source &&
         fullImage == other.fullImage &&
         thumbnail == other.thumbnail &&
@@ -110,7 +110,7 @@ class _$Photo extends Photo {
                                 $jc(
                                     $jc($jc(0, id.hashCode),
                                         authorName.hashCode),
-                                    subreddit.hashCode),
+                                    subredditName.hashCode),
                                 source.hashCode),
                             fullImage.hashCode),
                         thumbnail.hashCode),
@@ -125,7 +125,7 @@ class _$Photo extends Photo {
     return (newBuiltValueToStringHelper('Photo')
           ..add('id', id)
           ..add('authorName', authorName)
-          ..add('subreddit', subreddit)
+          ..add('subredditName', subredditName)
           ..add('source', source)
           ..add('fullImage', fullImage)
           ..add('thumbnail', thumbnail)
@@ -148,10 +148,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   String get authorName => _$this._authorName;
   set authorName(String authorName) => _$this._authorName = authorName;
 
-  SubredditBuilder _subreddit;
-  SubredditBuilder get subreddit =>
-      _$this._subreddit ??= new SubredditBuilder();
-  set subreddit(SubredditBuilder subreddit) => _$this._subreddit = subreddit;
+  String _subredditName;
+  String get subredditName => _$this._subredditName;
+  set subredditName(String subredditName) =>
+      _$this._subredditName = subredditName;
 
   PhotoMediaBuilder _source;
   PhotoMediaBuilder get source => _$this._source ??= new PhotoMediaBuilder();
@@ -189,7 +189,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
     if (_$v != null) {
       _id = _$v.id;
       _authorName = _$v.authorName;
-      _subreddit = _$v.subreddit?.toBuilder();
+      _subredditName = _$v.subredditName;
       _source = _$v.source?.toBuilder();
       _fullImage = _$v.fullImage?.toBuilder();
       _thumbnail = _$v.thumbnail?.toBuilder();
@@ -223,7 +223,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
           new _$Photo._(
               id: id,
               authorName: authorName,
-              subreddit: subreddit.build(),
+              subredditName: subredditName,
               source: source.build(),
               fullImage: fullImage.build(),
               thumbnail: thumbnail.build(),
@@ -234,8 +234,6 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'subreddit';
-        subreddit.build();
         _$failedField = 'source';
         source.build();
         _$failedField = 'fullImage';

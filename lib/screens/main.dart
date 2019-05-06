@@ -16,34 +16,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final _scrollController = ScrollController();
-
-  double Function() _offsetToLoad = () => 0;
-  VoidCallback _fetchMore = () {};
   Set<String> _shownNsfwIds = Set();
 
   @override
-  void initState() {
-    super.initState();
-
-    _scrollController.addListener(() {
-      final position = _scrollController.position;
-      if (position.pixels + _offsetToLoad() >= position.maxScrollExtent) {
-        _fetchMore();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _offsetToLoad = () => MediaQuery.of(context).size.height * 3;
-
     return StoreConnector<ReddigramState, bool>(
       converter: (store) => store.state.authState.inProgress,
       builder: (context, authInProgress) => Stack(
@@ -76,55 +52,56 @@ class _MainScreenState extends State<MainScreen> {
     return StoreConnector<ReddigramState, _BodyViewModel>(
       onInit: (store) => store.dispatch(fetchFreshFeed()),
       converter: (store) => _BodyViewModel.fromStore(store),
-      builder: (context, vm) {
-        _fetchMore = vm.fetchMore;
-
-        return RefreshIndicator(
-          onRefresh: () {
-            final completer = Completer();
-            vm.fetchFresh(completer);
-            return completer.future;
-          },
-          child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: _scrollController,
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            itemCount: vm.feedState.photos.length + 1,
-            itemBuilder: (context, i) {
-              // Last item is a loading indicator.
-              if (i == vm.feedState.photos.length) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  alignment: Alignment.center,
-                  child: vm.feedState.photos.isEmpty
-                      ? const Text(
-                          'There is no feed! 😲\n\nTry subscribing to some subreddits.',
-                          textAlign: TextAlign.center,
-                        )
-                      : const CircularProgressIndicator(),
-                );
-              }
-
-              return StoreConnector<ReddigramState, _PhotoViewModel>(
-                converter: (store) => _PhotoViewModel.fromStore(store, i),
-                builder: (context, vm) => PhotoListItem(
-                      photo: vm.photo,
-                      onUpvote: vm.onUpvote,
-                      onUpvoteCanceled: vm.onUpvoteCanceled,
-                      showNsfw: _shownNsfwIds.contains(vm.photo.id),
-                      onShowNsfw: () =>
-                          setState(() => _shownNsfwIds.add(vm.photo.id)),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PhotoPreviewScreen(photo: vm.photo))),
-                    ),
-              );
+      builder: (context, vm) => RefreshIndicator(
+            onRefresh: () {
+              final completer = Completer();
+              vm.fetchFresh(completer);
+              return completer.future;
             },
+            child: InfiniteList(
+              fetchMore: vm.fetchMore,
+              itemCount: vm.feedState.photos.length + 1,
+              itemBuilder: (context, i) {
+                // Last item is a loading indicator.
+                if (i == vm.feedState.photos.length) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                    alignment: Alignment.center,
+                    child: vm.feedState.photos.isEmpty
+                        ? const Text(
+                            'There is no feed! 😲\n\nTry subscribing to some subreddits.',
+                            textAlign: TextAlign.center,
+                          )
+                        : const CircularProgressIndicator(),
+                  );
+                }
+
+                return _buildPhoto(context, i);
+              },
+            ),
           ),
-        );
-      },
+    );
+  }
+
+  Widget _buildPhoto(BuildContext context, int index) {
+    return StoreConnector<ReddigramState, _PhotoViewModel>(
+      converter: (store) => _PhotoViewModel.fromStore(store, index),
+      builder: (context, vm) => PhotoListItem(
+            photo: vm.photo,
+            onUpvote: vm.onUpvote,
+            onUpvoteCanceled: vm.onUpvoteCanceled,
+            onPhotoTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhotoPreviewScreen(photo: vm.photo))),
+            onSubredditTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SubredditScreen(
+                        subredditName: vm.photo.subredditName))),
+            showNsfw: _shownNsfwIds.contains(vm.photo.id),
+            onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),
+          ),
     );
   }
 }
@@ -134,7 +111,7 @@ typedef CompleterCallback = void Function(Completer);
 class _BodyViewModel {
   final FeedState feedState;
   final CompleterCallback fetchFresh;
-  final VoidCallback fetchMore;
+  final void Function(Completer) fetchMore;
 
   _BodyViewModel(
       {@required this.feedState,
@@ -152,11 +129,7 @@ class _BodyViewModel {
           store.dispatch(fetchFreshFeed(completer));
         }
       },
-      fetchMore: () {
-        if (!store.state.feedState.fetching) {
-          store.dispatch(fetchMoreFeed());
-        }
-      },
+      fetchMore: (completer) => store.dispatch(fetchMoreFeed(completer)),
     );
   }
 }
@@ -172,8 +145,8 @@ class _PhotoViewModel {
       @required this.onUpvoteCanceled})
       : assert(photo != null);
 
-  factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int i) {
-    final photo = store.state.feedState.photos[i];
+  factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int index) {
+    final photo = store.state.feedState.photos[index];
 
     return _PhotoViewModel(
       photo: photo,

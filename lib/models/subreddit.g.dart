@@ -12,20 +12,26 @@ class _$Subreddit extends Subreddit {
   @override
   final String redditUrl;
   @override
-  final bool subscribed;
+  final String iconImageUrl;
+  @override
+  final BuiltList<Photo> photos;
 
   factory _$Subreddit([void Function(SubredditBuilder) updates]) =>
       (new SubredditBuilder()..update(updates)).build();
 
-  _$Subreddit._({this.name, this.redditUrl, this.subscribed}) : super._() {
+  _$Subreddit._({this.name, this.redditUrl, this.iconImageUrl, this.photos})
+      : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('Subreddit', 'name');
     }
     if (redditUrl == null) {
       throw new BuiltValueNullFieldError('Subreddit', 'redditUrl');
     }
-    if (subscribed == null) {
-      throw new BuiltValueNullFieldError('Subreddit', 'subscribed');
+    if (iconImageUrl == null) {
+      throw new BuiltValueNullFieldError('Subreddit', 'iconImageUrl');
+    }
+    if (photos == null) {
+      throw new BuiltValueNullFieldError('Subreddit', 'photos');
     }
   }
 
@@ -42,13 +48,16 @@ class _$Subreddit extends Subreddit {
     return other is Subreddit &&
         name == other.name &&
         redditUrl == other.redditUrl &&
-        subscribed == other.subscribed;
+        iconImageUrl == other.iconImageUrl &&
+        photos == other.photos;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc(0, name.hashCode), redditUrl.hashCode), subscribed.hashCode));
+        $jc($jc($jc(0, name.hashCode), redditUrl.hashCode),
+            iconImageUrl.hashCode),
+        photos.hashCode));
   }
 
   @override
@@ -56,7 +65,8 @@ class _$Subreddit extends Subreddit {
     return (newBuiltValueToStringHelper('Subreddit')
           ..add('name', name)
           ..add('redditUrl', redditUrl)
-          ..add('subscribed', subscribed))
+          ..add('iconImageUrl', iconImageUrl)
+          ..add('photos', photos))
         .toString();
   }
 }
@@ -72,9 +82,13 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
   String get redditUrl => _$this._redditUrl;
   set redditUrl(String redditUrl) => _$this._redditUrl = redditUrl;
 
-  bool _subscribed;
-  bool get subscribed => _$this._subscribed;
-  set subscribed(bool subscribed) => _$this._subscribed = subscribed;
+  String _iconImageUrl;
+  String get iconImageUrl => _$this._iconImageUrl;
+  set iconImageUrl(String iconImageUrl) => _$this._iconImageUrl = iconImageUrl;
+
+  ListBuilder<Photo> _photos;
+  ListBuilder<Photo> get photos => _$this._photos ??= new ListBuilder<Photo>();
+  set photos(ListBuilder<Photo> photos) => _$this._photos = photos;
 
   SubredditBuilder();
 
@@ -82,7 +96,8 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
     if (_$v != null) {
       _name = _$v.name;
       _redditUrl = _$v.redditUrl;
-      _subscribed = _$v.subscribed;
+      _iconImageUrl = _$v.iconImageUrl;
+      _photos = _$v.photos?.toBuilder();
       _$v = null;
     }
     return this;
@@ -103,9 +118,25 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
 
   @override
   _$Subreddit build() {
-    final _$result = _$v ??
-        new _$Subreddit._(
-            name: name, redditUrl: redditUrl, subscribed: subscribed);
+    _$Subreddit _$result;
+    try {
+      _$result = _$v ??
+          new _$Subreddit._(
+              name: name,
+              redditUrl: redditUrl,
+              iconImageUrl: iconImageUrl,
+              photos: photos.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'photos';
+        photos.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'Subreddit', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

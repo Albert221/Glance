@@ -6,7 +6,9 @@ import 'package:reddigram/models/models.dart';
 class PhotoPreviewScreen extends StatelessWidget {
   final Photo photo;
 
-  const PhotoPreviewScreen({Key key, this.photo}) : super(key: key);
+  const PhotoPreviewScreen({Key key, @required this.photo})
+      : assert(photo != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

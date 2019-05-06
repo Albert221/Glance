@@ -14,13 +14,19 @@ class _$ReddigramState extends ReddigramState {
   @override
   final FeedState feedState;
   @override
+  final BuiltList<Subreddit> subredditFeeds;
+  @override
   final BuiltSet<String> subscriptions;
 
   factory _$ReddigramState([void Function(ReddigramStateBuilder) updates]) =>
       (new ReddigramStateBuilder()..update(updates)).build();
 
   _$ReddigramState._(
-      {this.authState, this.preferences, this.feedState, this.subscriptions})
+      {this.authState,
+      this.preferences,
+      this.feedState,
+      this.subredditFeeds,
+      this.subscriptions})
       : super._() {
     if (authState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'authState');
@@ -30,6 +36,9 @@ class _$ReddigramState extends ReddigramState {
     }
     if (feedState == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'feedState');
+    }
+    if (subredditFeeds == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'subredditFeeds');
     }
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'subscriptions');
@@ -51,14 +60,17 @@ class _$ReddigramState extends ReddigramState {
         authState == other.authState &&
         preferences == other.preferences &&
         feedState == other.feedState &&
+        subredditFeeds == other.subredditFeeds &&
         subscriptions == other.subscriptions;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, authState.hashCode), preferences.hashCode),
-            feedState.hashCode),
+        $jc(
+            $jc($jc($jc(0, authState.hashCode), preferences.hashCode),
+                feedState.hashCode),
+            subredditFeeds.hashCode),
         subscriptions.hashCode));
   }
 
@@ -68,6 +80,7 @@ class _$ReddigramState extends ReddigramState {
           ..add('authState', authState)
           ..add('preferences', preferences)
           ..add('feedState', feedState)
+          ..add('subredditFeeds', subredditFeeds)
           ..add('subscriptions', subscriptions))
         .toString();
   }
@@ -93,6 +106,12 @@ class ReddigramStateBuilder
       _$this._feedState ??= new FeedStateBuilder();
   set feedState(FeedStateBuilder feedState) => _$this._feedState = feedState;
 
+  ListBuilder<Subreddit> _subredditFeeds;
+  ListBuilder<Subreddit> get subredditFeeds =>
+      _$this._subredditFeeds ??= new ListBuilder<Subreddit>();
+  set subredditFeeds(ListBuilder<Subreddit> subredditFeeds) =>
+      _$this._subredditFeeds = subredditFeeds;
+
   SetBuilder<String> _subscriptions;
   SetBuilder<String> get subscriptions =>
       _$this._subscriptions ??= new SetBuilder<String>();
@@ -106,6 +125,7 @@ class ReddigramStateBuilder
       _authState = _$v.authState?.toBuilder();
       _preferences = _$v.preferences?.toBuilder();
       _feedState = _$v.feedState?.toBuilder();
+      _subredditFeeds = _$v.subredditFeeds?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
       _$v = null;
     }
@@ -134,6 +154,7 @@ class ReddigramStateBuilder
               authState: authState.build(),
               preferences: preferences.build(),
               feedState: feedState.build(),
+              subredditFeeds: subredditFeeds.build(),
               subscriptions: subscriptions.build());
     } catch (_) {
       String _$failedField;
@@ -144,6 +165,8 @@ class ReddigramStateBuilder
         preferences.build();
         _$failedField = 'feedState';
         feedState.build();
+        _$failedField = 'subredditFeeds';
+        subredditFeeds.build();
         _$failedField = 'subscriptions';
         subscriptions.build();
       } catch (e) {

@@ -5,5 +5,6 @@ ReddigramState rootReducer(ReddigramState state, action) {
     ..authState.replace(authStateReducer(state.authState, action))
     ..preferences.replace(preferencesReducer(state.preferences, action))
     ..feedState.replace(feedStateReducer(state.feedState, action))
+    ..subredditFeeds.replace(subredditFeeds(state.subredditFeeds, action))
     ..subscriptions.replace(subscriptionsReducer(state.subscriptions, action)));
 }
