@@ -140,28 +140,19 @@ class RedditRepository {
     return response.rebuild((b) => b
       ..data = response.data
           .rebuild((b) => b
-            ..children = ListBuilder(response.data.children
-                .where((child) => child.data.preview != null)))
+            ..children = ListBuilder(response.data.children.where((child) =>
+                child.data.preview != null && child.data.thumbnail != 'self')))
           .toBuilder());
   }
 
-  Future<ListingResponse> best({String after = '', int limit = 25}) async {
-    return _client
-        .get('/best.json?after=$after&limit=$limit')
-        .then((response) => serializers.deserializeWith(
-            ListingResponse.serializer, response.data))
-        .then(_filterOnlyPhotos);
-  }
-
-  Future<ListingResponse> subreddit(String name,
+  Future<ListingResponse> feed(String feed,
       {String after = '', int limit = 25}) async {
-    assert(name.isNotEmpty);
-
     return _client
-        .get('/r/$name.json?after=$after&limit=$limit')
+        .get('/$feed.json?after=$after&limit=$limit')
         .then((response) => serializers.deserializeWith(
             ListingResponse.serializer, response.data))
-        .then(_filterOnlyPhotos);
+        .then(_filterOnlyPhotos)
+        .catchError((e) => print(e));
   }
 
   Future<String> username() async {

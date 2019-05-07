@@ -11,9 +11,9 @@ abstract class ReddigramState
 
   PreferencesState get preferences;
 
-  FeedState get feedState;
+  BuiltMap<String, Photo> get photos;
 
-  BuiltMap<String, BuiltList<Photo>> get subredditFeeds;
+  BuiltMap<String, BuiltList<String>> get feeds;
 
   BuiltSet<String> get subscriptions;
 
@@ -23,8 +23,10 @@ abstract class ReddigramState
     return _$ReddigramState._(
       authState: AuthState(),
       preferences: PreferencesState(),
-      feedState: FeedState(),
-      subredditFeeds: BuiltMap<String, BuiltList<Photo>>(),
+      photos: BuiltMap<String, Photo>(),
+      feeds: BuiltMap<String, BuiltList<String>>({
+        BEST_SUBSCRIBED: BuiltList<String>(),
+      }),
       subscriptions: BuiltSet(),
     );
   }

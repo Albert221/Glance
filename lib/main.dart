@@ -14,7 +14,14 @@ void main() {
   final store = Store<ReddigramState>(
     rootReducer,
     initialState: ReddigramState(),
-    middleware: [thunkMiddleware],
+    middleware: [
+      (Store<ReddigramState> store, action, NextDispatcher next) {
+        debugPrint(action.toString());
+
+        next(action);
+      },
+      thunkMiddleware
+    ],
   );
 
   runApp(ReddigramApp(store: store));

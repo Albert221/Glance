@@ -8,20 +8,27 @@ import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
-class SubredditScreen extends StatelessWidget {
+class SubredditScreen extends StatefulWidget {
   final String subredditName;
 
   const SubredditScreen({Key key, this.subredditName}) : super(key: key);
 
+  @override
+  _SubredditScreenState createState() => _SubredditScreenState();
+}
+
+class _SubredditScreenState extends State<SubredditScreen> {
+  final Set<String> _shownNsfwIds = Set();
+
   bool _subredditLoaded(Store<ReddigramState> store) =>
-      store.state.subredditFeeds[subredditName] != null;
+      store.state.feeds['r/${widget.subredditName}'] != null;
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<ReddigramState, bool>(
       onInit: (store) {
         if (!_subredditLoaded(store)) {
-          store.dispatch(fetchFreshSubreddit(subredditName));
+          store.dispatch(fetchFreshFeed('r/${widget.subredditName}', limit: 99));
         }
       },
       converter: (store) => _subredditLoaded(store),
@@ -54,7 +61,7 @@ class SubredditScreen extends StatelessWidget {
         Theme.of(context).buttonTheme.colorScheme.onBackground;
 
     return AppBar(
-      title: Text('r/$subredditName'),
+      title: Text('r/${widget.subredditName}'),
       bottom: const TabBar(
         tabs: [
           Tab(icon: Icon(Icons.grid_on)),
@@ -67,7 +74,7 @@ class SubredditScreen extends StatelessWidget {
           padding: const EdgeInsets.only(right: 16.0),
           child: StoreConnector<ReddigramState, _SubscribeViewModel>(
             converter: (store) =>
-                _SubscribeViewModel.fromStore(store, subredditName),
+                _SubscribeViewModel.fromStore(store, widget.subredditName),
             builder: (context, vm) => vm.subscribed
                 ? FlatButton(
                     onPressed: vm.unsubscribe,
@@ -94,7 +101,7 @@ class SubredditScreen extends StatelessWidget {
 
   Widget _buildGrid(BuildContext context) {
     return StoreConnector<ReddigramState, _SubredditViewModel>(
-      converter: (store) => _SubredditViewModel.fromStore(store, subredditName),
+      converter: (store) => _SubredditViewModel.fromStore(store, widget.subredditName),
       builder: (context, vm) => InfiniteList(
             fetchMore: vm.fetchMore,
             keepAlive: true,
@@ -105,7 +112,7 @@ class SubredditScreen extends StatelessWidget {
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: vm.subreddit.length,
+                      itemCount: vm.photos.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
@@ -113,13 +120,13 @@ class SubredditScreen extends StatelessWidget {
                       itemBuilder: (context, i) => Padding(
                             padding: const EdgeInsets.all(1.0),
                             child: PhotoGridItem(
-                              photo: vm.subreddit[i],
+                              photo: vm.photos[i],
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => PhotoPreviewScreen(
-                                          photo: vm.subreddit[i]),
+                                          photo: vm.photos[i]),
                                     ));
                               },
                             ),
@@ -138,13 +145,13 @@ class SubredditScreen extends StatelessWidget {
 
   Widget _buildList(BuildContext context) {
     return StoreConnector<ReddigramState, _SubredditViewModel>(
-      converter: (store) => _SubredditViewModel.fromStore(store, subredditName),
+      converter: (store) => _SubredditViewModel.fromStore(store, widget.subredditName),
       builder: (context, vm) => InfiniteList(
             fetchMore: vm.fetchMore,
             keepAlive: true,
-            itemCount: vm.subreddit.length + 1,
+            itemCount: vm.photos.length + 1,
             itemBuilder: (context, i) {
-              if (i == vm.subreddit.length) {
+              if (i == vm.photos.length) {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 32.0),
                   alignment: Alignment.center,
@@ -154,7 +161,7 @@ class SubredditScreen extends StatelessWidget {
 
               return StoreConnector<ReddigramState, _PhotoViewModel>(
                 converter: (store) =>
-                    _PhotoViewModel.fromStore(store, subredditName, i),
+                    _PhotoViewModel.fromStore(store, widget.subredditName, i),
                 builder: (context, vm) => PhotoListItem(
                       photo: vm.photo,
                       onUpvote: vm.onUpvote,
@@ -169,18 +176,20 @@ class SubredditScreen extends StatelessWidget {
 }
 
 class _SubredditViewModel {
-  final List<Photo> subreddit;
+  final List<Photo> photos;
   final void Function(Completer) fetchMore;
 
-  _SubredditViewModel({@required this.subreddit, @required this.fetchMore})
+  _SubredditViewModel({@required this.photos, @required this.fetchMore})
       : assert(fetchMore != null);
 
   factory _SubredditViewModel.fromStore(
       Store<ReddigramState> store, String subredditName) {
     return _SubredditViewModel(
-      subreddit: store.state.subredditFeeds[subredditName].toList(),
-      fetchMore: (completer) =>
-          store.dispatch(fetchMoreSubreddit(subredditName, completer)),
+      photos: store.state.feeds['r/$subredditName']
+          .map((photoId) => store.state.photos[photoId])
+          .toList(),
+      fetchMore: (completer) => store.dispatch(
+          fetchMoreFeed('r/$subredditName', limit: 27, completer: completer)),
     );
   }
 }
@@ -221,7 +230,8 @@ class _PhotoViewModel {
 
   factory _PhotoViewModel.fromStore(
       Store<ReddigramState> store, String subredditName, int index) {
-    final photo = store.state.subredditFeeds[subredditName][index];
+    final photoId = store.state.feeds['r/$subredditName'][index];
+    final photo = store.state.photos[photoId];
 
     return _PhotoViewModel(
       photo: photo,

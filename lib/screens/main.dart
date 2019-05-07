@@ -50,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBody(BuildContext context) {
     return StoreConnector<ReddigramState, _BodyViewModel>(
-      onInit: (store) => store.dispatch(fetchFreshFeed()),
+      onInit: (store) => store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED)),
       converter: (store) => _BodyViewModel.fromStore(store),
       builder: (context, vm) => RefreshIndicator(
             onRefresh: () {
@@ -60,14 +60,14 @@ class _MainScreenState extends State<MainScreen> {
             },
             child: InfiniteList(
               fetchMore: vm.fetchMore,
-              itemCount: vm.feedState.photos.length + 1,
+              itemCount: vm.photos.length + 1,
               itemBuilder: (context, i) {
                 // Last item is a loading indicator.
-                if (i == vm.feedState.photos.length) {
+                if (i == vm.photos.length) {
                   return Container(
                     padding: const EdgeInsets.symmetric(vertical: 32.0),
                     alignment: Alignment.center,
-                    child: vm.feedState.photos.isEmpty
+                    child: vm.photos.isEmpty
                         ? const Text(
                             'There is no feed! 😲\n\nTry subscribing to some subreddits.',
                             textAlign: TextAlign.center,
@@ -109,27 +109,28 @@ class _MainScreenState extends State<MainScreen> {
 typedef CompleterCallback = void Function(Completer);
 
 class _BodyViewModel {
-  final FeedState feedState;
+  final List<Photo> photos;
   final CompleterCallback fetchFresh;
   final void Function(Completer) fetchMore;
 
   _BodyViewModel(
-      {@required this.feedState,
+      {@required this.photos,
       @required this.fetchFresh,
       @required this.fetchMore})
-      : assert(feedState != null),
+      : assert(photos != null),
         assert(fetchFresh != null),
         assert(fetchMore != null);
 
   factory _BodyViewModel.fromStore(Store<ReddigramState> store) {
     return _BodyViewModel(
-      feedState: store.state.feedState,
+      photos: store.state.feeds[BEST_SUBSCRIBED]
+          .map((photoId) => store.state.photos[photoId])
+          .toList(),
       fetchFresh: (completer) {
-        if (!store.state.feedState.fetching) {
-          store.dispatch(fetchFreshFeed(completer));
-        }
+        store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
       },
-      fetchMore: (completer) => store.dispatch(fetchMoreFeed(completer)),
+      fetchMore: (completer) =>
+          store.dispatch(fetchMoreFeed(BEST_SUBSCRIBED, completer: completer)),
     );
   }
 }
@@ -146,7 +147,8 @@ class _PhotoViewModel {
       : assert(photo != null);
 
   factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int index) {
-    final photo = store.state.feedState.photos[index];
+    final photoId = store.state.feeds[BEST_SUBSCRIBED][index];
+    final photo = store.state.photos[photoId];
 
     return _PhotoViewModel(
       photo: photo,

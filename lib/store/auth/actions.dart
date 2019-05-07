@@ -65,7 +65,7 @@ ThunkAction<ReddigramState> signUserOut() {
 
     final completer = Completer()
       ..future.whenComplete(() => store.dispatch(SetInProgress(false)));
-    store.dispatch(fetchFreshFeed(completer));
+    store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
   };
 }
 

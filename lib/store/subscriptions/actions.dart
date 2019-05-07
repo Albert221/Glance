@@ -9,7 +9,7 @@ ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
   return (Store<ReddigramState> store) {
     reddigramRepository.fetchSubscribedSubreddits().then((subreddits) {
       store.dispatch(FetchedSubscribedSubreddits(subreddits));
-      store.dispatch(fetchFreshFeed(completer));
+      store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
     });
   };
 }
@@ -18,7 +18,7 @@ ThunkAction<ReddigramState> subscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     reddigramRepository.subscribeSubreddit(name).then((_) {
       store.dispatch(SubscribedSubreddit(name));
-      store.dispatch(fetchFreshFeed());
+      store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
     });
   };
 }
@@ -27,7 +27,7 @@ ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     reddigramRepository.unsubscribeSubreddit(name).then((_) {
       store.dispatch(UnsubscribedSubreddit(name));
-      store.dispatch(fetchFreshFeed());
+      store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
     });
   };
 }

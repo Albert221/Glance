@@ -12,9 +12,9 @@ class _$ReddigramState extends ReddigramState {
   @override
   final PreferencesState preferences;
   @override
-  final FeedState feedState;
+  final BuiltMap<String, Photo> photos;
   @override
-  final BuiltMap<String, BuiltList<Photo>> subredditFeeds;
+  final BuiltMap<String, BuiltList<String>> feeds;
   @override
   final BuiltSet<String> subscriptions;
 
@@ -24,8 +24,8 @@ class _$ReddigramState extends ReddigramState {
   _$ReddigramState._(
       {this.authState,
       this.preferences,
-      this.feedState,
-      this.subredditFeeds,
+      this.photos,
+      this.feeds,
       this.subscriptions})
       : super._() {
     if (authState == null) {
@@ -34,11 +34,11 @@ class _$ReddigramState extends ReddigramState {
     if (preferences == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'preferences');
     }
-    if (feedState == null) {
-      throw new BuiltValueNullFieldError('ReddigramState', 'feedState');
+    if (photos == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'photos');
     }
-    if (subredditFeeds == null) {
-      throw new BuiltValueNullFieldError('ReddigramState', 'subredditFeeds');
+    if (feeds == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'feeds');
     }
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'subscriptions');
@@ -59,8 +59,8 @@ class _$ReddigramState extends ReddigramState {
     return other is ReddigramState &&
         authState == other.authState &&
         preferences == other.preferences &&
-        feedState == other.feedState &&
-        subredditFeeds == other.subredditFeeds &&
+        photos == other.photos &&
+        feeds == other.feeds &&
         subscriptions == other.subscriptions;
   }
 
@@ -69,8 +69,8 @@ class _$ReddigramState extends ReddigramState {
     return $jf($jc(
         $jc(
             $jc($jc($jc(0, authState.hashCode), preferences.hashCode),
-                feedState.hashCode),
-            subredditFeeds.hashCode),
+                photos.hashCode),
+            feeds.hashCode),
         subscriptions.hashCode));
   }
 
@@ -79,8 +79,8 @@ class _$ReddigramState extends ReddigramState {
     return (newBuiltValueToStringHelper('ReddigramState')
           ..add('authState', authState)
           ..add('preferences', preferences)
-          ..add('feedState', feedState)
-          ..add('subredditFeeds', subredditFeeds)
+          ..add('photos', photos)
+          ..add('feeds', feeds)
           ..add('subscriptions', subscriptions))
         .toString();
   }
@@ -101,16 +101,16 @@ class ReddigramStateBuilder
   set preferences(PreferencesStateBuilder preferences) =>
       _$this._preferences = preferences;
 
-  FeedStateBuilder _feedState;
-  FeedStateBuilder get feedState =>
-      _$this._feedState ??= new FeedStateBuilder();
-  set feedState(FeedStateBuilder feedState) => _$this._feedState = feedState;
+  MapBuilder<String, Photo> _photos;
+  MapBuilder<String, Photo> get photos =>
+      _$this._photos ??= new MapBuilder<String, Photo>();
+  set photos(MapBuilder<String, Photo> photos) => _$this._photos = photos;
 
-  MapBuilder<String, BuiltList<Photo>> _subredditFeeds;
-  MapBuilder<String, BuiltList<Photo>> get subredditFeeds =>
-      _$this._subredditFeeds ??= new MapBuilder<String, BuiltList<Photo>>();
-  set subredditFeeds(MapBuilder<String, BuiltList<Photo>> subredditFeeds) =>
-      _$this._subredditFeeds = subredditFeeds;
+  MapBuilder<String, BuiltList<String>> _feeds;
+  MapBuilder<String, BuiltList<String>> get feeds =>
+      _$this._feeds ??= new MapBuilder<String, BuiltList<String>>();
+  set feeds(MapBuilder<String, BuiltList<String>> feeds) =>
+      _$this._feeds = feeds;
 
   SetBuilder<String> _subscriptions;
   SetBuilder<String> get subscriptions =>
@@ -124,8 +124,8 @@ class ReddigramStateBuilder
     if (_$v != null) {
       _authState = _$v.authState?.toBuilder();
       _preferences = _$v.preferences?.toBuilder();
-      _feedState = _$v.feedState?.toBuilder();
-      _subredditFeeds = _$v.subredditFeeds?.toBuilder();
+      _photos = _$v.photos?.toBuilder();
+      _feeds = _$v.feeds?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
       _$v = null;
     }
@@ -153,8 +153,8 @@ class ReddigramStateBuilder
           new _$ReddigramState._(
               authState: authState.build(),
               preferences: preferences.build(),
-              feedState: feedState.build(),
-              subredditFeeds: subredditFeeds.build(),
+              photos: photos.build(),
+              feeds: feeds.build(),
               subscriptions: subscriptions.build());
     } catch (_) {
       String _$failedField;
@@ -163,10 +163,10 @@ class ReddigramStateBuilder
         authState.build();
         _$failedField = 'preferences';
         preferences.build();
-        _$failedField = 'feedState';
-        feedState.build();
-        _$failedField = 'subredditFeeds';
-        subredditFeeds.build();
+        _$failedField = 'photos';
+        photos.build();
+        _$failedField = 'feeds';
+        feeds.build();
         _$failedField = 'subscriptions';
         subscriptions.build();
       } catch (e) {
