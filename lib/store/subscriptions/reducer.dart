@@ -21,5 +21,6 @@ BuiltSet<String> _subscribedSubreddit(
 
 BuiltSet<String> _unsubscribedSubreddit(
     BuiltSet<String> state, UnsubscribedSubreddit action) {
-  return state.rebuild((b) => b.remove(action.name));
+  return state.rebuild((b) =>
+      b.removeWhere((sub) => sub.toLowerCase() == action.name.toLowerCase()));
 }

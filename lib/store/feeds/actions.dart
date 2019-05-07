@@ -34,7 +34,6 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
         ..photosIds.replace(photosIds(photos))
         ..nsfw = false;
       final feed = feedBuilder.build();
-      print(feed);
 
       store.dispatch(FetchedFreshFeed(feedName, feed));
     }).whenComplete(() => completer?.complete());
