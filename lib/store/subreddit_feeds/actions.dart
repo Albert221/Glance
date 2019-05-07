@@ -8,37 +8,21 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<ReddigramState> fetchFreshSubreddit(String name) {
   return (Store<ReddigramState> store) {
-    // FIXME(Albert221): Use API to fetch subreddit data: /r/{name}/about
-    final subreddit = Future.delayed(
-        Duration(seconds: 2),
-        () => Future.value(Subreddit((b) => b
-          ..name = name
-          ..redditUrl = 'r/$name'
-          ..iconImageUrl =
-              'https://a.thumbs.redditmedia.com/4Au-rWJ7rUqSTMN09zEXEdpicCS4lnNynf-NXrTxm88.png')));
-    final photos = redditRepository
+    redditRepository
         .subreddit(name, limit: 99)
-        .then(ListingPhotosMapper.map);
-
-    Future.wait([subreddit, photos]).then((results) {
-      Subreddit subreddit = results[0] as Subreddit;
-      final photos = results[1] as List<Photo>;
-
-      subreddit = subreddit.rebuild((b) => b..photos.replace(photos));
-      store.dispatch(FetchedSubreddit(subreddit));
-    });
+        .then(ListingPhotosMapper.map)
+        .then((photos) => store.dispatch(FetchedSubreddit(name, photos)));
   };
 }
 
 ThunkAction<ReddigramState> fetchMoreSubreddit(String name,
     [Completer completer]) {
   return (Store<ReddigramState> store) {
-    final subreddit = store.state.subredditFeeds
-        .firstWhere((subreddit) => subreddit.name == name);
+    final subreddit = store.state.subredditFeeds[name];
 
     var after = '';
-    if (subreddit.photos.isNotEmpty) {
-      after = subreddit.photos.last.id;
+    if (subreddit.isNotEmpty) {
+      after = subreddit.last.id;
     }
 
     redditRepository
@@ -50,14 +34,15 @@ ThunkAction<ReddigramState> fetchMoreSubreddit(String name,
 }
 
 class FetchedSubreddit {
-  final Subreddit subreddit;
+  final String name;
+  final List<Photo> photos;
 
-  FetchedSubreddit(this.subreddit);
+  FetchedSubreddit(this.name, this.photos);
 }
 
 class FetchedMoreSubreddit {
-  final String subredditName;
+  final String name;
   final List<Photo> photos;
 
-  FetchedMoreSubreddit(this.subredditName, this.photos);
+  FetchedMoreSubreddit(this.name, this.photos);
 }

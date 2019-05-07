@@ -3,23 +3,20 @@ import 'package:reddigram/models/models.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 
-Reducer<BuiltList<Subreddit>> subredditFeeds = combineReducers([
-  TypedReducer<BuiltList<Subreddit>, FetchedSubreddit>(_fetchedSubreddit),
-  TypedReducer<BuiltList<Subreddit>, FetchedMoreSubreddit>(
+Reducer<BuiltMap<String, BuiltList<Photo>>> subredditFeeds = combineReducers([
+  TypedReducer<BuiltMap<String, BuiltList<Photo>>, FetchedSubreddit>(
+      _fetchedSubreddit),
+  TypedReducer<BuiltMap<String, BuiltList<Photo>>, FetchedMoreSubreddit>(
       _fetchedMoreSubreddit),
 ]);
 
-BuiltList<Subreddit> _fetchedSubreddit(
-    BuiltList<Subreddit> state, FetchedSubreddit action) {
-  return state.rebuild((b) => b
-    ..removeWhere((subreddit) => subreddit.name == action.subreddit.name)
-    ..add(action.subreddit));
+BuiltMap<String, BuiltList<Photo>> _fetchedSubreddit(
+    BuiltMap<String, BuiltList<Photo>> state, FetchedSubreddit action) {
+  return state.rebuild((b) => b[action.name] = BuiltList<Photo>(action.photos));
 }
 
-BuiltList<Subreddit> _fetchedMoreSubreddit(
-    BuiltList<Subreddit> state, FetchedMoreSubreddit action) {
-  return state.rebuild((b) => b.map((subreddit) =>
-      subreddit.name == action.subredditName
-          ? subreddit.rebuild((b) => b.photos.addAll(action.photos))
-          : subreddit));
+BuiltMap<String, BuiltList<Photo>> _fetchedMoreSubreddit(
+    BuiltMap<String, BuiltList<Photo>> state, FetchedMoreSubreddit action) {
+  return state.rebuild((b) => b.updateValue(
+      action.name, (b) => b.rebuild((b) => b.addAll(action.photos))));
 }

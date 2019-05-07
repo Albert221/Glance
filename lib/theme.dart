@@ -26,6 +26,9 @@ class ReddigramTheme {
           color: Colors.black,
         ),
       ),
+      tabBarTheme: TabBarTheme(
+        labelColor: Colors.black,
+      ),
       textTheme: lightTheme.textTheme.copyWith(
         title: TextStyle(
           color: Colors.black,

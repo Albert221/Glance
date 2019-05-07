@@ -6,17 +6,24 @@ class InfiniteList extends StatefulWidget {
   final int itemCount;
   final Widget Function(BuildContext, int) itemBuilder;
   final void Function(Completer) fetchMore;
+  final bool keepAlive;
 
   const InfiniteList(
-      {Key key, this.itemCount, this.itemBuilder, this.fetchMore})
+      {Key key,
+      this.itemCount,
+      this.itemBuilder,
+      this.fetchMore,
+      this.keepAlive = false})
       : super(key: key);
 
   @override
   _InfiniteListState createState() => _InfiniteListState();
 }
 
-class _InfiniteListState extends State<InfiniteList> {
+class _InfiniteListState extends State<InfiniteList>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
+
   double Function() _offsetToLoad = () => 0;
   Completer completer = Completer()..complete();
 
@@ -42,6 +49,7 @@ class _InfiniteListState extends State<InfiniteList> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     _offsetToLoad = () => MediaQuery.of(context).size.height * 3;
 
     return ListView.builder(
@@ -51,4 +59,7 @@ class _InfiniteListState extends State<InfiniteList> {
       itemBuilder: widget.itemBuilder,
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.keepAlive;
 }

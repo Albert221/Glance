@@ -13,7 +13,7 @@ abstract class ReddigramState
 
   FeedState get feedState;
 
-  BuiltList<Subreddit> get subredditFeeds;
+  BuiltMap<String, BuiltList<Photo>> get subredditFeeds;
 
   BuiltSet<String> get subscriptions;
 
@@ -24,7 +24,7 @@ abstract class ReddigramState
       authState: AuthState(),
       preferences: PreferencesState(),
       feedState: FeedState(),
-      subredditFeeds: BuiltList<Subreddit>(),
+      subredditFeeds: BuiltMap<String, BuiltList<Photo>>(),
       subscriptions: BuiltSet(),
     );
   }

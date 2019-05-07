@@ -1,5 +1,4 @@
 import 'package:built_value/built_value.dart';
-import 'package:reddigram/models/models.dart';
 
 part 'photo.g.dart';
 

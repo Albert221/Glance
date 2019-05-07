@@ -14,7 +14,7 @@ class _$ReddigramState extends ReddigramState {
   @override
   final FeedState feedState;
   @override
-  final BuiltList<Subreddit> subredditFeeds;
+  final BuiltMap<String, BuiltList<Photo>> subredditFeeds;
   @override
   final BuiltSet<String> subscriptions;
 
@@ -106,10 +106,10 @@ class ReddigramStateBuilder
       _$this._feedState ??= new FeedStateBuilder();
   set feedState(FeedStateBuilder feedState) => _$this._feedState = feedState;
 
-  ListBuilder<Subreddit> _subredditFeeds;
-  ListBuilder<Subreddit> get subredditFeeds =>
-      _$this._subredditFeeds ??= new ListBuilder<Subreddit>();
-  set subredditFeeds(ListBuilder<Subreddit> subredditFeeds) =>
+  MapBuilder<String, BuiltList<Photo>> _subredditFeeds;
+  MapBuilder<String, BuiltList<Photo>> get subredditFeeds =>
+      _$this._subredditFeeds ??= new MapBuilder<String, BuiltList<Photo>>();
+  set subredditFeeds(MapBuilder<String, BuiltList<Photo>> subredditFeeds) =>
       _$this._subredditFeeds = subredditFeeds;
 
   SetBuilder<String> _subscriptions;
