@@ -18,6 +18,8 @@ class SubredditScreen extends StatefulWidget {
 }
 
 class _SubredditScreenState extends State<SubredditScreen> {
+  final _shownNsfwIds = Set<String>();
+
   bool _subredditLoaded(Store<ReddigramState> store) =>
       store.state.feeds['r/${widget.subredditName}'] != null;
 
@@ -130,9 +132,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   Widget _buildGrid(BuildContext context) {
-    return StoreConnector<ReddigramState, _SubredditViewModel>(
+    return StoreConnector<ReddigramState, _FeedViewModel>(
       converter: (store) =>
-          _SubredditViewModel.fromStore(store, widget.subredditName),
+          _FeedViewModel.fromStore(store, widget.subredditName),
       builder: (context, vm) => InfiniteList(
             fetchMore: vm.fetchMore,
             keepAlive: true,
@@ -174,15 +176,15 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   Widget _buildList(BuildContext context) {
-    return StoreConnector<ReddigramState, _SubredditViewModel>(
+    return StoreConnector<ReddigramState, _FeedViewModel>(
       converter: (store) =>
-          _SubredditViewModel.fromStore(store, widget.subredditName),
-      builder: (context, vm) => InfiniteList(
-            fetchMore: vm.fetchMore,
+          _FeedViewModel.fromStore(store, widget.subredditName),
+      builder: (context, feedVm) => InfiniteList(
+            fetchMore: feedVm.fetchMore,
             keepAlive: true,
-            itemCount: vm.photos.length + 1,
+            itemCount: feedVm.photos.length + 1,
             itemBuilder: (context, i) {
-              if (i == vm.photos.length) {
+              if (i == feedVm.photos.length) {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 32.0),
                   alignment: Alignment.center,
@@ -197,7 +199,15 @@ class _SubredditScreenState extends State<SubredditScreen> {
                       photo: vm.photo,
                       onUpvote: vm.onUpvote,
                       onUpvoteCanceled: vm.onUpvoteCanceled,
-                      showNsfw: true,
+                      showNsfw: feedVm.feed.nsfw ||
+                          _shownNsfwIds.contains(vm.photo.id),
+                      onShowNsfw: () =>
+                          setState(() => _shownNsfwIds.add(vm.photo.id)),
+                      onPhotoTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PhotoPreviewScreen(photo: vm.photo))),
                     ),
               );
             },
@@ -206,20 +216,20 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 }
 
-class _SubredditViewModel {
+class _FeedViewModel {
   final List<Photo> photos;
   final Feed feed;
   final void Function(Completer) fetchMore;
 
-  _SubredditViewModel(
+  _FeedViewModel(
       {@required this.photos, @required this.feed, @required this.fetchMore})
       : assert(photos != null),
         assert(feed != null),
         assert(fetchMore != null);
 
-  factory _SubredditViewModel.fromStore(
+  factory _FeedViewModel.fromStore(
       Store<ReddigramState> store, String subredditName) {
-    return _SubredditViewModel(
+    return _FeedViewModel(
       photos: store.state.feeds['r/$subredditName'].photosIds
           .map((photoId) => store.state.photos[photoId])
           .toList(),
