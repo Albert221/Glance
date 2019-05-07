@@ -22,8 +22,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<ReddigramState, _SubredditViewModel>(
-      onInit: (store) =>
-          store.dispatch(fetchFreshSubreddit(widget.subredditName)),
+      onInit: (store) {
+        if (!store.state.subredditFeeds
+            .any((subreddit) => subreddit.name == widget.subredditName)) {
+          store.dispatch(fetchFreshSubreddit(widget.subredditName));
+        }
+      },
       converter: (store) =>
           _SubredditViewModel.fromStore(store, widget.subredditName),
       builder: (context, vm) => Scaffold(
@@ -35,8 +39,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     child: CircularProgressIndicator(),
                   )
                 : InfiniteList(
-                    fetchMore: vm.subreddit == null ? (_) {} : vm.fetchMore,
-                    itemCount: 2,
+                    fetchMore: vm.fetchMore,
+                    itemCount: 3,
                     itemBuilder: (context, i) => [
                           _buildHeader(context, vm.subreddit),
                           Padding(
@@ -67,6 +71,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                   ),
                             ),
                           ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(),
+                          ),
                         ][i],
                   ),
           ),
@@ -82,7 +91,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
         Theme.of(context).buttonTheme.colorScheme.onBackground;
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -154,8 +163,7 @@ class _SubscribeViewModel {
   factory _SubscribeViewModel.fromStore(
       Store<ReddigramState> store, Subreddit subreddit) {
     return _SubscribeViewModel(
-      subscribed: store.state.subscriptions
-          .any((name) => name.toLowerCase() == subreddit.name.toLowerCase()),
+      subscribed: store.state.subscriptions.contains(subreddit.name),
       subscribe: () => store.dispatch(subscribeSubreddit(subreddit.name)),
       unsubscribe: () => store.dispatch(unsubscribeSubreddit(subreddit.name)),
     );

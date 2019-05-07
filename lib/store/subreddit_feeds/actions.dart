@@ -17,7 +17,7 @@ ThunkAction<ReddigramState> fetchFreshSubreddit(String name) {
           ..iconImageUrl =
               'https://a.thumbs.redditmedia.com/4Au-rWJ7rUqSTMN09zEXEdpicCS4lnNynf-NXrTxm88.png')));
     final photos = redditRepository
-        .subreddit(name, limit: 100)
+        .subreddit(name, limit: 99)
         .then(ListingPhotosMapper.map);
 
     Future.wait([subreddit, photos]).then((results) {
@@ -42,7 +42,7 @@ ThunkAction<ReddigramState> fetchMoreSubreddit(String name,
     }
 
     redditRepository
-        .subreddit(name, after: after, limit: 100)
+        .subreddit(name, after: after, limit: 27)
         .then(ListingPhotosMapper.map)
         .then((photos) => store.dispatch(FetchedMoreSubreddit(name, photos)))
         .whenComplete(() => completer?.complete());

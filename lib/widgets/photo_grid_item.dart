@@ -12,14 +12,11 @@ class PhotoGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: 'image-${photo.id}',
-      child: Ink.image(
-        image: CachedNetworkImageProvider(photo.thumbnail.url),
-        fit: BoxFit.cover,
-        child: InkWell(
-          onTap: onTap,
-        ),
+    return Ink.image(
+      image: CachedNetworkImageProvider(photo.thumbnail.url),
+      fit: BoxFit.cover,
+      child: InkWell(
+        onTap: onTap,
       ),
     );
   }
