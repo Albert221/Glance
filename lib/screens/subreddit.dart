@@ -60,12 +60,37 @@ class _SubredditScreenState extends State<SubredditScreen> {
         Theme.of(context).buttonTheme.colorScheme.onBackground;
 
     return AppBar(
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(),
-          Text('r/${widget.subredditName}'),
-        ],
+      title: StoreConnector<ReddigramState, bool>(
+        converter: (store) =>
+            store.state.feeds['r/${widget.subredditName}']?.nsfw ?? false,
+        builder: (context, nsfw) => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (nsfw)
+                  Container(
+                    margin: const EdgeInsets.only(right: 8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: Colors.grey,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 2.0, horizontal: 4.0),
+                    child: Text(
+                      '18+',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                Expanded(
+                  child: Text(
+                    'r/${widget.subredditName}',
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+              ],
+            ),
       ),
       bottom: const TabBar(
         tabs: [
@@ -222,7 +247,8 @@ class _SubscribeViewModel {
   factory _SubscribeViewModel.fromStore(
       Store<ReddigramState> store, String subredditName) {
     return _SubscribeViewModel(
-      subscribed: store.state.subscriptions.contains(subredditName),
+      subscribed: store.state.subscriptions
+          .any((sub) => sub.toLowerCase() == subredditName.toLowerCase()),
       subscribe: () => store.dispatch(subscribeSubreddit(subredditName)),
       unsubscribe: () => store.dispatch(unsubscribeSubreddit(subredditName)),
     );
