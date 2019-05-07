@@ -145,9 +145,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: vm.photos.length,
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 150),
                       itemBuilder: (context, i) => Padding(
                             padding: const EdgeInsets.all(1.0),
                             child: PhotoGridItem(
