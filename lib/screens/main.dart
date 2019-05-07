@@ -123,7 +123,7 @@ class _BodyViewModel {
 
   factory _BodyViewModel.fromStore(Store<ReddigramState> store) {
     return _BodyViewModel(
-      photos: store.state.feeds[BEST_SUBSCRIBED]
+      photos: store.state.feeds[BEST_SUBSCRIBED].photosIds
           .map((photoId) => store.state.photos[photoId])
           .toList(),
       fetchFresh: (completer) {
@@ -147,7 +147,7 @@ class _PhotoViewModel {
       : assert(photo != null);
 
   factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int index) {
-    final photoId = store.state.feeds[BEST_SUBSCRIBED][index];
+    final photoId = store.state.feeds[BEST_SUBSCRIBED].photosIds[index];
     final photo = store.state.photos[photoId];
 
     return _PhotoViewModel(

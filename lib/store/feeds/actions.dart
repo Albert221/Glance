@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:reddigram/api/api.dart';
+import 'package:reddigram/models/models.dart';
 import 'package:reddigram/store/photos/actions.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
@@ -27,7 +28,15 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
         .then(ListingPhotosMapper.map)
         .then((photos) {
       store.dispatch(FetchedPhotos(photos));
-      store.dispatch(FetchedFreshFeed(feedName, photosIds(photos)));
+
+      // FIXME(Albert221): Fetch subreddit data and set `nsfw` accordingly.
+      final feedBuilder = FeedBuilder()
+        ..photosIds.replace(photosIds(photos))
+        ..nsfw = false;
+      final feed = feedBuilder.build();
+      print(feed);
+
+      store.dispatch(FetchedFreshFeed(feedName, feed));
     }).whenComplete(() => completer?.complete());
   };
 }
@@ -36,7 +45,7 @@ ThunkAction<ReddigramState> fetchMoreFeed(String feedName,
     {int limit, Completer completer}) {
   return (Store<ReddigramState> store) {
     final feed = store.state.feeds[feedName];
-    final after = feed.isEmpty ? '' : feed.last;
+    final after = feed.photosIds.isEmpty ? '' : feed.photosIds.last;
 
     redditRepository
         .feed(_getProperFeedName(store, feedName), after: after, limit: limit)
@@ -50,9 +59,9 @@ ThunkAction<ReddigramState> fetchMoreFeed(String feedName,
 
 class FetchedFreshFeed {
   final String name;
-  final List<String> photosIds;
+  final Feed feed;
 
-  FetchedFreshFeed(this.name, this.photosIds);
+  FetchedFreshFeed(this.name, this.feed);
 }
 
 class FetchedMoreFeed {

@@ -14,7 +14,7 @@ class _$ReddigramState extends ReddigramState {
   @override
   final BuiltMap<String, Photo> photos;
   @override
-  final BuiltMap<String, BuiltList<String>> feeds;
+  final BuiltMap<String, Feed> feeds;
   @override
   final BuiltSet<String> subscriptions;
 
@@ -106,11 +106,10 @@ class ReddigramStateBuilder
       _$this._photos ??= new MapBuilder<String, Photo>();
   set photos(MapBuilder<String, Photo> photos) => _$this._photos = photos;
 
-  MapBuilder<String, BuiltList<String>> _feeds;
-  MapBuilder<String, BuiltList<String>> get feeds =>
-      _$this._feeds ??= new MapBuilder<String, BuiltList<String>>();
-  set feeds(MapBuilder<String, BuiltList<String>> feeds) =>
-      _$this._feeds = feeds;
+  MapBuilder<String, Feed> _feeds;
+  MapBuilder<String, Feed> get feeds =>
+      _$this._feeds ??= new MapBuilder<String, Feed>();
+  set feeds(MapBuilder<String, Feed> feeds) => _$this._feeds = feeds;
 
   SetBuilder<String> _subscriptions;
   SetBuilder<String> get subscriptions =>

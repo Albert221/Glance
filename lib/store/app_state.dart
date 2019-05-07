@@ -13,7 +13,7 @@ abstract class ReddigramState
 
   BuiltMap<String, Photo> get photos;
 
-  BuiltMap<String, BuiltList<String>> get feeds;
+  BuiltMap<String, Feed> get feeds;
 
   BuiltSet<String> get subscriptions;
 
@@ -24,8 +24,8 @@ abstract class ReddigramState
       authState: AuthState(),
       preferences: PreferencesState(),
       photos: BuiltMap<String, Photo>(),
-      feeds: BuiltMap<String, BuiltList<String>>({
-        BEST_SUBSCRIBED: BuiltList<String>(),
+      feeds: BuiltMap<String, Feed>({
+        BEST_SUBSCRIBED: Feed(),
       }),
       subscriptions: BuiltSet(),
     );

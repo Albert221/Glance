@@ -18,8 +18,6 @@ class SubredditScreen extends StatefulWidget {
 }
 
 class _SubredditScreenState extends State<SubredditScreen> {
-  final Set<String> _shownNsfwIds = Set();
-
   bool _subredditLoaded(Store<ReddigramState> store) =>
       store.state.feeds['r/${widget.subredditName}'] != null;
 
@@ -28,7 +26,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
     return StoreConnector<ReddigramState, bool>(
       onInit: (store) {
         if (!_subredditLoaded(store)) {
-          store.dispatch(fetchFreshFeed('r/${widget.subredditName}', limit: 99));
+          store
+              .dispatch(fetchFreshFeed('r/${widget.subredditName}', limit: 99));
         }
       },
       converter: (store) => _subredditLoaded(store),
@@ -61,7 +60,13 @@ class _SubredditScreenState extends State<SubredditScreen> {
         Theme.of(context).buttonTheme.colorScheme.onBackground;
 
     return AppBar(
-      title: Text('r/${widget.subredditName}'),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(),
+          Text('r/${widget.subredditName}'),
+        ],
+      ),
       bottom: const TabBar(
         tabs: [
           Tab(icon: Icon(Icons.grid_on)),
@@ -101,7 +106,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   Widget _buildGrid(BuildContext context) {
     return StoreConnector<ReddigramState, _SubredditViewModel>(
-      converter: (store) => _SubredditViewModel.fromStore(store, widget.subredditName),
+      converter: (store) =>
+          _SubredditViewModel.fromStore(store, widget.subredditName),
       builder: (context, vm) => InfiniteList(
             fetchMore: vm.fetchMore,
             keepAlive: true,
@@ -145,7 +151,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   Widget _buildList(BuildContext context) {
     return StoreConnector<ReddigramState, _SubredditViewModel>(
-      converter: (store) => _SubredditViewModel.fromStore(store, widget.subredditName),
+      converter: (store) =>
+          _SubredditViewModel.fromStore(store, widget.subredditName),
       builder: (context, vm) => InfiniteList(
             fetchMore: vm.fetchMore,
             keepAlive: true,
@@ -177,17 +184,22 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
 class _SubredditViewModel {
   final List<Photo> photos;
+  final Feed feed;
   final void Function(Completer) fetchMore;
 
-  _SubredditViewModel({@required this.photos, @required this.fetchMore})
-      : assert(fetchMore != null);
+  _SubredditViewModel(
+      {@required this.photos, @required this.feed, @required this.fetchMore})
+      : assert(photos != null),
+        assert(feed != null),
+        assert(fetchMore != null);
 
   factory _SubredditViewModel.fromStore(
       Store<ReddigramState> store, String subredditName) {
     return _SubredditViewModel(
-      photos: store.state.feeds['r/$subredditName']
+      photos: store.state.feeds['r/$subredditName'].photosIds
           .map((photoId) => store.state.photos[photoId])
           .toList(),
+      feed: store.state.feeds['r/$subredditName'],
       fetchMore: (completer) => store.dispatch(
           fetchMoreFeed('r/$subredditName', limit: 27, completer: completer)),
     );
@@ -230,7 +242,7 @@ class _PhotoViewModel {
 
   factory _PhotoViewModel.fromStore(
       Store<ReddigramState> store, String subredditName, int index) {
-    final photoId = store.state.feeds['r/$subredditName'][index];
+    final photoId = store.state.feeds['r/$subredditName'].photosIds[index];
     final photo = store.state.photos[photoId];
 
     return _PhotoViewModel(
