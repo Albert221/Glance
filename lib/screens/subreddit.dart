@@ -72,23 +72,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
         builder: (context, nsfw) => Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (nsfw)
-                  Container(
-                    margin: const EdgeInsets.only(right: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4.0),
-                      color: Colors.grey,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 2.0, horizontal: 4.0),
-                    child: const Text(
-                      '18+',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                if (nsfw) NsfwBadge(),
                 Expanded(
                   child: Text(
                     'r/${widget.subredditName}',
