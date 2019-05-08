@@ -1,8 +1,8 @@
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/models/models.dart';
 
-class ListingPhotosMapper {
-  static List<Photo> map(ListingResponse response) {
+class LinkListingPhotosMapper {
+  static List<Photo> map(LinkListingResponse response) {
     return response.data.children
         .map((child) => Photo((b) => b
           ..id = child.data.name
@@ -28,7 +28,7 @@ class ListingPhotosMapper {
         .toList();
   }
 
-  static PhotoMediaBuilder _fullImage(Child child) {
+  static PhotoMediaBuilder _fullImage(LinkChild child) {
     return PhotoMedia((b) => b
           ..url = child.data.preview.images.first.resolutions.last.url
               .replaceAll('&amp;', '&')

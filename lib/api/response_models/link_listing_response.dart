@@ -2,48 +2,48 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_collection/built_collection.dart';
 
-part 'listing_response.g.dart';
+part 'link_listing_response.g.dart';
 
-abstract class ListingResponse
-    implements Built<ListingResponse, ListingResponseBuilder> {
-  ListingData get data;
+abstract class LinkListingResponse
+    implements Built<LinkListingResponse, LinkListingResponseBuilder> {
+  LinkListingData get data;
 
-  ListingResponse._();
+  LinkListingResponse._();
 
-  factory ListingResponse([updates(ListingResponseBuilder b)]) =
-      _$ListingResponse;
+  factory LinkListingResponse([updates(LinkListingResponseBuilder b)]) =
+      _$LinkListingResponse;
 
-  static Serializer<ListingResponse> get serializer =>
-      _$listingResponseSerializer;
+  static Serializer<LinkListingResponse> get serializer =>
+      _$linkListingResponseSerializer;
 }
 
-abstract class ListingData implements Built<ListingData, ListingDataBuilder> {
+abstract class LinkListingData implements Built<LinkListingData, LinkListingDataBuilder> {
   @nullable
   String get after;
 
   @nullable
   String get before;
 
-  BuiltList<Child> get children;
+  BuiltList<LinkChild> get children;
 
-  ListingData._();
+  LinkListingData._();
 
-  factory ListingData([updates(ListingDataBuilder b)]) = _$ListingData;
+  factory LinkListingData([updates(LinkListingDataBuilder b)]) = _$LinkListingData;
 
-  static Serializer<ListingData> get serializer => _$listingDataSerializer;
+  static Serializer<LinkListingData> get serializer => _$linkListingDataSerializer;
 }
 
-abstract class Child implements Built<Child, ChildBuilder> {
-  ChildData get data;
+abstract class LinkChild implements Built<LinkChild, LinkChildBuilder> {
+  LinkChildData get data;
 
-  Child._();
+  LinkChild._();
 
-  factory Child([updates(ChildBuilder b)]) = _$Child;
+  factory LinkChild([updates(LinkChildBuilder b)]) = _$LinkChild;
 
-  static Serializer<Child> get serializer => _$childSerializer;
+  static Serializer<LinkChild> get serializer => _$linkChildSerializer;
 }
 
-abstract class ChildData implements Built<ChildData, ChildDataBuilder> {
+abstract class LinkChildData implements Built<LinkChildData, LinkChildDataBuilder> {
   String get name;
 
   String get title;
@@ -75,11 +75,11 @@ abstract class ChildData implements Built<ChildData, ChildDataBuilder> {
   @nullable
   Preview get preview;
 
-  ChildData._();
+  LinkChildData._();
 
-  factory ChildData([updates(ChildDataBuilder b)]) = _$ChildData;
+  factory LinkChildData([updates(LinkChildDataBuilder b)]) = _$LinkChildData;
 
-  static Serializer<ChildData> get serializer => _$childDataSerializer;
+  static Serializer<LinkChildData> get serializer => _$linkChildDataSerializer;
 }
 
 abstract class Preview implements Built<Preview, PreviewBuilder> {

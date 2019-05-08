@@ -7,19 +7,21 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
-      ..add(Child.serializer)
-      ..add(ChildData.serializer)
       ..add(Image.serializer)
-      ..add(ListingData.serializer)
-      ..add(ListingResponse.serializer)
+      ..add(LinkChild.serializer)
+      ..add(LinkChildData.serializer)
+      ..add(LinkListingData.serializer)
+      ..add(LinkListingResponse.serializer)
       ..add(Preview.serializer)
       ..add(PreviewImage.serializer)
-      ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Child)]),
-          () => new ListBuilder<Child>())
+      ..add(Subreddit.serializer)
+      ..add(SubredditResponse.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Image)]),
           () => new ListBuilder<Image>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(LinkChild)]),
+          () => new ListBuilder<LinkChild>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(PreviewImage)]),
           () => new ListBuilder<PreviewImage>()))

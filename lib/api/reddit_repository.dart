@@ -7,29 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/consts.dart';
-
-class RedditTokens {
-  final String accessToken;
-  final String refreshToken;
-  final DateTime expirationTime;
-
-  RedditTokens(
-      {@required this.accessToken,
-      @required this.refreshToken,
-      @required this.expirationTime})
-      : assert(accessToken != null),
-        assert(refreshToken != null),
-        assert(expirationTime != null);
-
-  RedditTokens copyWith(
-      {String accessToken, String refreshToken, DateTime expirationTime}) {
-    return RedditTokens(
-      accessToken: accessToken ?? this.accessToken,
-      refreshToken: refreshToken ?? this.refreshToken,
-      expirationTime: expirationTime ?? this.expirationTime,
-    );
-  }
-}
+import 'package:reddigram/models/models.dart';
 
 class RedditRepository {
   Dio _client;
@@ -70,7 +48,7 @@ class RedditRepository {
             '${info.packageName}:${info.version} (by /u/Albert221)');
   }
 
-  Future<Response> post(String path,
+  Future<Response> _post(String path,
       {String data, Map<String, dynamic> headers}) async {
     return _client.post(
       path,
@@ -86,7 +64,7 @@ class RedditRepository {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
-    return post(
+    return _post(
       '/api/v1/access_token',
       data:
           'grant_type=refresh_token&refresh_token=${refreshToken ?? _tokens.refreshToken}',
@@ -121,7 +99,7 @@ class RedditRepository {
     final basicAuth = 'Basic ' +
         base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
 
-    return post(
+    return _post(
       '/api/v1/access_token',
       data: 'grant_type=authorization_code&code=$code'
           '&redirect_uri=https://reddigram.wolszon.me/redirect',
@@ -136,7 +114,7 @@ class RedditRepository {
     });
   }
 
-  static ListingResponse _filterOnlyPhotos(ListingResponse response) {
+  static LinkListingResponse _filterOnlyPhotos(LinkListingResponse response) {
     return response.rebuild((b) => b
       ..data = response.data
           .rebuild((b) => b
@@ -145,14 +123,14 @@ class RedditRepository {
           .toBuilder());
   }
 
-  Future<ListingResponse> feed(String feed,
+  Future<List<Photo>> feed(String feed,
       {String after = '', int limit = 25}) async {
     return _client
         .get('/$feed.json?after=$after&limit=$limit')
         .then((response) => serializers.deserializeWith(
-            ListingResponse.serializer, response.data))
+            LinkListingResponse.serializer, response.data))
         .then(_filterOnlyPhotos)
-        .catchError((e) => print(e));
+        .then(LinkListingPhotosMapper.map);
   }
 
   Future<String> username() async {
@@ -164,12 +142,43 @@ class RedditRepository {
   Future<void> upvote(String id) async {
     _assertAuthorized();
 
-    return post('/api/vote', data: 'dir=1&id=$id');
+    return _post('/api/vote', data: 'dir=1&id=$id');
   }
 
   Future<void> cancelUpvote(String id) async {
     _assertAuthorized();
 
-    return post('/api/vote', data: 'dir=0&id=$id');
+    return _post('/api/vote', data: 'dir=0&id=$id');
+  }
+
+  Future<Feed> subreddit(String name) async {
+    return _client
+        .get('/r/$name/about')
+        .then((response) => serializers.deserializeWith(
+            SubredditResponse.serializer, response.data))
+        .then(SubredditFeedMapper.map);
+  }
+}
+
+class RedditTokens {
+  final String accessToken;
+  final String refreshToken;
+  final DateTime expirationTime;
+
+  RedditTokens(
+      {@required this.accessToken,
+      @required this.refreshToken,
+      @required this.expirationTime})
+      : assert(accessToken != null),
+        assert(refreshToken != null),
+        assert(expirationTime != null);
+
+  RedditTokens copyWith(
+      {String accessToken, String refreshToken, DateTime expirationTime}) {
+    return RedditTokens(
+      accessToken: accessToken ?? this.accessToken,
+      refreshToken: refreshToken ?? this.refreshToken,
+      expirationTime: expirationTime ?? this.expirationTime,
+    );
   }
 }

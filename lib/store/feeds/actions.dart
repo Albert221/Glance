@@ -9,6 +9,8 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 const BEST_SUBSCRIBED = 'BEST_SUBSCRIBED';
 
+bool isSubreddit(String feed) => feed.contains(RegExp(r'^r\/'));
+
 String _getProperFeedName(Store<ReddigramState> store, String feed) {
   switch (feed) {
     case BEST_SUBSCRIBED:
@@ -23,16 +25,20 @@ String _getProperFeedName(Store<ReddigramState> store, String feed) {
 ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
     {int limit, Completer completer}) {
   return (Store<ReddigramState> store) {
-    redditRepository
-        .feed(_getProperFeedName(store, feedName), limit: limit)
-        .then(ListingPhotosMapper.map)
-        .then((photos) {
+    final futures = <Future>[
+      redditRepository.feed(_getProperFeedName(store, feedName), limit: limit),
+      if (isSubreddit(feedName))
+        redditRepository.subreddit(feedName.substring(2)),
+    ];
+
+    Future.wait(futures).then((results) {
+      final photos = results[0] as List<Photo>;
+
       store.dispatch(FetchedPhotos(photos));
 
-      // FIXME(Albert221): Fetch subreddit data and set `nsfw` accordingly.
       final feedBuilder = FeedBuilder()
         ..photosIds.replace(photosIds(photos))
-        ..nsfw = false;
+        ..nsfw = results.length == 2 ? (results[1] as Feed).nsfw : false;
       final feed = feedBuilder.build();
 
       store.dispatch(FetchedFreshFeed(feedName, feed));
@@ -48,7 +54,6 @@ ThunkAction<ReddigramState> fetchMoreFeed(String feedName,
 
     redditRepository
         .feed(_getProperFeedName(store, feedName), after: after, limit: limit)
-        .then(ListingPhotosMapper.map)
         .then((photos) {
       store.dispatch(FetchedPhotos(photos));
       store.dispatch(FetchedMoreFeed(feedName, photosIds(photos)));

@@ -1,44 +1,49 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'listing_response.dart';
+part of 'link_listing_response.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<ListingResponse> _$listingResponseSerializer =
-    new _$ListingResponseSerializer();
-Serializer<ListingData> _$listingDataSerializer = new _$ListingDataSerializer();
-Serializer<Child> _$childSerializer = new _$ChildSerializer();
-Serializer<ChildData> _$childDataSerializer = new _$ChildDataSerializer();
+Serializer<LinkListingResponse> _$linkListingResponseSerializer =
+    new _$LinkListingResponseSerializer();
+Serializer<LinkListingData> _$linkListingDataSerializer =
+    new _$LinkListingDataSerializer();
+Serializer<LinkChild> _$linkChildSerializer = new _$LinkChildSerializer();
+Serializer<LinkChildData> _$linkChildDataSerializer =
+    new _$LinkChildDataSerializer();
 Serializer<Preview> _$previewSerializer = new _$PreviewSerializer();
 Serializer<PreviewImage> _$previewImageSerializer =
     new _$PreviewImageSerializer();
 Serializer<Image> _$imageSerializer = new _$ImageSerializer();
 
-class _$ListingResponseSerializer
-    implements StructuredSerializer<ListingResponse> {
+class _$LinkListingResponseSerializer
+    implements StructuredSerializer<LinkListingResponse> {
   @override
-  final Iterable<Type> types = const [ListingResponse, _$ListingResponse];
+  final Iterable<Type> types = const [
+    LinkListingResponse,
+    _$LinkListingResponse
+  ];
   @override
-  final String wireName = 'ListingResponse';
+  final String wireName = 'LinkListingResponse';
 
   @override
-  Iterable serialize(Serializers serializers, ListingResponse object,
+  Iterable serialize(Serializers serializers, LinkListingResponse object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'data',
       serializers.serialize(object.data,
-          specifiedType: const FullType(ListingData)),
+          specifiedType: const FullType(LinkListingData)),
     ];
 
     return result;
   }
 
   @override
-  ListingResponse deserialize(Serializers serializers, Iterable serialized,
+  LinkListingResponse deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ListingResponseBuilder();
+    final result = new LinkListingResponseBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -48,7 +53,8 @@ class _$ListingResponseSerializer
       switch (key) {
         case 'data':
           result.data.replace(serializers.deserialize(value,
-              specifiedType: const FullType(ListingData)) as ListingData);
+                  specifiedType: const FullType(LinkListingData))
+              as LinkListingData);
           break;
       }
     }
@@ -57,20 +63,21 @@ class _$ListingResponseSerializer
   }
 }
 
-class _$ListingDataSerializer implements StructuredSerializer<ListingData> {
+class _$LinkListingDataSerializer
+    implements StructuredSerializer<LinkListingData> {
   @override
-  final Iterable<Type> types = const [ListingData, _$ListingData];
+  final Iterable<Type> types = const [LinkListingData, _$LinkListingData];
   @override
-  final String wireName = 'ListingData';
+  final String wireName = 'LinkListingData';
 
   @override
-  Iterable serialize(Serializers serializers, ListingData object,
+  Iterable serialize(Serializers serializers, LinkListingData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'children',
       serializers.serialize(object.children,
           specifiedType:
-              const FullType(BuiltList, const [const FullType(Child)])),
+              const FullType(BuiltList, const [const FullType(LinkChild)])),
     ];
     if (object.after != null) {
       result
@@ -89,9 +96,9 @@ class _$ListingDataSerializer implements StructuredSerializer<ListingData> {
   }
 
   @override
-  ListingData deserialize(Serializers serializers, Iterable serialized,
+  LinkListingData deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ListingDataBuilder();
+    final result = new LinkListingDataBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -109,9 +116,8 @@ class _$ListingDataSerializer implements StructuredSerializer<ListingData> {
           break;
         case 'children':
           result.children.replace(serializers.deserialize(value,
-                  specifiedType:
-                      const FullType(BuiltList, const [const FullType(Child)]))
-              as BuiltList);
+              specifiedType: const FullType(
+                  BuiltList, const [const FullType(LinkChild)])) as BuiltList);
           break;
       }
     }
@@ -120,28 +126,28 @@ class _$ListingDataSerializer implements StructuredSerializer<ListingData> {
   }
 }
 
-class _$ChildSerializer implements StructuredSerializer<Child> {
+class _$LinkChildSerializer implements StructuredSerializer<LinkChild> {
   @override
-  final Iterable<Type> types = const [Child, _$Child];
+  final Iterable<Type> types = const [LinkChild, _$LinkChild];
   @override
-  final String wireName = 'Child';
+  final String wireName = 'LinkChild';
 
   @override
-  Iterable serialize(Serializers serializers, Child object,
+  Iterable serialize(Serializers serializers, LinkChild object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'data',
       serializers.serialize(object.data,
-          specifiedType: const FullType(ChildData)),
+          specifiedType: const FullType(LinkChildData)),
     ];
 
     return result;
   }
 
   @override
-  Child deserialize(Serializers serializers, Iterable serialized,
+  LinkChild deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ChildBuilder();
+    final result = new LinkChildBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -151,7 +157,7 @@ class _$ChildSerializer implements StructuredSerializer<Child> {
       switch (key) {
         case 'data':
           result.data.replace(serializers.deserialize(value,
-              specifiedType: const FullType(ChildData)) as ChildData);
+              specifiedType: const FullType(LinkChildData)) as LinkChildData);
           break;
       }
     }
@@ -160,14 +166,14 @@ class _$ChildSerializer implements StructuredSerializer<Child> {
   }
 }
 
-class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
+class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
   @override
-  final Iterable<Type> types = const [ChildData, _$ChildData];
+  final Iterable<Type> types = const [LinkChildData, _$LinkChildData];
   @override
-  final String wireName = 'ChildData';
+  final String wireName = 'LinkChildData';
 
   @override
-  Iterable serialize(Serializers serializers, ChildData object,
+  Iterable serialize(Serializers serializers, LinkChildData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'name',
@@ -221,9 +227,9 @@ class _$ChildDataSerializer implements StructuredSerializer<ChildData> {
   }
 
   @override
-  ChildData deserialize(Serializers serializers, Iterable serialized,
+  LinkChildData deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ChildDataBuilder();
+    final result = new LinkChildDataBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -430,31 +436,33 @@ class _$ImageSerializer implements StructuredSerializer<Image> {
   }
 }
 
-class _$ListingResponse extends ListingResponse {
+class _$LinkListingResponse extends LinkListingResponse {
   @override
-  final ListingData data;
+  final LinkListingData data;
 
-  factory _$ListingResponse([void Function(ListingResponseBuilder) updates]) =>
-      (new ListingResponseBuilder()..update(updates)).build();
+  factory _$LinkListingResponse(
+          [void Function(LinkListingResponseBuilder) updates]) =>
+      (new LinkListingResponseBuilder()..update(updates)).build();
 
-  _$ListingResponse._({this.data}) : super._() {
+  _$LinkListingResponse._({this.data}) : super._() {
     if (data == null) {
-      throw new BuiltValueNullFieldError('ListingResponse', 'data');
+      throw new BuiltValueNullFieldError('LinkListingResponse', 'data');
     }
   }
 
   @override
-  ListingResponse rebuild(void Function(ListingResponseBuilder) updates) =>
+  LinkListingResponse rebuild(
+          void Function(LinkListingResponseBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ListingResponseBuilder toBuilder() =>
-      new ListingResponseBuilder()..replace(this);
+  LinkListingResponseBuilder toBuilder() =>
+      new LinkListingResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ListingResponse && data == other.data;
+    return other is LinkListingResponse && data == other.data;
   }
 
   @override
@@ -464,22 +472,24 @@ class _$ListingResponse extends ListingResponse {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ListingResponse')..add('data', data))
+    return (newBuiltValueToStringHelper('LinkListingResponse')
+          ..add('data', data))
         .toString();
   }
 }
 
-class ListingResponseBuilder
-    implements Builder<ListingResponse, ListingResponseBuilder> {
-  _$ListingResponse _$v;
+class LinkListingResponseBuilder
+    implements Builder<LinkListingResponse, LinkListingResponseBuilder> {
+  _$LinkListingResponse _$v;
 
-  ListingDataBuilder _data;
-  ListingDataBuilder get data => _$this._data ??= new ListingDataBuilder();
-  set data(ListingDataBuilder data) => _$this._data = data;
+  LinkListingDataBuilder _data;
+  LinkListingDataBuilder get data =>
+      _$this._data ??= new LinkListingDataBuilder();
+  set data(LinkListingDataBuilder data) => _$this._data = data;
 
-  ListingResponseBuilder();
+  LinkListingResponseBuilder();
 
-  ListingResponseBuilder get _$this {
+  LinkListingResponseBuilder get _$this {
     if (_$v != null) {
       _data = _$v.data?.toBuilder();
       _$v = null;
@@ -488,23 +498,23 @@ class ListingResponseBuilder
   }
 
   @override
-  void replace(ListingResponse other) {
+  void replace(LinkListingResponse other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ListingResponse;
+    _$v = other as _$LinkListingResponse;
   }
 
   @override
-  void update(void Function(ListingResponseBuilder) updates) {
+  void update(void Function(LinkListingResponseBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ListingResponse build() {
-    _$ListingResponse _$result;
+  _$LinkListingResponse build() {
+    _$LinkListingResponse _$result;
     try {
-      _$result = _$v ?? new _$ListingResponse._(data: data.build());
+      _$result = _$v ?? new _$LinkListingResponse._(data: data.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -512,7 +522,7 @@ class ListingResponseBuilder
         data.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'ListingResponse', _$failedField, e.toString());
+            'LinkListingResponse', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -521,34 +531,35 @@ class ListingResponseBuilder
   }
 }
 
-class _$ListingData extends ListingData {
+class _$LinkListingData extends LinkListingData {
   @override
   final String after;
   @override
   final String before;
   @override
-  final BuiltList<Child> children;
+  final BuiltList<LinkChild> children;
 
-  factory _$ListingData([void Function(ListingDataBuilder) updates]) =>
-      (new ListingDataBuilder()..update(updates)).build();
+  factory _$LinkListingData([void Function(LinkListingDataBuilder) updates]) =>
+      (new LinkListingDataBuilder()..update(updates)).build();
 
-  _$ListingData._({this.after, this.before, this.children}) : super._() {
+  _$LinkListingData._({this.after, this.before, this.children}) : super._() {
     if (children == null) {
-      throw new BuiltValueNullFieldError('ListingData', 'children');
+      throw new BuiltValueNullFieldError('LinkListingData', 'children');
     }
   }
 
   @override
-  ListingData rebuild(void Function(ListingDataBuilder) updates) =>
+  LinkListingData rebuild(void Function(LinkListingDataBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ListingDataBuilder toBuilder() => new ListingDataBuilder()..replace(this);
+  LinkListingDataBuilder toBuilder() =>
+      new LinkListingDataBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ListingData &&
+    return other is LinkListingData &&
         after == other.after &&
         before == other.before &&
         children == other.children;
@@ -562,7 +573,7 @@ class _$ListingData extends ListingData {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ListingData')
+    return (newBuiltValueToStringHelper('LinkListingData')
           ..add('after', after)
           ..add('before', before)
           ..add('children', children))
@@ -570,8 +581,9 @@ class _$ListingData extends ListingData {
   }
 }
 
-class ListingDataBuilder implements Builder<ListingData, ListingDataBuilder> {
-  _$ListingData _$v;
+class LinkListingDataBuilder
+    implements Builder<LinkListingData, LinkListingDataBuilder> {
+  _$LinkListingData _$v;
 
   String _after;
   String get after => _$this._after;
@@ -581,14 +593,14 @@ class ListingDataBuilder implements Builder<ListingData, ListingDataBuilder> {
   String get before => _$this._before;
   set before(String before) => _$this._before = before;
 
-  ListBuilder<Child> _children;
-  ListBuilder<Child> get children =>
-      _$this._children ??= new ListBuilder<Child>();
-  set children(ListBuilder<Child> children) => _$this._children = children;
+  ListBuilder<LinkChild> _children;
+  ListBuilder<LinkChild> get children =>
+      _$this._children ??= new ListBuilder<LinkChild>();
+  set children(ListBuilder<LinkChild> children) => _$this._children = children;
 
-  ListingDataBuilder();
+  LinkListingDataBuilder();
 
-  ListingDataBuilder get _$this {
+  LinkListingDataBuilder get _$this {
     if (_$v != null) {
       _after = _$v.after;
       _before = _$v.before;
@@ -599,24 +611,24 @@ class ListingDataBuilder implements Builder<ListingData, ListingDataBuilder> {
   }
 
   @override
-  void replace(ListingData other) {
+  void replace(LinkListingData other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ListingData;
+    _$v = other as _$LinkListingData;
   }
 
   @override
-  void update(void Function(ListingDataBuilder) updates) {
+  void update(void Function(LinkListingDataBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ListingData build() {
-    _$ListingData _$result;
+  _$LinkListingData build() {
+    _$LinkListingData _$result;
     try {
       _$result = _$v ??
-          new _$ListingData._(
+          new _$LinkListingData._(
               after: after, before: before, children: children.build());
     } catch (_) {
       String _$failedField;
@@ -625,7 +637,7 @@ class ListingDataBuilder implements Builder<ListingData, ListingDataBuilder> {
         children.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'ListingData', _$failedField, e.toString());
+            'LinkListingData', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -634,30 +646,30 @@ class ListingDataBuilder implements Builder<ListingData, ListingDataBuilder> {
   }
 }
 
-class _$Child extends Child {
+class _$LinkChild extends LinkChild {
   @override
-  final ChildData data;
+  final LinkChildData data;
 
-  factory _$Child([void Function(ChildBuilder) updates]) =>
-      (new ChildBuilder()..update(updates)).build();
+  factory _$LinkChild([void Function(LinkChildBuilder) updates]) =>
+      (new LinkChildBuilder()..update(updates)).build();
 
-  _$Child._({this.data}) : super._() {
+  _$LinkChild._({this.data}) : super._() {
     if (data == null) {
-      throw new BuiltValueNullFieldError('Child', 'data');
+      throw new BuiltValueNullFieldError('LinkChild', 'data');
     }
   }
 
   @override
-  Child rebuild(void Function(ChildBuilder) updates) =>
+  LinkChild rebuild(void Function(LinkChildBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ChildBuilder toBuilder() => new ChildBuilder()..replace(this);
+  LinkChildBuilder toBuilder() => new LinkChildBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Child && data == other.data;
+    return other is LinkChild && data == other.data;
   }
 
   @override
@@ -667,20 +679,21 @@ class _$Child extends Child {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Child')..add('data', data)).toString();
+    return (newBuiltValueToStringHelper('LinkChild')..add('data', data))
+        .toString();
   }
 }
 
-class ChildBuilder implements Builder<Child, ChildBuilder> {
-  _$Child _$v;
+class LinkChildBuilder implements Builder<LinkChild, LinkChildBuilder> {
+  _$LinkChild _$v;
 
-  ChildDataBuilder _data;
-  ChildDataBuilder get data => _$this._data ??= new ChildDataBuilder();
-  set data(ChildDataBuilder data) => _$this._data = data;
+  LinkChildDataBuilder _data;
+  LinkChildDataBuilder get data => _$this._data ??= new LinkChildDataBuilder();
+  set data(LinkChildDataBuilder data) => _$this._data = data;
 
-  ChildBuilder();
+  LinkChildBuilder();
 
-  ChildBuilder get _$this {
+  LinkChildBuilder get _$this {
     if (_$v != null) {
       _data = _$v.data?.toBuilder();
       _$v = null;
@@ -689,23 +702,23 @@ class ChildBuilder implements Builder<Child, ChildBuilder> {
   }
 
   @override
-  void replace(Child other) {
+  void replace(LinkChild other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$Child;
+    _$v = other as _$LinkChild;
   }
 
   @override
-  void update(void Function(ChildBuilder) updates) {
+  void update(void Function(LinkChildBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$Child build() {
-    _$Child _$result;
+  _$LinkChild build() {
+    _$LinkChild _$result;
     try {
-      _$result = _$v ?? new _$Child._(data: data.build());
+      _$result = _$v ?? new _$LinkChild._(data: data.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -713,7 +726,7 @@ class ChildBuilder implements Builder<Child, ChildBuilder> {
         data.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'Child', _$failedField, e.toString());
+            'LinkChild', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -722,7 +735,7 @@ class ChildBuilder implements Builder<Child, ChildBuilder> {
   }
 }
 
-class _$ChildData extends ChildData {
+class _$LinkChildData extends LinkChildData {
   @override
   final String name;
   @override
@@ -748,10 +761,10 @@ class _$ChildData extends ChildData {
   @override
   final Preview preview;
 
-  factory _$ChildData([void Function(ChildDataBuilder) updates]) =>
-      (new ChildDataBuilder()..update(updates)).build();
+  factory _$LinkChildData([void Function(LinkChildDataBuilder) updates]) =>
+      (new LinkChildDataBuilder()..update(updates)).build();
 
-  _$ChildData._(
+  _$LinkChildData._(
       {this.name,
       this.title,
       this.subreddit,
@@ -766,42 +779,42 @@ class _$ChildData extends ChildData {
       this.preview})
       : super._() {
     if (name == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'name');
+      throw new BuiltValueNullFieldError('LinkChildData', 'name');
     }
     if (title == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'title');
+      throw new BuiltValueNullFieldError('LinkChildData', 'title');
     }
     if (subreddit == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'subreddit');
+      throw new BuiltValueNullFieldError('LinkChildData', 'subreddit');
     }
     if (permalink == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'permalink');
+      throw new BuiltValueNullFieldError('LinkChildData', 'permalink');
     }
     if (author == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'author');
+      throw new BuiltValueNullFieldError('LinkChildData', 'author');
     }
     if (score == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'score');
+      throw new BuiltValueNullFieldError('LinkChildData', 'score');
     }
     if (thumbnail == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'thumbnail');
+      throw new BuiltValueNullFieldError('LinkChildData', 'thumbnail');
     }
     if (over18 == null) {
-      throw new BuiltValueNullFieldError('ChildData', 'over18');
+      throw new BuiltValueNullFieldError('LinkChildData', 'over18');
     }
   }
 
   @override
-  ChildData rebuild(void Function(ChildDataBuilder) updates) =>
+  LinkChildData rebuild(void Function(LinkChildDataBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ChildDataBuilder toBuilder() => new ChildDataBuilder()..replace(this);
+  LinkChildDataBuilder toBuilder() => new LinkChildDataBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ChildData &&
+    return other is LinkChildData &&
         name == other.name &&
         title == other.title &&
         subreddit == other.subreddit &&
@@ -844,7 +857,7 @@ class _$ChildData extends ChildData {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ChildData')
+    return (newBuiltValueToStringHelper('LinkChildData')
           ..add('name', name)
           ..add('title', title)
           ..add('subreddit', subreddit)
@@ -861,8 +874,9 @@ class _$ChildData extends ChildData {
   }
 }
 
-class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
-  _$ChildData _$v;
+class LinkChildDataBuilder
+    implements Builder<LinkChildData, LinkChildDataBuilder> {
+  _$LinkChildData _$v;
 
   String _name;
   String get name => _$this._name;
@@ -914,9 +928,9 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   PreviewBuilder get preview => _$this._preview ??= new PreviewBuilder();
   set preview(PreviewBuilder preview) => _$this._preview = preview;
 
-  ChildDataBuilder();
+  LinkChildDataBuilder();
 
-  ChildDataBuilder get _$this {
+  LinkChildDataBuilder get _$this {
     if (_$v != null) {
       _name = _$v.name;
       _title = _$v.title;
@@ -936,24 +950,24 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
   }
 
   @override
-  void replace(ChildData other) {
+  void replace(LinkChildData other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ChildData;
+    _$v = other as _$LinkChildData;
   }
 
   @override
-  void update(void Function(ChildDataBuilder) updates) {
+  void update(void Function(LinkChildDataBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ChildData build() {
-    _$ChildData _$result;
+  _$LinkChildData build() {
+    _$LinkChildData _$result;
     try {
       _$result = _$v ??
-          new _$ChildData._(
+          new _$LinkChildData._(
               name: name,
               title: title,
               subreddit: subreddit,
@@ -973,7 +987,7 @@ class ChildDataBuilder implements Builder<ChildData, ChildDataBuilder> {
         _preview?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'ChildData', _$failedField, e.toString());
+            'LinkChildData', _$failedField, e.toString());
       }
       rethrow;
     }

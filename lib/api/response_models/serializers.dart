@@ -5,6 +5,6 @@ import 'package:reddigram/api/api.dart';
 
 part 'serializers.g.dart';
 
-@SerializersFor(const [ListingResponse])
+@SerializersFor(const [LinkListingResponse, SubredditResponse])
 final Serializers serializers =
     (_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
