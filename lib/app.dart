@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/theme.dart';
@@ -21,6 +22,11 @@ class ReddigramApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     return StoreProvider<ReddigramState>(
       store: store,
       child: StoreConnector<ReddigramState, AppTheme>(

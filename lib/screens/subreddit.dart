@@ -128,20 +128,20 @@ class _SubredditScreenState extends State<SubredditScreen> {
             keepAlive: true,
             itemCount: 2,
             itemBuilder: (context, i) => [
-                  Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: feedVm.photos.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 150),
-                      itemBuilder: (context, i) => Padding(
-                            padding: const EdgeInsets.all(1.0),
-                            child: _buildPhotoGridItem(context, feedVm, i),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: feedVm.photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3),
+                    itemBuilder: (context, i) => Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 1.0,
+                            right: i % 3 == 2 ? 0 : 1,
                           ),
-                    ),
+                          child: _buildPhotoGridItem(context, feedVm, i),
+                        ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 32.0),
