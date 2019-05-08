@@ -3,8 +3,7 @@ import 'package:reddigram/api/api.dart';
 
 void main() {
   test('Repository fetches and maps stuff', () async {
-    final listing = await RedditRepository().feed('r/EarthPorn')
-        .then((response) => LinkListingPhotosMapper.map(response));
+    final listing = await RedditRepository().feed('r/EarthPorn');
 
     print(listing);
   });

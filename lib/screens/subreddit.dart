@@ -23,6 +23,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
   bool _subredditLoaded(Store<ReddigramState> store) =>
       store.state.feeds['r/${widget.subredditName}'] != null;
 
+  bool _nsfwPhotoShown(_FeedViewModel vm, Photo photo) =>
+      vm.feed.nsfw || _shownNsfwIds.contains(photo.id);
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<ReddigramState, bool>(
@@ -77,7 +80,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(
                         vertical: 2.0, horizontal: 4.0),
-                    child: Text(
+                    child: const Text(
                       '18+',
                       style: TextStyle(
                         fontSize: 14.0,
@@ -135,8 +138,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
     return StoreConnector<ReddigramState, _FeedViewModel>(
       converter: (store) =>
           _FeedViewModel.fromStore(store, widget.subredditName),
-      builder: (context, vm) => InfiniteList(
-            fetchMore: vm.fetchMore,
+      builder: (context, feedVm) => InfiniteList(
+            fetchMore: feedVm.fetchMore,
             keepAlive: true,
             itemCount: 2,
             itemBuilder: (context, i) => [
@@ -145,23 +148,13 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: vm.photos.length,
+                      itemCount: feedVm.photos.length,
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 150),
                       itemBuilder: (context, i) => Padding(
                             padding: const EdgeInsets.all(1.0),
-                            child: PhotoGridItem(
-                              photo: vm.photos[i],
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PhotoPreviewScreen(
-                                          photo: vm.photos[i]),
-                                    ));
-                              },
-                            ),
+                            child: _buildPhotoGridItem(context, feedVm, i),
                           ),
                     ),
                   ),
@@ -172,6 +165,24 @@ class _SubredditScreenState extends State<SubredditScreen> {
                   ),
                 ][i],
           ),
+    );
+  }
+
+  Widget _buildPhotoGridItem(
+      BuildContext context, _FeedViewModel vm, int photoIndex) {
+    final photo = vm.photos[photoIndex];
+
+    return PhotoGridItem(
+      photo: photo,
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PhotoPreviewScreen(photo: photo),
+            ));
+      },
+      showNsfw: _nsfwPhotoShown(vm, photo),
+      onShowNsfw: () => setState(() => _shownNsfwIds.add(photo.id)),
     );
   }
 
@@ -192,25 +203,27 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 );
               }
 
-              return StoreConnector<ReddigramState, _PhotoViewModel>(
-                converter: (store) =>
-                    _PhotoViewModel.fromStore(store, widget.subredditName, i),
-                builder: (context, vm) => PhotoListItem(
-                      photo: vm.photo,
-                      onUpvote: vm.onUpvote,
-                      onUpvoteCanceled: vm.onUpvoteCanceled,
-                      showNsfw: feedVm.feed.nsfw ||
-                          _shownNsfwIds.contains(vm.photo.id),
-                      onShowNsfw: () =>
-                          setState(() => _shownNsfwIds.add(vm.photo.id)),
-                      onPhotoTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PhotoPreviewScreen(photo: vm.photo))),
-                    ),
-              );
+              return _buildPhotoListItem(context, feedVm, i);
             },
+          ),
+    );
+  }
+
+  Widget _buildPhotoListItem(
+      BuildContext context, _FeedViewModel feedVm, int photoIndex) {
+    return StoreConnector<ReddigramState, _PhotoViewModel>(
+      converter: (store) =>
+          _PhotoViewModel.fromStore(store, widget.subredditName, photoIndex),
+      builder: (context, vm) => PhotoListItem(
+            photo: vm.photo,
+            onUpvote: vm.onUpvote,
+            onUpvoteCanceled: vm.onUpvoteCanceled,
+            showNsfw: _nsfwPhotoShown(feedVm, vm.photo),
+            onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),
+            onPhotoTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhotoPreviewScreen(photo: vm.photo))),
           ),
     );
   }
