@@ -83,15 +83,11 @@ class PhotoListItem extends StatelessWidget {
           child: Upvoteable(
             height: height,
             onUpvote: photo.upvoted ? null : onUpvote,
-            child: Hero(
-              tag: 'photo-${photo.id}',
-              transitionOnUserGestures: true,
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: photo.fullImage.url,
-                fadeInDuration: Duration.zero,
-                placeholder: (context, url) => _buildPlaceholder(context),
-              ),
+            child: CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: photo.fullImage.url,
+              fadeInDuration: Duration.zero,
+              placeholder: (context, url) => _buildPlaceholder(context),
             ),
           ),
         ),

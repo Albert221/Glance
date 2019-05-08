@@ -16,7 +16,6 @@ class PhotoPreviewScreen extends StatelessWidget {
 
     return Scaffold(
       body: PhotoView(
-        heroTag: 'photo-${photo.id}',
         transitionOnUserGestures: true,
         imageProvider: CachedNetworkImageProvider(photo.source.url),
         minScale: minScale,
