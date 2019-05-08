@@ -17,15 +17,20 @@ class InfiniteList extends StatefulWidget {
       : super(key: key);
 
   @override
-  _InfiniteListState createState() => _InfiniteListState();
+  InfiniteListState createState() => InfiniteListState();
 }
 
-class _InfiniteListState extends State<InfiniteList>
+class InfiniteListState extends State<InfiniteList>
     with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
 
   double Function() _offsetToLoad = () => 0;
   Completer completer = Completer()..complete();
+
+  void scrollToOffset(double offset,
+      {Duration duration = const Duration(milliseconds: 300)}) {
+    _scrollController.animateTo(offset, duration: duration, curve: Curves.ease);
+  }
 
   @override
   void initState() {

@@ -19,6 +19,7 @@ class SubredditScreen extends StatefulWidget {
 
 class _SubredditScreenState extends State<SubredditScreen> {
   final _shownNsfwIds = Set<String>();
+  final _columnListKey = GlobalKey<InfiniteListState>();
 
   bool _subredditLoaded(Store<ReddigramState> store) =>
       store.state.feeds['r/${widget.subredditName}'] != null;
@@ -175,11 +176,22 @@ class _SubredditScreenState extends State<SubredditScreen> {
     return PhotoGridItem(
       photo: photo,
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PhotoPreviewScreen(photo: photo),
-            ));
+        final width = MediaQuery.of(context).size.width;
+
+        final offset = photoIndex == 0
+            ? 0.0
+            : vm.photos
+                .sublist(0, photoIndex)
+                .map((photo) => width / photo.fullImage.aspectRatio)
+                // 123 is the padding (2*8) + top and bottom bar height (51, 56)
+                .map((height) => (height > width ? width : height) + 123)
+                .reduce((a, b) => a + b);
+
+        DefaultTabController.of(context).animateTo(1);
+        // Delay so that the column InfiniteList can get its state built
+        Future.delayed(Duration(milliseconds: 300), () {
+          _columnListKey.currentState.scrollToOffset(offset);
+        });
       },
       showNsfw: _nsfwPhotoShown(vm, photo),
       onShowNsfw: () => setState(() => _shownNsfwIds.add(photo.id)),
@@ -191,6 +203,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
       converter: (store) =>
           _FeedViewModel.fromStore(store, widget.subredditName),
       builder: (context, feedVm) => InfiniteList(
+            key: _columnListKey,
             fetchMore: feedVm.fetchMore,
             keepAlive: true,
             itemCount: feedVm.photos.length + 1,
