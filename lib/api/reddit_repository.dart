@@ -156,7 +156,7 @@ class RedditRepository {
 
   Future<Feed> subreddit(String name) async {
     return _client
-        .get('/r/$name/about')
+        .get('/r/$name/about.json')
         .then((response) => serializers.deserializeWith(
             SubredditResponse.serializer, response.data))
         .then(SubredditFeedMapper.map);
