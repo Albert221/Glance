@@ -84,8 +84,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
       ),
       bottom: const TabBar(
         tabs: [
-          Tab(icon: Icon(Icons.grid_on)),
-          Tab(icon: Icon(Icons.list)),
+          Tab(icon: Icon(Icons.apps)),
+          Tab(icon: Icon(Icons.view_list)),
         ],
       ),
       actions: [
