@@ -132,7 +132,12 @@ class MainDrawer extends StatelessWidget {
             padding: EdgeInsets.zero,
             children: [
               ListTile(
-                title: const Text('Subreddits'),
+                title: const Text(
+                  'Subreddits',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 trailing: const Icon(Icons.add),
                 onTap: () => _subscribe(context, vm.subscribe),
               ),
