@@ -15,6 +15,7 @@ class PhotoPreviewScreen extends StatelessWidget {
     final minScale = MediaQuery.of(context).size.width / photo.source.width;
 
     return Scaffold(
+      appBar: AppBar(),
       body: PhotoView(
         transitionOnUserGestures: true,
         imageProvider: CachedNetworkImageProvider(photo.source.url),
