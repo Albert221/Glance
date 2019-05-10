@@ -87,6 +87,8 @@ class RedditRepository {
     });
   }
 
+  String getAccessToken() => _tokens?.accessToken;
+
   void clearTokens() {
     _tokens = null;
   }

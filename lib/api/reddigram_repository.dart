@@ -2,16 +2,19 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:meta/meta.dart';
 import 'package:reddigram/utils/jwt.dart';
 
 class ReddigramRepository {
-  Dio _client;
+  final String Function() fetchRedditAccessToken;
 
+  Dio _client;
   String _token;
 
   DateTime get _tokenExpiration => jwtExp(_token);
 
-  ReddigramRepository() {
+  ReddigramRepository({@required this.fetchRedditAccessToken})
+      : assert(fetchRedditAccessToken != null) {
     _client = Dio(BaseOptions(
       baseUrl: 'https://reddigram-api.herokuapp.com',
     ));
@@ -50,7 +53,7 @@ class ReddigramRepository {
   }
 
   Future<void> refreshToken() async {
-    _client.post('/refresh_token').then((response) => _token = response.data);
+    return authenticate(fetchRedditAccessToken());
   }
 
   void clearToken() {

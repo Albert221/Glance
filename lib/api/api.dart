@@ -12,4 +12,6 @@ import 'package:reddigram/api/api.dart';
 import 'package:reddigram/api/reddigram_repository.dart';
 
 final redditRepository = RedditRepository();
-final reddigramRepository = ReddigramRepository();
+final reddigramRepository = ReddigramRepository(fetchRedditAccessToken: () {
+  return redditRepository.getAccessToken();
+});
