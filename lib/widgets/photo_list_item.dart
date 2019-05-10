@@ -146,12 +146,15 @@ class PhotoListItem extends StatelessWidget {
             ),
           ),
         ),
-        InkWell(
-          child: const Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: const Icon(Icons.exit_to_app),
+        Tooltip(
+          child: InkWell(
+            child: const Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: const Icon(Icons.launch),
+            ),
+            onTap: () async => await launch(photo.redditUrl),
           ),
-          onTap: () async => await launch(photo.redditUrl),
+          message: 'Open in Reddit',
         ),
       ],
     );
