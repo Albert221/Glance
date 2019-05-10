@@ -19,29 +19,30 @@ class RedditRepository {
       baseUrl: 'https://www.reddit.com',
     ));
 
-    _client.interceptors.add(InterceptorsWrapper(onRequest: (options) {
-      if (_tokens != null) {
-        options.headers['Authorization'] = 'Bearer ${_tokens.accessToken}';
-        options.baseUrl = 'https://oauth.reddit.com';
-      }
+    _client.interceptors.addAll([
+      InterceptorsWrapper(onRequest: (options) async {
+        // Refreshment of access token
+        if (_tokens == null || options.path.contains('access_token')) {
+          // skip if we aren't authorized
+          return options;
+        }
 
-      return options;
-    }));
+        final minuteAgo = DateTime.now().subtract(Duration(minutes: 1));
+        if (_tokens.expirationTime.isBefore(minuteAgo)) {
+          await refreshAccessToken();
+        }
 
-    // Refreshment of access token
-    _client.interceptors.add(InterceptorsWrapper(onRequest: (options) async {
-      if (_tokens == null || options.path.contains('access_token')) {
-        // skip if we aren't authorized
         return options;
-      }
+      }),
+      InterceptorsWrapper(onRequest: (options) {
+        if (_tokens != null) {
+          options.headers['Authorization'] = 'Bearer ${_tokens.accessToken}';
+          options.baseUrl = 'https://oauth.reddit.com';
+        }
 
-      final minuteAgo = DateTime.now().subtract(Duration(minutes: 1));
-      if (_tokens.expirationTime.isBefore(minuteAgo)) {
-        await refreshAccessToken();
-      }
-
-      return options;
-    }));
+        return options;
+      })
+    ]);
 
     PackageInfo.fromPlatform().then((info) =>
         _client.options.headers['User-Agent'] =

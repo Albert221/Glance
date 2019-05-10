@@ -19,27 +19,28 @@ class ReddigramRepository {
       baseUrl: 'https://reddigram-api.herokuapp.com',
     ));
 
-    _client.interceptors.add(InterceptorsWrapper(onRequest: (options) {
-      if (_token != null) {
-        options.headers['Authorization'] = 'Bearer $_token';
-      }
+    _client.interceptors.addAll([
+      InterceptorsWrapper(onRequest: (options) async {
+        if (_token == null || options.path.contains('authenticate')) {
+          return options;
+        }
 
-      return options;
-    }));
+        final minuteAgo = DateTime.now().subtract(Duration(minutes: 1));
+        if (_tokenExpiration.isBefore(minuteAgo)) {
+          await refreshToken();
+        }
 
-    // Refreshment of token
-    _client.interceptors.add(InterceptorsWrapper(onRequest: (options) async {
-      if (_token == null || options.path.contains('refresh_token')) {
         return options;
-      }
+      }),
+      InterceptorsWrapper(onRequest: (options) {
+        // Refreshment of token
+        if (_token != null) {
+          options.headers['Authorization'] = 'Bearer $_token';
+        }
 
-      final minuteAgo = DateTime.now().subtract(Duration(minutes: 1));
-      if (_tokenExpiration.isBefore(minuteAgo)) {
-        await refreshToken();
-      }
-
-      return options;
-    }));
+        return options;
+      }),
+    ]);
   }
 
   Future<void> authenticate(String redditAccessToken) async {
