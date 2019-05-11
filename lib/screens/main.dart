@@ -80,14 +80,9 @@ class _MainScreenState extends State<MainScreen> {
             onUpvote: vm.onUpvote,
             onUpvoteCanceled: vm.onUpvoteCanceled,
             onPhotoTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PhotoPreviewScreen(photo: vm.photo))),
-            onSubredditTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SubredditScreen(
-                        subredditName: vm.photo.subredditName))),
+                context, PhotoPreviewScreen.route(context, vm.photo)),
+            onSubredditTap: () => Navigator.push(context,
+                SubredditScreen.route(context, vm.photo.subredditName)),
             showNsfw: _shownNsfwIds.contains(vm.photo.id),
             onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),
           ),
