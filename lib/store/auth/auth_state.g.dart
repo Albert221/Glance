@@ -6,18 +6,50 @@ part of 'auth_state.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+const AuthStatus _$unknown = const AuthStatus._('unknown');
+const AuthStatus _$guest = const AuthStatus._('guest');
+const AuthStatus _$authenticating = const AuthStatus._('authenticating');
+const AuthStatus _$authenticated = const AuthStatus._('authenticated');
+const AuthStatus _$signingOut = const AuthStatus._('signingOut');
+
+AuthStatus _$valueOf(String name) {
+  switch (name) {
+    case 'unknown':
+      return _$unknown;
+    case 'guest':
+      return _$guest;
+    case 'authenticating':
+      return _$authenticating;
+    case 'authenticated':
+      return _$authenticated;
+    case 'signingOut':
+      return _$signingOut;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AuthStatus> _$values =
+    new BuiltSet<AuthStatus>(const <AuthStatus>[
+  _$unknown,
+  _$guest,
+  _$authenticating,
+  _$authenticated,
+  _$signingOut,
+]);
+
 class _$AuthState extends AuthState {
   @override
   final String username;
   @override
-  final bool inProgress;
+  final AuthStatus status;
 
   factory _$AuthState([void Function(AuthStateBuilder) updates]) =>
       (new AuthStateBuilder()..update(updates)).build();
 
-  _$AuthState._({this.username, this.inProgress}) : super._() {
-    if (inProgress == null) {
-      throw new BuiltValueNullFieldError('AuthState', 'inProgress');
+  _$AuthState._({this.username, this.status}) : super._() {
+    if (status == null) {
+      throw new BuiltValueNullFieldError('AuthState', 'status');
     }
   }
 
@@ -33,19 +65,19 @@ class _$AuthState extends AuthState {
     if (identical(other, this)) return true;
     return other is AuthState &&
         username == other.username &&
-        inProgress == other.inProgress;
+        status == other.status;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, username.hashCode), inProgress.hashCode));
+    return $jf($jc($jc(0, username.hashCode), status.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('AuthState')
           ..add('username', username)
-          ..add('inProgress', inProgress))
+          ..add('status', status))
         .toString();
   }
 }
@@ -57,16 +89,16 @@ class AuthStateBuilder implements Builder<AuthState, AuthStateBuilder> {
   String get username => _$this._username;
   set username(String username) => _$this._username = username;
 
-  bool _inProgress;
-  bool get inProgress => _$this._inProgress;
-  set inProgress(bool inProgress) => _$this._inProgress = inProgress;
+  AuthStatus _status;
+  AuthStatus get status => _$this._status;
+  set status(AuthStatus status) => _$this._status = status;
 
   AuthStateBuilder();
 
   AuthStateBuilder get _$this {
     if (_$v != null) {
       _username = _$v.username;
-      _inProgress = _$v.inProgress;
+      _status = _$v.status;
       _$v = null;
     }
     return this;
@@ -88,7 +120,7 @@ class AuthStateBuilder implements Builder<AuthState, AuthStateBuilder> {
   @override
   _$AuthState build() {
     final _$result =
-        _$v ?? new _$AuthState._(username: username, inProgress: inProgress);
+        _$v ?? new _$AuthState._(username: username, status: status);
     replace(_$result);
     return _$result;
   }

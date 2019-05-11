@@ -116,8 +116,8 @@ class MainDrawer extends StatelessWidget {
               color: Theme.of(context).appBarTheme.color,
             ),
             child: Text(
-              authState.authenticated
-                  ? authState.username ?? 'No username'
+              authState.status == AuthStatus.authenticated
+                  ? authState.username
                   : 'Guest',
               style: Theme.of(context).textTheme.title,
             ),
@@ -168,19 +168,20 @@ class MainDrawer extends StatelessWidget {
         children: [
           StoreConnector<ReddigramState, _ConnectViewModel>(
             converter: (store) => _ConnectViewModel.fromStore(store),
-            builder: (context, vm) => vm.authState.authenticated
-                ? ListTile(
-                    title: const Text('Sign out'),
-                    leading: const Icon(Icons.power_settings_new),
-                    onTap: () {
-                      vm.signOut();
-                    },
-                  )
-                : ListTile(
-                    title: const Text('Connect to Reddit'),
-                    leading: const Icon(Icons.account_circle),
-                    onTap: () => _connectToReddit(vm.onConnect),
-                  ),
+            builder: (context, vm) =>
+                vm.authState.status == AuthStatus.authenticated
+                    ? ListTile(
+                        title: const Text('Sign out'),
+                        leading: const Icon(Icons.power_settings_new),
+                        onTap: () {
+                          vm.signOut();
+                        },
+                      )
+                    : ListTile(
+                        title: const Text('Connect to Reddit'),
+                        leading: const Icon(Icons.account_circle),
+                        onTap: () => _connectToReddit(vm.onConnect),
+                      ),
           ),
           StoreConnector<ReddigramState, _ThemeViewModel>(
             converter: (store) => _ThemeViewModel.fromStore(store),

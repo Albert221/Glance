@@ -3,13 +3,13 @@ import 'package:redux/redux.dart';
 
 Reducer<AuthState> authStateReducer = combineReducers([
   TypedReducer<AuthState, SetUsername>(_setUsername),
-  TypedReducer<AuthState, SetInProgress>(_setInProgress),
+  TypedReducer<AuthState, SetAuthStatus>(_setAuthStatus),
 ]);
 
 AuthState _setUsername(AuthState state, SetUsername action) {
   return state.rebuild((b) => b..username = action.username);
 }
 
-AuthState _setInProgress(AuthState state, SetInProgress action) {
-  return state.rebuild((b) => b..inProgress = action.inProgress);
+AuthState _setAuthStatus(AuthState state, SetAuthStatus action) {
+  return state.rebuild((b) => b..status = action.status);
 }

@@ -20,21 +20,11 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<ReddigramState, bool>(
-      converter: (store) => store.state.authState.inProgress,
-      builder: (context, authInProgress) => Stack(
-            children: [
-              Scaffold(
-                key: MainScreen.scaffoldKey,
-                appBar: _buildAppBar(context),
-                drawer: MainDrawer(),
-                body: _buildBody(context),
-              ),
-              authInProgress
-                  ? const FullscreenProgressIndicator()
-                  : const SizedBox(),
-            ],
-          ),
+    return Scaffold(
+      key: MainScreen.scaffoldKey,
+      appBar: _buildAppBar(context),
+      drawer: MainDrawer(),
+      body: _buildBody(context),
     );
   }
 
@@ -152,10 +142,10 @@ class _PhotoViewModel {
 
     return _PhotoViewModel(
       photo: photo,
-      onUpvote: store.state.authState.authenticated
+      onUpvote: store.state.authState.status == AuthStatus.authenticated
           ? () => store.dispatch(upvote(photo))
           : null,
-      onUpvoteCanceled: store.state.authState.authenticated
+      onUpvoteCanceled: store.state.authState.status == AuthStatus.authenticated
           ? () => store.dispatch(cancelUpvote(photo))
           : null,
     );

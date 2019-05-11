@@ -6,6 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/theme.dart';
 import 'package:reddigram/screens/screens.dart';
+import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
 class ReddigramApp extends StatelessWidget {
@@ -16,9 +17,7 @@ class ReddigramApp extends StatelessWidget {
 
   ReddigramApp({Key key, @required this.store})
       : assert(store != null),
-        super(key: key) {
-    store.dispatch(authenticateUserFromStorage());
-  }
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +31,35 @@ class ReddigramApp extends StatelessWidget {
       child: StoreConnector<ReddigramState, AppTheme>(
         onInit: (store) => store.dispatch(loadTheme()),
         converter: (store) => store.state.preferences.theme,
-        builder: (context, theme) => MaterialApp(
-              title: 'Reddigram',
-              theme: theme == AppTheme.light
-                  ? ReddigramTheme.light()
-                  : ReddigramTheme.dark(),
-              routes: {
-                '/': (context) => MainScreen(),
-              },
-              navigatorObservers: [_navObserver],
-            ),
+        builder: (context, theme) {
+          return StoreConnector<ReddigramState, AuthStatus>(
+            onInit: (store) => store.dispatch(loadUser()),
+            converter: (store) => store.state.authState.status,
+            builder: (context, authStatus) {
+              return MaterialApp(
+                title: 'Reddigram',
+                theme: theme == AppTheme.light
+                    ? ReddigramTheme.light()
+                    : ReddigramTheme.dark(),
+                routes: {
+                  '/': (context) => MainScreen(),
+                },
+                navigatorObservers: [_navObserver],
+                builder: (context, child) {
+                  return Stack(
+                    children: [
+                      child,
+                      if (authStatus == AuthStatus.unknown ||
+                          authStatus == AuthStatus.authenticating ||
+                          authStatus == AuthStatus.signingOut)
+                        FullscreenProgressIndicator(),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

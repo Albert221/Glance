@@ -292,10 +292,10 @@ class _PhotoViewModel {
 
     return _PhotoViewModel(
       photo: photo,
-      onUpvote: store.state.authState.authenticated
+      onUpvote: store.state.authState.status == AuthStatus.authenticated
           ? () => store.dispatch(upvote(photo))
           : null,
-      onUpvoteCanceled: store.state.authState.authenticated
+      onUpvoteCanceled: store.state.authState.status == AuthStatus.authenticated
           ? () => store.dispatch(cancelUpvote(photo))
           : null,
     );
