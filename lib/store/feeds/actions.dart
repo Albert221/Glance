@@ -14,6 +14,10 @@ bool isSubreddit(String feed) => feed.contains(RegExp(r'^r\/'));
 String _getProperFeedName(Store<ReddigramState> store, String feed) {
   switch (feed) {
     case BEST_SUBSCRIBED:
+      if (store.state.subscriptions.isEmpty) {
+        return '/';
+      }
+
       return 'r/' + store.state.subscriptions.join('+');
     default:
       return feed;

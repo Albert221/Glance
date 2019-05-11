@@ -7,10 +7,11 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
   return (Store<ReddigramState> store) {
-    reddigramRepository.fetchSubscribedSubreddits().then((subreddits) {
-      store.dispatch(FetchedSubscribedSubreddits(subreddits));
-      store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
-    });
+    reddigramRepository
+        .fetchSubscribedSubreddits()
+        .then((subreddits) =>
+            store.dispatch(FetchedSubscribedSubreddits(subreddits)))
+        .whenComplete(() => completer.complete());
   };
 }
 

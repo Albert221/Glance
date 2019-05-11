@@ -8,6 +8,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _refreshTokenKey = 'reddit_refresh_token';
 
+Future<void> _loadFeeds(Store<ReddigramState> store) {
+  // Fetch all feeds after we have info if user is authed or not.
+  final completer = Completer();
+  store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
+
+  return completer.future;
+}
+
 void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
   final futures = <Future>[];
 
@@ -15,17 +23,19 @@ void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
       .username()
       .then((username) => store.dispatch(SetUsername(username))));
 
-  final completer = Completer();
-  futures.add(completer.future);
+  final subscriptionsCompleter = Completer();
+  futures.add(subscriptionsCompleter.future);
   futures.add(reddigramRepository.authenticate(redditAccessToken).then(
-        (_) => store.dispatch(fetchSubscribedSubreddits(completer)),
-        onError: (_) => completer.complete(),
+        (_) =>
+            store.dispatch(fetchSubscribedSubreddits(subscriptionsCompleter)),
+        onError: (_) => subscriptionsCompleter.complete(),
       ));
 
-  Future.wait(futures).then(
-    (_) => store.dispatch(SetAuthStatus(AuthStatus.authenticated)),
-    onError: (_) => store.dispatch(SetAuthStatus(AuthStatus.guest)),
-  );
+  Future.wait(futures)
+    ..then((_) async => await _loadFeeds(store)).then(
+      (_) => store.dispatch(SetAuthStatus(AuthStatus.authenticated)),
+      onError: (_) => store.dispatch(SetAuthStatus(AuthStatus.guest)),
+    );
 }
 
 ThunkAction<ReddigramState> loadUser() {
@@ -39,6 +49,8 @@ ThunkAction<ReddigramState> loadUser() {
         final tokens = await redditRepository.refreshAccessToken(refreshToken);
         _loadUserData(store, tokens.accessToken);
       } else {
+        await _loadFeeds(store);
+
         store.dispatch(SetAuthStatus(AuthStatus.guest));
       }
     });
@@ -70,10 +82,8 @@ ThunkAction<ReddigramState> signUserOut() {
     store.dispatch(SetUsername(null));
     store.dispatch(FetchedSubscribedSubreddits([]));
 
-    final completer = Completer()
-      ..future
-          .whenComplete(() => store.dispatch(SetAuthStatus(AuthStatus.guest)));
-    store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
+    _loadFeeds(store)
+        .whenComplete(() => store.dispatch(SetAuthStatus(AuthStatus.guest)));
   };
 }
 

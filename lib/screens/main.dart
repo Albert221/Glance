@@ -40,7 +40,6 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBody(BuildContext context) {
     return StoreConnector<ReddigramState, _BodyViewModel>(
-      onInit: (store) => store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED)),
       converter: (store) => _BodyViewModel.fromStore(store),
       builder: (context, vm) => RefreshIndicator(
             onRefresh: () {
