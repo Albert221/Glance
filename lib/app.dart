@@ -29,7 +29,7 @@ class ReddigramApp extends StatelessWidget {
     return StoreProvider<ReddigramState>(
       store: store,
       child: StoreConnector<ReddigramState, AppTheme>(
-        onInit: (store) => store.dispatch(loadTheme()),
+        onInit: (store) => store.dispatch(loadPreferences()),
         converter: (store) => store.state.preferences.theme,
         builder: (context, theme) {
           return StoreConnector<ReddigramState, AuthStatus>(
