@@ -25,6 +25,7 @@ dependencies:
   redux_thunk: ^0.2.1
   shared_preferences: ^0.5.2
   url_launcher: ^5.0.2
+  validators: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

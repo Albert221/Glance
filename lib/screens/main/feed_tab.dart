@@ -8,87 +8,24 @@ import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
-class MainScreen extends StatefulWidget {
-  static final scaffoldKey = GlobalKey<ScaffoldState>();
+class FeedTab extends StatefulWidget {
+  final String feedName;
+
+  const FeedTab({Key key, @required this.feedName})
+      : assert(feedName != null),
+        super(key: key);
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _FeedTabState createState() => _FeedTabState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  final _pageController = PageController();
-
+class _FeedTabState extends State<FeedTab> {
   Set<String> _shownNsfwIds = Set();
-  int _currentTab = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: MainScreen.scaffoldKey,
-      appBar: _buildAppBar(context),
-      drawer: MainDrawer(),
-      body: StoreConnector<ReddigramState, void>(
-        onInit: (store) => store.dispatch(fetchFreshFeed(BEST)),
-        converter: (store) => null,
-        builder: (context, _) => PageView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: [
-                _buildFeed(context, BEST),
-                _buildFeed(context, NEW_SUBSCRIBED),
-                _buildFeed(context, BEST_SUBSCRIBED),
-                Icon(Icons.view_list),
-              ],
-            ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentTab,
-        onTap: (index) {
-          setState(() {
-            _currentTab = index;
-            _pageController.animateToPage(
-              index,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.ease,
-            );
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.stars),
-            title: Text('Best'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.whatshot),
-            title: Text('Your new'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            title: Text('Your best'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.view_list),
-            title: Text('Subbed'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(
-        'Reddigram',
-        style: Theme.of(context).appBarTheme.textTheme.display1,
-      ),
-      centerTitle: true,
-    );
-  }
-
-  Widget _buildFeed(BuildContext context, String feedName) {
     return StoreConnector<ReddigramState, _BodyViewModel>(
-      converter: (store) => _BodyViewModel.fromStore(store, feedName),
+      converter: (store) => _BodyViewModel.fromStore(store, widget.feedName),
       builder: (context, vm) {
         return RefreshIndicator(
           onRefresh: () {
@@ -113,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
 
-              return _buildPhoto(context, feedName, i);
+              return _buildPhoto(context, i);
             },
           ),
         );
@@ -121,9 +58,10 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildPhoto(BuildContext context, String feedName, int index) {
+  Widget _buildPhoto(BuildContext context, int index) {
     return StoreConnector<ReddigramState, _PhotoViewModel>(
-      converter: (store) => _PhotoViewModel.fromStore(store, feedName, index),
+      converter: (store) =>
+          _PhotoViewModel.fromStore(store, widget.feedName, index),
       builder: (context, vm) => PhotoListItem(
             photo: vm.photo,
             onUpvote: vm.onUpvote,
@@ -139,11 +77,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-typedef CompleterCallback = void Function(Completer);
-
 class _BodyViewModel {
   final List<Photo> photos;
-  final CompleterCallback fetchFresh;
+  final void Function(Completer) fetchFresh;
   final void Function(Completer) fetchMore;
 
   _BodyViewModel(

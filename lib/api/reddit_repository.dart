@@ -5,6 +5,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
+import 'package:validators/validators.dart';
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/consts.dart';
 import 'package:reddigram/models/models.dart';
@@ -117,22 +118,12 @@ class RedditRepository {
     });
   }
 
-  static LinkListingResponse _filterOnlyPhotos(LinkListingResponse response) {
-    return response.rebuild((b) => b
-      ..data = response.data
-          .rebuild((b) => b
-            ..children = ListBuilder(response.data.children.where((child) =>
-                child.data.preview != null && child.data.thumbnail != 'self')))
-          .toBuilder());
-  }
-
   Future<List<Photo>> feed(String feed,
       {String after = '', int limit = 25}) async {
     return _client
         .get('/$feed.json?after=$after&limit=$limit')
         .then((response) => serializers.deserializeWith(
             LinkListingResponse.serializer, response.data))
-        .then(_filterOnlyPhotos)
         .then(LinkListingPhotosMapper.map);
   }
 
