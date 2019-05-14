@@ -19,6 +19,7 @@ ThunkAction<ReddigramState> subscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     reddigramRepository.subscribeSubreddit(name).then((_) {
       store.dispatch(SubscribedSubreddit(name));
+      store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED));
       store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
     });
   };
@@ -28,6 +29,7 @@ ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     reddigramRepository.unsubscribeSubreddit(name).then((_) {
       store.dispatch(UnsubscribedSubreddit(name));
+      store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED));
       store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
     });
   };
