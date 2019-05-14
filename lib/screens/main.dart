@@ -16,7 +16,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final _pageController = PageController();
+
   Set<String> _shownNsfwIds = Set();
+  int _currentTab = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,52 @@ class _MainScreenState extends State<MainScreen> {
       key: MainScreen.scaffoldKey,
       appBar: _buildAppBar(context),
       drawer: MainDrawer(),
-      body: _buildBody(context),
+      body: StoreConnector<ReddigramState, void>(
+        onInit: (store) => store.dispatch(fetchFreshFeed(BEST)),
+        converter: (store) => null,
+        builder: (context, _) => PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: [
+                _buildFeed(context, BEST),
+                _buildFeed(context, NEW_SUBSCRIBED),
+                _buildFeed(context, BEST_SUBSCRIBED),
+                Icon(Icons.view_list),
+              ],
+            ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentTab,
+        onTap: (index) {
+          setState(() {
+            _currentTab = index;
+            _pageController.animateToPage(
+              index,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.ease,
+            );
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.stars),
+            title: Text('Best'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.whatshot),
+            title: Text('Your new'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            title: Text('Your best'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_list),
+            title: Text('Subbed'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -38,43 +86,44 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildFeed(BuildContext context, String feedName) {
     return StoreConnector<ReddigramState, _BodyViewModel>(
-      converter: (store) => _BodyViewModel.fromStore(store),
-      builder: (context, vm) => RefreshIndicator(
-            onRefresh: () {
-              final completer = Completer();
-              vm.fetchFresh(completer);
-              return completer.future;
-            },
-            child: InfiniteList(
-              fetchMore: vm.fetchMore,
-              itemCount: vm.photos.length + 1,
-              itemBuilder: (context, i) {
-                // Last item is a loading indicator.
-                if (i == vm.photos.length) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0),
-                    alignment: Alignment.center,
-                    child: vm.photos.isEmpty
-                        ? const Text(
-                            'There is no feed! 😲\n\nTry subscribing to some subreddits.',
-                            textAlign: TextAlign.center,
-                          )
-                        : const CircularProgressIndicator(),
-                  );
-                }
+      converter: (store) => _BodyViewModel.fromStore(store, feedName),
+      builder: (context, vm) {
+        return RefreshIndicator(
+          onRefresh: () {
+            final completer = Completer();
+            vm.fetchFresh(completer);
 
-                return _buildPhoto(context, i);
-              },
-            ),
+            return completer.future;
+          },
+          child: InfiniteList(
+            keepAlive: true,
+            fetchMore: vm.fetchMore,
+            itemCount: vm.photos.length + 1,
+            itemBuilder: (context, i) {
+              // Last item is a loading indicator.
+              if (i == vm.photos.length) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  alignment: Alignment.center,
+                  child: vm.photos.isEmpty
+                      ? const Text('That feed is empty! 😲')
+                      : const CircularProgressIndicator(),
+                );
+              }
+
+              return _buildPhoto(context, feedName, i);
+            },
           ),
+        );
+      },
     );
   }
 
-  Widget _buildPhoto(BuildContext context, int index) {
+  Widget _buildPhoto(BuildContext context, String feedName, int index) {
     return StoreConnector<ReddigramState, _PhotoViewModel>(
-      converter: (store) => _PhotoViewModel.fromStore(store, index),
+      converter: (store) => _PhotoViewModel.fromStore(store, feedName, index),
       builder: (context, vm) => PhotoListItem(
             photo: vm.photo,
             onUpvote: vm.onUpvote,
@@ -105,16 +154,16 @@ class _BodyViewModel {
         assert(fetchFresh != null),
         assert(fetchMore != null);
 
-  factory _BodyViewModel.fromStore(Store<ReddigramState> store) {
+  factory _BodyViewModel.fromStore(
+      Store<ReddigramState> store, String feedName) {
     return _BodyViewModel(
-      photos: store.state.feeds[BEST_SUBSCRIBED].photosIds
+      photos: store.state.feeds[feedName].photosIds
           .map((photoId) => store.state.photos[photoId])
           .toList(),
-      fetchFresh: (completer) {
-        store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
-      },
+      fetchFresh: (completer) =>
+          store.dispatch(fetchFreshFeed(feedName, completer: completer)),
       fetchMore: (completer) =>
-          store.dispatch(fetchMoreFeed(BEST_SUBSCRIBED, completer: completer)),
+          store.dispatch(fetchMoreFeed(feedName, completer: completer)),
     );
   }
 }
@@ -130,8 +179,9 @@ class _PhotoViewModel {
       @required this.onUpvoteCanceled})
       : assert(photo != null);
 
-  factory _PhotoViewModel.fromStore(Store<ReddigramState> store, int index) {
-    final photoId = store.state.feeds[BEST_SUBSCRIBED].photosIds[index];
+  factory _PhotoViewModel.fromStore(
+      Store<ReddigramState> store, String feedName, int index) {
+    final photoId = store.state.feeds[feedName].photosIds[index];
     final photo = store.state.photos[photoId];
 
     return _PhotoViewModel(

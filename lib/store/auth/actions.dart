@@ -10,10 +10,15 @@ const _refreshTokenKey = 'reddit_refresh_token';
 
 Future<void> _loadFeeds(Store<ReddigramState> store) {
   // Fetch all feeds after we have info if user is authed or not.
-  final completer = Completer();
-  store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: completer));
+  final bestCompleter = Completer();
+  store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: bestCompleter));
+  final newCompleter = Completer();
+  store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED, completer: newCompleter));
 
-  return completer.future;
+  return Future.wait([
+    bestCompleter.future,
+    newCompleter.future,
+  ]);
 }
 
 void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {

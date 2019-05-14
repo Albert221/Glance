@@ -25,6 +25,8 @@ abstract class ReddigramState
       preferences: PreferencesState(),
       photos: BuiltMap<String, Photo>(),
       feeds: BuiltMap<String, Feed>({
+        BEST: Feed(),
+        NEW_SUBSCRIBED: Feed(),
         BEST_SUBSCRIBED: Feed(),
       }),
       subscriptions: BuiltSet(),
