@@ -70,7 +70,8 @@ class _FeedTabState extends State<FeedTab> {
                 context, PhotoPreviewScreen.route(context, vm.photo)),
             onSubredditTap: () => Navigator.push(context,
                 SubredditScreen.route(context, vm.photo.subredditName)),
-            showNsfw: _shownNsfwIds.contains(vm.photo.id),
+            showNsfw: _shownNsfwIds.contains(vm.photo.id) ||
+                PreferencesProvider.of(context).showNsfw,
             onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),
           ),
     );

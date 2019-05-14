@@ -33,8 +33,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
   bool _subredditLoaded(Store<ReddigramState> store) =>
       store.state.feeds['r/${widget.subredditName}'] != null;
 
-  bool _nsfwPhotoShown(_FeedViewModel vm, Photo photo) =>
-      vm.feed.nsfw || _shownNsfwIds.contains(photo.id);
+  bool _nsfwPhotoShown(BuildContext context, _FeedViewModel vm, Photo photo) =>
+      vm.feed.nsfw ||
+      _shownNsfwIds.contains(photo.id) ||
+      PreferencesProvider.of(context).showNsfw;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +188,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
           _columnListKey.currentState.scrollToOffset(offset);
         });
       },
-      showNsfw: _nsfwPhotoShown(vm, photo),
+      showNsfw: _nsfwPhotoShown(context, vm, photo),
       onShowNsfw: () => setState(() => _shownNsfwIds.add(photo.id)),
     );
   }
@@ -224,7 +226,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
             photo: vm.photo,
             onUpvote: vm.onUpvote,
             onUpvoteCanceled: vm.onUpvoteCanceled,
-            showNsfw: _nsfwPhotoShown(feedVm, vm.photo),
+            showNsfw: _nsfwPhotoShown(context, feedVm, vm.photo),
             onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),
             onPhotoTap: () => Navigator.push(
                 context, PhotoPreviewScreen.route(context, vm.photo)),

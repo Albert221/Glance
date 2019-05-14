@@ -56,20 +56,30 @@ class MainDrawer extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        StoreConnector<ReddigramState, _ThemeViewModel>(
-          converter: (store) => _ThemeViewModel.fromStore(store),
+        StoreConnector<ReddigramState, _PreferenceViewModel>(
+          converter: (store) => _PreferenceViewModel<AppTheme>(
+                value: store.state.preferences.theme,
+                onSwitch: (dark) => store
+                    .dispatch(setTheme(dark ? AppTheme.dark : AppTheme.light)),
+              ),
           builder: (context, vm) => SwitchListTile(
                 title: const Text('Dark theme'),
                 secondary: const Icon(Icons.invert_colors),
-                value: vm.theme == AppTheme.dark,
-                onChanged: (value) => vm.onSwitch(value),
+                value: vm.value == AppTheme.dark,
+                onChanged: vm.onSwitch,
               ),
         ),
-        SwitchListTile(
-          title: const Text('Show adult content'),
-          secondary: const Icon(Icons.child_care),
-          value: false,
-          onChanged: (_) {},
+        StoreConnector<ReddigramState, _PreferenceViewModel>(
+          converter: (store) => _PreferenceViewModel<bool>(
+                value: store.state.preferences.showNsfw,
+                onSwitch: (showNsfw) => store.dispatch(setShowNsfw(showNsfw)),
+              ),
+          builder: (context, vm) => SwitchListTile(
+                title: const Text('Show adult content'),
+                secondary: const Icon(Icons.child_care),
+                value: vm.value,
+                onChanged: vm.onSwitch,
+              ),
         ),
       ],
     );
@@ -152,19 +162,11 @@ class _ConnectViewModel {
   }
 }
 
-class _ThemeViewModel {
-  final AppTheme theme;
+class _PreferenceViewModel<T> {
+  final T value;
   final void Function(bool) onSwitch;
 
-  _ThemeViewModel({@required this.theme, @required this.onSwitch})
-      : assert(theme != null),
+  _PreferenceViewModel({@required this.value, @required this.onSwitch})
+      : assert(value != null),
         assert(onSwitch != null);
-
-  factory _ThemeViewModel.fromStore(Store<ReddigramState> store) {
-    return _ThemeViewModel(
-      theme: store.state.preferences.theme,
-      onSwitch: (dark) =>
-          store.dispatch(setTheme(dark ? AppTheme.dark : AppTheme.light)),
-    );
-  }
 }

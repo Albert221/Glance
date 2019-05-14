@@ -28,36 +28,39 @@ class ReddigramApp extends StatelessWidget {
 
     return StoreProvider<ReddigramState>(
       store: store,
-      child: StoreConnector<ReddigramState, AppTheme>(
+      child: StoreConnector<ReddigramState, PreferencesState>(
         onInit: (store) => store.dispatch(loadPreferences()),
-        converter: (store) => store.state.preferences.theme,
-        builder: (context, theme) {
-          return StoreConnector<ReddigramState, AuthStatus>(
-            onInit: (store) => store.dispatch(loadUser()),
-            converter: (store) => store.state.authState.status,
-            builder: (context, authStatus) {
-              return MaterialApp(
-                title: 'Reddigram',
-                theme: theme == AppTheme.light
-                    ? ReddigramTheme.light()
-                    : ReddigramTheme.dark(),
-                routes: {
-                  '/': (context) => MainScreen(),
-                },
-                navigatorObservers: [_navObserver],
-                builder: (context, child) {
-                  return Stack(
-                    children: [
-                      child,
-                      if (authStatus == AuthStatus.unknown ||
-                          authStatus == AuthStatus.authenticating ||
-                          authStatus == AuthStatus.signingOut)
-                        FullscreenProgressIndicator(),
-                    ],
-                  );
-                },
-              );
-            },
+        converter: (store) => store.state.preferences,
+        builder: (context, preferences) {
+          return PreferencesProvider(
+            preferences: preferences,
+            child: StoreConnector<ReddigramState, AuthStatus>(
+              onInit: (store) => store.dispatch(loadUser()),
+              converter: (store) => store.state.authState.status,
+              builder: (context, authStatus) {
+                return MaterialApp(
+                  title: 'Reddigram',
+                  theme: PreferencesProvider.of(context).theme == AppTheme.light
+                      ? ReddigramTheme.light()
+                      : ReddigramTheme.dark(),
+                  routes: {
+                    '/': (context) => MainScreen(),
+                  },
+                  navigatorObservers: [_navObserver],
+                  builder: (context, child) {
+                    return Stack(
+                      children: [
+                        child,
+                        if (authStatus == AuthStatus.unknown ||
+                            authStatus == AuthStatus.authenticating ||
+                            authStatus == AuthStatus.signingOut)
+                          FullscreenProgressIndicator(),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
