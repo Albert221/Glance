@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 
@@ -33,10 +34,12 @@ class SubbedTab extends StatelessWidget {
                     const SizedBox(height: 16.0),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: FlatButton(
-                        child: const Text('SUBSCRIBE'),
-                        onPressed: () =>
-                            Navigator.of(context).pop(controller.text),
+                      child: ButtonTheme.bar(
+                        child: FlatButton(
+                          child: const Text('SUBSCRIBE'),
+                          onPressed: () =>
+                              Navigator.of(context).pop(controller.text),
+                        ),
                       ),
                     ),
                   ],
@@ -53,7 +56,7 @@ class SubbedTab extends StatelessWidget {
 
   void _unsubscribe(
       BuildContext context, String subreddit, VoidCallback callback) async {
-    showDialog<void>(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -61,11 +64,11 @@ class SubbedTab extends StatelessWidget {
           content: Text('Do you really want to unsubscribe from r/$subreddit?'),
           actions: [
             FlatButton(
-              child: const Text('Cancel'),
+              child: const Text('CANCEL'),
               onPressed: () => Navigator.of(context).pop(),
             ),
             FlatButton(
-              child: const Text('Unsubscribe'),
+              child: const Text('UNSUBSCRIBE'),
               onPressed: () {
                 Navigator.of(context).pop();
                 callback();
@@ -101,11 +104,19 @@ class SubbedTab extends StatelessWidget {
                 ),
               ...vm.subreddits
                   .map((subreddit) => ListTile(
+                        leading: const CircleAvatar(),
                         title: Text('r/$subreddit'),
-                        onTap: () {
-                          _unsubscribe(context, subreddit,
-                              () => vm.unsubscribe(subreddit));
-                        },
+                        contentPadding: const EdgeInsets.only(left: 16.0),
+                        trailing: InkWell(
+                          child: const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Icon(Icons.remove),
+                          ),
+                          onTap: () => _unsubscribe(context, subreddit,
+                              () => vm.unsubscribe(subreddit)),
+                        ),
+                        onTap: () => Navigator.push(
+                            context, SubredditScreen.route(context, subreddit)),
                       ))
                   .toList(),
             ],
