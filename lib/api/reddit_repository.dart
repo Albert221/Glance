@@ -118,8 +118,13 @@ class RedditRepository {
     });
   }
 
+  /// If [feed] equals '_EMPTY' then it always returns empty list.
   Future<List<Photo>> feed(String feed,
       {String after = '', int limit = 25}) async {
+    if (feed == '_EMPTY') {
+      return Future.value([]);
+    }
+
     return _client
         .get('/$feed.json?after=$after&limit=$limit')
         .then((response) => serializers.deserializeWith(

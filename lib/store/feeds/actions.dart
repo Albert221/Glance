@@ -19,11 +19,11 @@ String _getProperFeedName(Store<ReddigramState> store, String feed) {
       return '/';
     case NEW_SUBSCRIBED:
       return store.state.subscriptions.isEmpty
-          ? '/'
+          ? '_EMPTY'
           : 'r/' + store.state.subscriptions.join('+') + '/new';
     case BEST_SUBSCRIBED:
       return store.state.subscriptions.isEmpty
-          ? '/'
+          ? '_EMPTY'
           : 'r/' + store.state.subscriptions.join('+');
     default:
       return feed;

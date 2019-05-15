@@ -23,8 +23,9 @@ class SubscriptionRepositoriesFacade implements SubscriptionRepository {
   void useLocal() => _backendType = SubscriptionsBackendType.Local;
 
   @override
-  Future<List<String>> fetchSubscribedSubreddits() =>
-      _backendType == SubscriptionsBackendType.Api
+  Future<List<String>> fetchSubscribedSubreddits(
+          {SubscriptionsBackendType forceBackend}) =>
+      (forceBackend ?? _backendType) == SubscriptionsBackendType.Api
           ? apiRepository.fetchSubscribedSubreddits()
           : localRepository.fetchSubscribedSubreddits();
 
