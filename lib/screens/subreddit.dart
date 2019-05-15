@@ -11,10 +11,8 @@ import 'package:redux/redux.dart';
 class SubredditScreen extends StatefulWidget {
   static PageRoute route(BuildContext context, String subredditName) {
     return MaterialPageRoute(
-      settings: RouteSettings(name: 'SubredditScreen'),
-      builder: (context) => SubredditScreen(
-            subredditName: subredditName,
-          ),
+      settings: const RouteSettings(name: 'SubredditScreen'),
+      builder: (context) => SubredditScreen(subredditName: subredditName),
     );
   }
 
@@ -83,7 +81,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
         builder: (context, nsfw) => Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (nsfw) NsfwBadge(),
+                if (nsfw) const NsfwBadge(),
                 Expanded(
                   child: Text(
                     'r/${widget.subredditName}',

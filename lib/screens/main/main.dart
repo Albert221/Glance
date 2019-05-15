@@ -1,12 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:reddigram/models/models.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
-import 'package:reddigram/widgets/widgets.dart';
-import 'package:redux/redux.dart';
 
 class MainScreen extends StatefulWidget {
   static final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -24,18 +19,18 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       key: MainScreen.scaffoldKey,
       appBar: _buildAppBar(context),
-      drawer: MainDrawer(),
+      drawer: const MainDrawer(),
       body: StoreConnector<ReddigramState, void>(
         onInit: (store) => store.dispatch(fetchFreshFeed(BEST)),
         converter: (store) => null,
         builder: (context, _) => PageView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: [
-                FeedTab(feedName: BEST),
-                FeedTab(feedName: NEW_SUBSCRIBED),
-                FeedTab(feedName: BEST_SUBSCRIBED),
-                SubbedTab(),
+                const FeedTab(feedName: BEST),
+                const FeedTab(feedName: NEW_SUBSCRIBED),
+                const FeedTab(feedName: BEST_SUBSCRIBED),
+                const SubbedTab(),
               ],
             ),
       ),
@@ -47,25 +42,25 @@ class _MainScreenState extends State<MainScreen> {
             _currentTab = index;
             _pageController.animateToPage(
               index,
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.ease,
             );
           });
         },
         items: [
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.stars),
             title: Text('Best'),
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.whatshot),
             title: Text('Your new'),
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.star),
             title: Text('Your best'),
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
             title: Text('Subbed'),
           ),

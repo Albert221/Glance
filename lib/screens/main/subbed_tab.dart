@@ -4,6 +4,8 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 
 class SubbedTab extends StatelessWidget {
+  const SubbedTab({Key key}) : super(key: key);
+
   void _subscribe(BuildContext context, void Function(String) callback) async {
     final controller = TextEditingController();
     final focusNode = FocusNode();

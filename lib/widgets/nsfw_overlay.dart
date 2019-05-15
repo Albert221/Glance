@@ -18,7 +18,7 @@ class NsfwOverlay extends StatelessWidget {
         onTap: onShow,
         child: AnimatedOpacity(
           opacity: show ? 0 : 1,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.ease,
           child: Container(
             width: double.infinity,

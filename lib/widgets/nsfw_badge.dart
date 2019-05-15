@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NsfwBadge extends StatelessWidget {
+  const NsfwBadge({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,8 +11,7 @@ class NsfwBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(4.0),
         color: Colors.grey,
       ),
-      padding: const EdgeInsets.symmetric(
-          vertical: 2.0, horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
       child: const Text(
         '18+',
         style: TextStyle(

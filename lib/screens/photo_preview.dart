@@ -6,10 +6,8 @@ import 'package:reddigram/models/models.dart';
 class PhotoPreviewScreen extends StatelessWidget {
   static PageRoute route(BuildContext context, Photo photo) {
     return MaterialPageRoute(
-      settings: RouteSettings(name: 'PhotoPreviewScreen'),
-      builder: (context) => PhotoPreviewScreen(
-            photo: photo,
-          ),
+      settings: const RouteSettings(name: 'PhotoPreviewScreen'),
+      builder: (context) => PhotoPreviewScreen(photo: photo),
     );
   }
 

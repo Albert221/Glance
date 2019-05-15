@@ -32,27 +32,27 @@ class _UpvoteableState extends State<Upvoteable>
 
     _opacityFirst = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0, 1 / 4, curve: Curves.ease),
+      curve: const Interval(0, 1 / 4, curve: Curves.ease),
     ))
       ..addListener(() => setState(() {}));
 
     _opacitySecond = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(3 / 4, 1, curve: Curves.ease),
+      curve: const Interval(3 / 4, 1, curve: Curves.ease),
     ));
 
     _alignmentFirst =
         Tween(begin: Alignment.bottomCenter, end: Alignment.center)
             .animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0, 1 / 3, curve: Curves.ease),
+      curve: const Interval(0, 1 / 3, curve: Curves.ease),
     ));
 
     _alignmentSecond =
         Tween(begin: Alignment.center, end: Alignment.bottomCenter).animate(
             CurvedAnimation(
                 parent: _controller,
-                curve: Interval(2 / 3, 1, curve: Curves.ease)));
+                curve: const Interval(2 / 3, 1, curve: Curves.ease)));
   }
 
   @override
@@ -86,7 +86,7 @@ class _UpvoteableState extends State<Upvoteable>
               child: Container(
                 color: Colors.black45,
                 alignment: _alignmentFirst.value - _alignmentSecond.value,
-                child: Icon(
+                child: const Icon(
                   Icons.arrow_upward,
                   color: Colors.white54,
                   size: 128.0,

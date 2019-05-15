@@ -8,7 +8,9 @@ import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainDrawer extends StatelessWidget {
-  final _methodChannel = MethodChannel('me.wolszon.reddigram/oauth');
+  final _methodChannel = const MethodChannel('me.wolszon.reddigram/oauth');
+
+  const MainDrawer({Key key}) : super(key: key);
 
   void _connectToReddit(_OnConnectCallback onConnect) async {
     try {
@@ -97,9 +99,7 @@ class MainDrawer extends StatelessWidget {
                     ? ListTile(
                         title: const Text('Sign out'),
                         leading: const Icon(Icons.power_settings_new),
-                        onTap: () {
-                          vm.signOut();
-                        },
+                        onTap: vm.signOut,
                       )
                     : ListTile(
                         title: const Text('Connect to Reddit'),
@@ -118,7 +118,7 @@ class MainDrawer extends StatelessWidget {
                   const TextSpan(text: 'Reddigram • '),
                   TextSpan(
                     text: 'Privacy policy',
-                    style: TextStyle(
+                    style: const TextStyle(
                       decoration: TextDecoration.underline,
                     ),
                     recognizer: TapGestureRecognizer()

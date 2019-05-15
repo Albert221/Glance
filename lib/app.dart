@@ -54,7 +54,7 @@ class ReddigramApp extends StatelessWidget {
                         if (authStatus == AuthStatus.unknown ||
                             authStatus == AuthStatus.authenticating ||
                             authStatus == AuthStatus.signingOut)
-                          FullscreenProgressIndicator(),
+                          const FullscreenProgressIndicator(),
                       ],
                     );
                   },

@@ -16,12 +16,9 @@ class PreferencesProvider extends InheritedWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return child;
-  }
+  Widget build(BuildContext context) => child;
 
   @override
-  bool updateShouldNotify(PreferencesProvider oldWidget) {
-    return preferences != oldWidget.preferences;
-  }
+  bool updateShouldNotify(PreferencesProvider oldWidget) =>
+      preferences != oldWidget.preferences;
 }
