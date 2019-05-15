@@ -7,7 +7,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
   return (Store<ReddigramState> store) {
-    reddigramRepository
+    subscriptionRepository
         .fetchSubscribedSubreddits()
         .then((subreddits) =>
             store.dispatch(FetchedSubscribedSubreddits(subreddits)))
@@ -17,7 +17,7 @@ ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
 
 ThunkAction<ReddigramState> subscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
-    reddigramRepository.subscribeSubreddit(name).then((_) {
+    subscriptionRepository.subscribeSubreddit(name).then((_) {
       store.dispatch(SubscribedSubreddit(name));
       store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED));
       store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
@@ -27,7 +27,7 @@ ThunkAction<ReddigramState> subscribeSubreddit(String name) {
 
 ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
-    reddigramRepository.unsubscribeSubreddit(name).then((_) {
+    subscriptionRepository.unsubscribeSubreddit(name).then((_) {
       store.dispatch(UnsubscribedSubreddit(name));
       store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED));
       store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
