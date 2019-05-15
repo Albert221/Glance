@@ -76,7 +76,7 @@ class MainDrawer extends StatelessWidget {
               ),
           builder: (context, vm) => SwitchListTile(
                 title: const Text('Show adult content'),
-                secondary: const Icon(Icons.child_care),
+                secondary: const Icon(Icons.block),
                 value: vm.value,
                 onChanged: vm.onSwitch,
               ),

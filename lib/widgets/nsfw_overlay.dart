@@ -37,7 +37,7 @@ class NsfwOverlay extends StatelessWidget {
                 ),
                 const SizedBox(height: 12.0),
                 const Icon(
-                  Icons.child_care,
+                  Icons.block,
                   size: 48.0,
                   color: Colors.white,
                 ),
