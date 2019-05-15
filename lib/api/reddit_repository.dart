@@ -34,7 +34,7 @@ class RedditRepository {
         return options;
       }),
       InterceptorsWrapper(onRequest: (options) {
-        if (_tokens != null) {
+        if (_tokens != null && !options.path.contains('access_token')) {
           options.headers['Authorization'] = 'Bearer ${_tokens.accessToken}';
           options.baseUrl = 'https://oauth.reddit.com';
         }
