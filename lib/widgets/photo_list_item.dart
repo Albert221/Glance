@@ -50,11 +50,15 @@ class PhotoListItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'u/${photo.authorName}',
-            style: Theme.of(context).textTheme.caption,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'u/${photo.authorName}',
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              style: Theme.of(context).textTheme.caption,
+            ),
           ),
         ),
         InkWell(
