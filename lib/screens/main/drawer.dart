@@ -48,7 +48,7 @@ class MainDrawer extends StatelessWidget {
               authState.status == AuthStatus.authenticated
                   ? authState.username
                   : 'Guest',
-              style: Theme.of(context).textTheme.title,
+              style: Theme.of(context).textTheme.caption,
             ),
           ),
     );

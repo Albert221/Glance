@@ -54,7 +54,7 @@ class PhotoListItem extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Text(
             'u/${photo.authorName}',
-            style: Theme.of(context).textTheme.title,
+            style: Theme.of(context).textTheme.caption,
           ),
         ),
         InkWell(
@@ -63,7 +63,7 @@ class PhotoListItem extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'r/${photo.subredditName}',
-              style: Theme.of(context).textTheme.title,
+              style: Theme.of(context).textTheme.caption,
             ),
           ),
         ),

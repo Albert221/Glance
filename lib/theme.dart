@@ -30,7 +30,7 @@ class ReddigramTheme {
         labelColor: Colors.black,
       ),
       textTheme: lightTheme.textTheme.copyWith(
-        title: TextStyle(
+        caption: TextStyle(
           color: Colors.black,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -60,7 +60,7 @@ class ReddigramTheme {
         ),
       ),
       textTheme: lightTheme.textTheme.copyWith(
-        title: TextStyle(
+        caption: TextStyle(
           color: Colors.white,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,

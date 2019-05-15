@@ -8,45 +8,9 @@ class SubbedTab extends StatelessWidget {
   const SubbedTab({Key key}) : super(key: key);
 
   void _subscribe(BuildContext context, void Function(String) callback) async {
-    final controller = TextEditingController();
-    final focusNode = FocusNode();
-
-    FocusScope.of(context).requestFocus(focusNode);
-
-    final subreddit = await showDialog<String>(
+    final subreddit = await showSearch<String>(
       context: context,
-      builder: (context) => SimpleDialog(
-            title: const Text('Subscribe to subreddit'),
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      focusNode: focusNode,
-                      controller: controller,
-                      decoration:
-                          const InputDecoration(hintText: 'Enter name here'),
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) => Navigator.of(context).pop(value),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: ButtonTheme.bar(
-                        child: FlatButton(
-                          child: const Text('SUBSCRIBE'),
-                          onPressed: () =>
-                              Navigator.of(context).pop(controller.text),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      delegate: SearchSubredditsDelegate(),
     );
 
     if (subreddit != null && subreddit.isNotEmpty) {
@@ -85,16 +49,22 @@ class SubbedTab extends StatelessWidget {
     return StoreConnector<ReddigramState, _SubredditsViewModel>(
       converter: (store) => _SubredditsViewModel.fromStore(store),
       builder: (context, vm) => ListView(
-            padding: EdgeInsets.zero,
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             children: [
               ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: Icon(
+                    Icons.add,
+                    color: Theme.of(context).textTheme.body1.color,
+                  ),
+                ),
                 title: const Text(
-                  'Subreddits',
+                  'Subscribe to subreddit',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                trailing: const Icon(Icons.add),
                 onTap: () => _subscribe(context, vm.subscribe),
               ),
               if (vm.subreddits.isEmpty)
