@@ -31,17 +31,13 @@ class PhotoListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Material(
-        elevation: 2.0,
-        color: Theme.of(context).cardColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTopBar(context),
-            _buildImage(context),
-            _buildBottomBar(context),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTopBar(context),
+          _buildImage(context),
+          _buildBottomBar(context),
+        ],
       ),
     );
   }
@@ -76,32 +72,38 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width - 16;
     final pictureHeight = width / photo.fullImage.aspectRatio;
     final height = pictureHeight > width ? width : pictureHeight;
 
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: onPhotoTap,
-          child: Upvoteable(
-            height: height,
-            onUpvote: photo.upvoted ? null : onUpvote,
-            child: CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: photo.fullImage.url,
-              fadeInDuration: Duration.zero,
-              placeholder: (context, url) => _buildPlaceholder(context),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: onPhotoTap,
+              child: Upvoteable(
+                height: height,
+                onUpvote: photo.upvoted ? null : onUpvote,
+                child: CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: photo.fullImage.url,
+                  fadeInDuration: Duration.zero,
+                  placeholder: (context, url) => _buildPlaceholder(context),
+                ),
+              ),
             ),
-          ),
+            if (photo.nsfw)
+              NsfwOverlay(
+                height: height,
+                show: showNsfw,
+                onShow: onShowNsfw,
+              ),
+          ],
         ),
-        if (photo.nsfw)
-          NsfwOverlay(
-            height: height,
-            show: showNsfw,
-            onShow: onShowNsfw,
-          ),
-      ],
+      ),
     );
   }
 
@@ -130,12 +132,14 @@ class PhotoListItem extends StatelessWidget {
           child: Container(
             width: double.infinity,
             height: 56.0,
-            padding: const EdgeInsets.all(16.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: Row(
               children: [
-                GestureDetector(
-                  onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
-                  child: Icon(
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: photo.upvoted ? onUpvoteCanceled : onUpvote,
+                  icon: Icon(
                     Icons.arrow_upward,
                     color: photo.upvoted
                         ? Colors.red
@@ -143,22 +147,20 @@ class PhotoListItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12.0),
-                Text(photo.upvoted
-                    ? 'You and ${photo.upvotes - 1} others upvoted this.'
-                    : '${photo.upvotes} others upvoted this.'),
+                Expanded(
+                  child: Text(photo.upvoted
+                      ? 'You and ${photo.upvotes - 1} others upvoted this.'
+                      : '${photo.upvotes} others upvoted this.'),
+                ),
+                IconButton(
+                  onPressed: () async => await launch(photo.redditUrl),
+                  padding: EdgeInsets.zero,
+                  icon: const Icon(Icons.launch),
+                  tooltip: 'Open in Reddit',
+                ),
               ],
             ),
           ),
-        ),
-        Tooltip(
-          child: InkWell(
-            child: const Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: const Icon(Icons.launch),
-            ),
-            onTap: () async => await launch(photo.redditUrl),
-          ),
-          message: 'Open in Reddit',
         ),
       ],
     );

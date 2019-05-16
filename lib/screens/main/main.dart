@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
+import 'package:reddigram/widgets/reddigram_logo.dart';
 
 class MainScreen extends StatefulWidget {
   static final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -71,10 +72,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text(
-        'Reddigram',
-        style: Theme.of(context).appBarTheme.textTheme.display1,
-      ),
+      title: const ReddigramLogo(),
       centerTitle: true,
     );
   }

@@ -7,15 +7,11 @@ class ReddigramTheme {
     return lightTheme.copyWith(
       primaryColor: Colors.black,
       accentColor: Colors.black,
+      scaffoldBackgroundColor: Colors.white,
       appBarTheme: AppBarTheme(
+        elevation: 0,
         color: Colors.white,
         textTheme: TextTheme(
-          display1: TextStyle(
-            color: Colors.black,
-            fontSize: 22.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Pacifico',
-          ),
           title: TextStyle(
             color: Colors.black,
             fontSize: 20.0,
@@ -48,16 +44,10 @@ class ReddigramTheme {
 
     return lightTheme.copyWith(
       accentColor: Colors.white,
+      scaffoldBackgroundColor: Colors.black,
       appBarTheme: AppBarTheme(
+        elevation: 0,
         color: Colors.black,
-        textTheme: TextTheme(
-          display1: TextStyle(
-            color: Colors.white,
-            fontSize: 22.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'Pacifico',
-          ),
-        ),
       ),
       textTheme: lightTheme.textTheme.copyWith(
         caption: TextStyle(

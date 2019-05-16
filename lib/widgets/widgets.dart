@@ -5,4 +5,5 @@ export 'nsfw_overlay.dart';
 export 'photo_grid_item.dart';
 export 'photo_list_item.dart';
 export 'preferences_provider.dart';
+export 'reddigram_logo.dart';
 export 'upvoteable.dart';
