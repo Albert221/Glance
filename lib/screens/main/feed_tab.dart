@@ -10,8 +10,9 @@ import 'package:redux/redux.dart';
 
 class FeedTab extends StatefulWidget {
   final String feedName;
+  final Key infiniteListKey;
 
-  const FeedTab({Key key, @required this.feedName})
+  const FeedTab({Key key, @required this.feedName, this.infiniteListKey})
       : assert(feedName != null),
         super(key: key);
 
@@ -35,6 +36,7 @@ class _FeedTabState extends State<FeedTab> {
             return completer.future;
           },
           child: InfiniteList(
+            key: widget.infiniteListKey,
             keepAlive: true,
             fetchMore: vm.fetchMore,
             itemCount: vm.photos.length + 1,

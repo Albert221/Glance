@@ -65,9 +65,7 @@ class _IconNavigationBarState extends State<IconNavigationBar> {
           return Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: index != widget.currentIndex
-                  ? () => widget.onTap(index)
-                  : null,
+              onTap: () => widget.onTap(index),
               child: Container(
                 height: 64.0,
                 alignment: Alignment.center,

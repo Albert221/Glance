@@ -13,6 +13,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final feedKeys = List.generate(3, (i) => GlobalKey<InfiniteListState>());
+
   final _pageController = PageController();
   int _currentTab = 0;
 
@@ -28,9 +30,18 @@ class _MainScreenState extends State<MainScreen> {
               physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: [
-                const FeedTab(feedName: POPULAR),
-                const FeedTab(feedName: NEW_SUBSCRIBED),
-                const FeedTab(feedName: BEST_SUBSCRIBED),
+                FeedTab(
+                  feedName: POPULAR,
+                  infiniteListKey: feedKeys[0],
+                ),
+                FeedTab(
+                  feedName: NEW_SUBSCRIBED,
+                  infiniteListKey: feedKeys[1],
+                ),
+                FeedTab(
+                  feedName: BEST_SUBSCRIBED,
+                  infiniteListKey: feedKeys[2],
+                ),
                 const SubbedTab(),
               ],
             ),
@@ -57,12 +68,18 @@ class _MainScreenState extends State<MainScreen> {
         ],
         onTap: (index) {
           setState(() {
-            _currentTab = index;
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.ease,
-            );
+            if (_currentTab != index) {
+              // Change the current tab
+              _currentTab = index;
+              _pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease,
+              );
+            } else {
+              // Scroll to the top
+              feedKeys[index].currentState.scrollToOffset(0);
+            }
           });
         },
       ),
