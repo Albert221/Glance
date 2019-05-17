@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/reddigram_logo.dart';
+import 'package:reddigram/widgets/widgets.dart';
 
 class MainScreen extends StatefulWidget {
   static final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -34,9 +35,14 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+      bottomNavigationBar: IconNavigationBar(
         currentIndex: _currentTab,
+        icons: [
+          const Icon(Icons.stars),
+          const Icon(Icons.whatshot),
+          const Icon(Icons.star),
+          const Icon(Icons.view_list),
+        ],
         onTap: (index) {
           setState(() {
             _currentTab = index;
@@ -47,24 +53,6 @@ class _MainScreenState extends State<MainScreen> {
             );
           });
         },
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.stars),
-            title: Text('Best'),
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.whatshot),
-            title: Text('Your new'),
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            title: Text('Your best'),
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.view_list),
-            title: Text('Subbed'),
-          ),
-        ],
       ),
     );
   }
