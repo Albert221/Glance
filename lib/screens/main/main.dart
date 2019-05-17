@@ -39,19 +39,19 @@ class _MainScreenState extends State<MainScreen> {
         currentIndex: _currentTab,
         icons: [
           const IconNavigationBarItem(
-            icon: Icon(Icons.stars),
+            icon: Icon(Icons.show_chart),
             tooltip: 'Popular',
           ),
           const IconNavigationBarItem(
-            icon: Icon(Icons.whatshot),
+            icon: Icon(Icons.star),
             tooltip: 'Your newest',
           ),
           const IconNavigationBarItem(
-            icon: Icon(Icons.star),
+            icon: Icon(Icons.whatshot),
             tooltip: 'Your best',
           ),
           const IconNavigationBarItem(
-            icon: Icon(Icons.view_list),
+            icon: Icon(Icons.short_text),
             tooltip: 'Subscriptions',
           ),
         ],
