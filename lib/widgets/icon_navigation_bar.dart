@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
+class IconNavigationBarItem {
+  final Widget icon;
+  final String tooltip;
+
+  const IconNavigationBarItem({@required this.icon, this.tooltip})
+      : assert(icon != null);
+}
+
 class IconNavigationBar extends StatefulWidget {
-  final List<Widget> icons;
+  final List<IconNavigationBarItem> icons;
   final ValueChanged<int> onTap;
   final int currentIndex;
 
@@ -30,8 +38,29 @@ class _IconNavigationBarState extends State<IconNavigationBar> {
     return Container(
       color: backgroundColor,
       child: Row(
-        children: widget.icons.map((icon) {
-          final index = widget.icons.indexOf(icon);
+        children: widget.icons.map((item) {
+          final index = widget.icons.indexOf(item);
+
+          final itemWidget = AnimatedContainer(
+            duration: widget.animationDuration,
+            width: 44.0,
+            height: 44.0,
+            decoration: BoxDecoration(
+              color:
+                  index == widget.currentIndex ? iconsColor : backgroundColor,
+              shape: BoxShape.circle,
+            ),
+            child: AnimatedTheme(
+              data: ThemeData(
+                iconTheme: IconThemeData(
+                  color: index == widget.currentIndex
+                      ? backgroundColor
+                      : iconsColor,
+                ),
+              ),
+              child: item.icon,
+            ),
+          );
 
           return Expanded(
             child: GestureDetector(
@@ -42,27 +71,12 @@ class _IconNavigationBarState extends State<IconNavigationBar> {
               child: Container(
                 height: 64.0,
                 alignment: Alignment.center,
-                child: AnimatedContainer(
-                  duration: widget.animationDuration,
-                  width: 44.0,
-                  height: 44.0,
-                  decoration: BoxDecoration(
-                    color: index == widget.currentIndex
-                        ? iconsColor
-                        : backgroundColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: AnimatedTheme(
-                    data: ThemeData(
-                      iconTheme: IconThemeData(
-                        color: index == widget.currentIndex
-                            ? backgroundColor
-                            : iconsColor,
-                      ),
-                    ),
-                    child: icon,
-                  ),
-                ),
+                child: item.tooltip != null
+                    ? Tooltip(
+                        message: item.tooltip,
+                        child: itemWidget,
+                      )
+                    : itemWidget,
               ),
             ),
           );

@@ -38,10 +38,22 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: IconNavigationBar(
         currentIndex: _currentTab,
         icons: [
-          const Icon(Icons.stars),
-          const Icon(Icons.whatshot),
-          const Icon(Icons.star),
-          const Icon(Icons.view_list),
+          const IconNavigationBarItem(
+            icon: Icon(Icons.stars),
+            tooltip: 'Best',
+          ),
+          const IconNavigationBarItem(
+            icon: Icon(Icons.whatshot),
+            tooltip: 'Your newest',
+          ),
+          const IconNavigationBarItem(
+            icon: Icon(Icons.star),
+            tooltip: 'Your best',
+          ),
+          const IconNavigationBarItem(
+            icon: Icon(Icons.view_list),
+            tooltip: 'Subscriptions',
+          ),
         ],
         onTap: (index) {
           setState(() {
@@ -62,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
       title: const ReddigramLogo(),
       centerTitle: true,
       leading: IconButton(
-        icon: Icon(Icons.account_circle),
+        icon: const Icon(Icons.account_circle),
         onPressed: () {
           showModalBottomSheet(
             context: context,

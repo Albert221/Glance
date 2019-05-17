@@ -138,19 +138,15 @@ class _SubredditScreenState extends State<SubredditScreen> {
             itemCount: 2,
             itemBuilder: (context, i) => [
                   GridView.builder(
+                    padding: const EdgeInsets.all(2.0),
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: feedVm.photos.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3),
-                    itemBuilder: (context, i) => Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 1.0,
-                            right: i % 3 == 2 ? 0 : 1,
-                          ),
-                          child: _buildPhotoGridItem(context, feedVm, i),
-                        ),
+                    itemBuilder: (context, i) =>
+                        _buildPhotoGridItem(context, feedVm, i),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 32.0),
@@ -169,7 +165,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
     return PhotoGridItem(
       photo: photo,
       onTap: () {
-        final width = MediaQuery.of(context).size.width;
+        final width = MediaQuery.of(context).size.width - 16;
 
         final offset = photoIndex == 0
             ? 0.0
