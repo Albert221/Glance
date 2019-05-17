@@ -22,13 +22,13 @@ class _MainScreenState extends State<MainScreen> {
       key: MainScreen.scaffoldKey,
       appBar: _buildAppBar(context),
       body: StoreConnector<ReddigramState, void>(
-        onInit: (store) => store.dispatch(fetchFreshFeed(BEST)),
+        onInit: (store) => store.dispatch(fetchFreshFeed(POPULAR)),
         converter: (store) => null,
         builder: (context, _) => PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: [
-                const FeedTab(feedName: BEST),
+                const FeedTab(feedName: POPULAR),
                 const FeedTab(feedName: NEW_SUBSCRIBED),
                 const FeedTab(feedName: BEST_SUBSCRIBED),
                 const SubbedTab(),
@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
         icons: [
           const IconNavigationBarItem(
             icon: Icon(Icons.stars),
-            tooltip: 'Best',
+            tooltip: 'Popular',
           ),
           const IconNavigationBarItem(
             icon: Icon(Icons.whatshot),

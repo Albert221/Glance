@@ -7,7 +7,7 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-const BEST = 'BEST';
+const POPULAR = 'POPULAR';
 const NEW_SUBSCRIBED = 'NEW_SUBSCRIBED';
 const BEST_SUBSCRIBED = 'BEST_SUBSCRIBED';
 
@@ -15,8 +15,8 @@ bool isSubreddit(String feed) => feed.contains(RegExp(r'^r\/'));
 
 String _getProperFeedName(Store<ReddigramState> store, String feed) {
   switch (feed) {
-    case BEST:
-      return '/';
+    case POPULAR:
+      return '/r/popular';
     case NEW_SUBSCRIBED:
       return store.state.subscriptions.isEmpty
           ? '_EMPTY'
