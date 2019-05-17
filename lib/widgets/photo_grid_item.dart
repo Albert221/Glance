@@ -30,7 +30,7 @@ class PhotoGridItem extends StatelessWidget {
             GestureDetector(
               onTap: onTap,
               child: CachedNetworkImage(
-                imageUrl: photo.fullImage.url,
+                imageUrl: photo.thumbnail.url,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,

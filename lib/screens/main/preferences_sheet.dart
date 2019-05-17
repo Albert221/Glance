@@ -7,10 +7,8 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MainDrawer extends StatelessWidget {
+class PreferencesSheet extends StatelessWidget {
   final _methodChannel = const MethodChannel('me.wolszon.reddigram/oauth');
-
-  const MainDrawer({Key key}) : super(key: key);
 
   void _connectToReddit(_OnConnectCallback onConnect) async {
     try {
@@ -24,40 +22,40 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeader(context),
-          Expanded(child: _buildPreferences(context)),
-          _buildFooter(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return StoreConnector<ReddigramState, AuthState>(
-      converter: (store) => store.state.authState,
-      builder: (context, authState) => DrawerHeader(
-            margin: EdgeInsets.zero,
-            decoration: BoxDecoration(
-              color: Theme.of(context).appBarTheme.color,
-            ),
-            child: Text(
-              authState.status == AuthStatus.authenticated
-                  ? authState.username
-                  : 'Guest',
-              style: Theme.of(context).textTheme.caption,
-            ),
-          ),
-    );
-  }
-
-  Widget _buildPreferences(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        StoreConnector<ReddigramState, _ConnectViewModel>(
+          converter: (store) => _ConnectViewModel.fromStore(store),
+          builder: (context, vm) =>
+              vm.authState.status == AuthStatus.authenticated
+                  ? ListTile(
+                      title: const Text('Sign out'),
+                      trailing: Text(vm.authState.username),
+                      leading: const Icon(Icons.power_settings_new),
+                      onTap: vm.signOut,
+                    )
+                  : ListTile(
+                      title: const Text('Connect to Reddit'),
+                      leading: const Icon(Icons.account_circle),
+                      onTap: () => _connectToReddit(vm.onConnect),
+                      trailing: vm.authState.status == AuthStatus.authenticating
+                          ? Transform.scale(
+                              scale: 0.5,
+                              child: const CircularProgressIndicator(),
+                            )
+                          : null,
+                    ),
+        ),
+        ListTile(
+          title: const Text(
+            'PREFERENCES',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          dense: true,
+        ),
         StoreConnector<ReddigramState, _PreferenceViewModel>(
           converter: (store) => _PreferenceViewModel<AppTheme>(
                 value: store.state.preferences.theme,
@@ -83,56 +81,31 @@ class MainDrawer extends StatelessWidget {
                 onChanged: vm.onSwitch,
               ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
-    return Material(
-      elevation: 4.0,
-      child: Column(
-        children: [
-          StoreConnector<ReddigramState, _ConnectViewModel>(
-            converter: (store) => _ConnectViewModel.fromStore(store),
-            builder: (context, vm) =>
-                vm.authState.status == AuthStatus.authenticated
-                    ? ListTile(
-                        title: const Text('Sign out'),
-                        leading: const Icon(Icons.power_settings_new),
-                        onTap: vm.signOut,
-                      )
-                    : ListTile(
-                        title: const Text('Connect to Reddit'),
-                        leading: const Icon(Icons.account_circle),
-                        onTap: () => _connectToReddit(vm.onConnect),
-                      ),
-          ),
-          ListTile(
-            title: RichText(
-              text: TextSpan(
-                style: Theme.of(context)
-                    .textTheme
-                    .body2
-                    .copyWith(color: Theme.of(context).disabledColor),
-                children: [
-                  const TextSpan(text: 'Reddigram • '),
-                  TextSpan(
-                    text: 'Privacy policy',
-                    style: const TextStyle(
-                      decoration: TextDecoration.underline,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () =>
-                          launch('https://reddigram.wolszon.me/privacy.html'),
+        ListTile(
+          enabled: false,
+          dense: true,
+          title: RichText(
+            text: TextSpan(
+              style: Theme.of(context)
+                  .textTheme
+                  .body2
+                  .copyWith(color: Theme.of(context).disabledColor),
+              children: [
+                const TextSpan(text: 'Reddigram • '),
+                TextSpan(
+                  text: 'Privacy policy',
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
                   ),
-                ],
-              ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () =>
+                        launch('https://reddigram.wolszon.me/privacy.html'),
+                ),
+              ],
             ),
-            enabled: false,
-            dense: true,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

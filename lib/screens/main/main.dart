@@ -20,7 +20,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       key: MainScreen.scaffoldKey,
       appBar: _buildAppBar(context),
-      drawer: const MainDrawer(),
       body: StoreConnector<ReddigramState, void>(
         onInit: (store) => store.dispatch(fetchFreshFeed(BEST)),
         converter: (store) => null,
@@ -74,6 +73,15 @@ class _MainScreenState extends State<MainScreen> {
     return AppBar(
       title: const ReddigramLogo(),
       centerTitle: true,
+      leading: IconButton(
+        icon: Icon(Icons.account_circle),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => PreferencesSheet(),
+          );
+        },
+      ),
     );
   }
 }

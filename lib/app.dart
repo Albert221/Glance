@@ -51,9 +51,7 @@ class ReddigramApp extends StatelessWidget {
                     return Stack(
                       children: [
                         child,
-                        if (authStatus == AuthStatus.unknown ||
-                            authStatus == AuthStatus.authenticating ||
-                            authStatus == AuthStatus.signingOut)
+                        if (authStatus == AuthStatus.unknown)
                           const FullscreenProgressIndicator(),
                       ],
                     );
