@@ -21,22 +21,30 @@ class PhotoGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Ink.image(
-          image: CachedNetworkImageProvider(photo.thumbnail.url),
-          fit: BoxFit.cover,
-          child: InkWell(
-            onTap: onTap,
-          ),
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: onTap,
+              child: CachedNetworkImage(
+                imageUrl: photo.fullImage.url,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+            if (photo.nsfw)
+              NsfwOverlay(
+                height: double.infinity,
+                show: showNsfw,
+                onShow: onShowNsfw,
+              ),
+          ],
         ),
-        if (photo.nsfw)
-          NsfwOverlay(
-            height: double.infinity,
-            show: showNsfw,
-            onShow: onShowNsfw,
-          ),
-      ],
+      ),
     );
   }
 }
