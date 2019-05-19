@@ -29,7 +29,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
   final _columnListKey = GlobalKey<InfiniteListState>();
 
   bool _subredditLoaded(Store<ReddigramState> store) =>
-      store.state.feeds['r/${widget.subredditName}'] != null;
+      store.state.feeds['r/${widget.subredditName}'] != null &&
+      store.state.feeds['r/${widget.subredditName}'].photosLoaded;
 
   bool _nsfwPhotoShown(BuildContext context, _FeedViewModel vm, Photo photo) =>
       vm.feed.nsfw ||

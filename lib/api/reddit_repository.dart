@@ -66,8 +66,8 @@ class RedditRepository {
 
     return _post(
       '/api/v1/access_token',
-      data:
-          'grant_type=refresh_token&refresh_token=${refreshToken ?? _tokens.refreshToken}',
+      data: 'grant_type=refresh_token'
+          '&refresh_token=${refreshToken ?? _tokens.refreshToken}',
       headers: {'Authorization': basicAuth},
     ).then((response) {
       if (_tokens == null && refreshToken != null) {
@@ -154,6 +154,16 @@ class RedditRepository {
         .then((response) => serializers.deserializeWith(
             SubredditResponse.serializer, response.data))
         .then(SubredditFeedMapper.map);
+  }
+
+  Future<List<Feed>> searchSubreddits(String query) async {
+    return _client
+        .get('/api/subreddit_autocomplete_v2.json?query=$query&limit=10'
+            '&include_profiles=false&include_categories=false'
+            '&include_over_18=on')
+        .then((response) => serializers.deserializeWith(
+            SubredditListResponse.serializer, response.data))
+        .then(SubredditFeedMapper.mapList);
   }
 }
 

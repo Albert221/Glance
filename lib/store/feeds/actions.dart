@@ -44,10 +44,19 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
 
       store.dispatch(FetchedPhotos(photos));
 
-      final feedBuilder = FeedBuilder()
+      var feed = Feed().rebuild((b) => b
         ..photosIds.replace(photosIds(photos))
-        ..nsfw = results.length == 2 ? (results[1] as Feed).nsfw : false;
-      final feed = feedBuilder.build();
+        ..photosLoaded = true);
+
+      if (results.length == 2) {
+        final resultFeed = results[1] as Feed;
+
+        feed = feed.rebuild((b) => b
+          ..name = resultFeed.name
+          ..nsfw = resultFeed.nsfw
+          ..primaryColor = resultFeed.primaryColor
+          ..iconUrl = resultFeed.iconUrl);
+      }
 
       store.dispatch(FetchedFreshFeed(feedName, feed));
     }).whenComplete(() => completer?.complete());

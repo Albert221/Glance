@@ -8,19 +8,46 @@ part of 'feed.dart';
 
 class _$Feed extends Feed {
   @override
+  final String name;
+  @override
   final BuiltList<String> photosIds;
   @override
+  final bool photosLoaded;
+  @override
   final bool nsfw;
+  @override
+  final String primaryColor;
+  @override
+  final String iconUrl;
 
   factory _$Feed([void Function(FeedBuilder) updates]) =>
       (new FeedBuilder()..update(updates)).build();
 
-  _$Feed._({this.photosIds, this.nsfw}) : super._() {
+  _$Feed._(
+      {this.name,
+      this.photosIds,
+      this.photosLoaded,
+      this.nsfw,
+      this.primaryColor,
+      this.iconUrl})
+      : super._() {
+    if (name == null) {
+      throw new BuiltValueNullFieldError('Feed', 'name');
+    }
     if (photosIds == null) {
       throw new BuiltValueNullFieldError('Feed', 'photosIds');
     }
+    if (photosLoaded == null) {
+      throw new BuiltValueNullFieldError('Feed', 'photosLoaded');
+    }
     if (nsfw == null) {
       throw new BuiltValueNullFieldError('Feed', 'nsfw');
+    }
+    if (primaryColor == null) {
+      throw new BuiltValueNullFieldError('Feed', 'primaryColor');
+    }
+    if (iconUrl == null) {
+      throw new BuiltValueNullFieldError('Feed', 'iconUrl');
     }
   }
 
@@ -34,19 +61,36 @@ class _$Feed extends Feed {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Feed && photosIds == other.photosIds && nsfw == other.nsfw;
+    return other is Feed &&
+        name == other.name &&
+        photosIds == other.photosIds &&
+        photosLoaded == other.photosLoaded &&
+        nsfw == other.nsfw &&
+        primaryColor == other.primaryColor &&
+        iconUrl == other.iconUrl;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, photosIds.hashCode), nsfw.hashCode));
+    return $jf($jc(
+        $jc(
+            $jc(
+                $jc($jc($jc(0, name.hashCode), photosIds.hashCode),
+                    photosLoaded.hashCode),
+                nsfw.hashCode),
+            primaryColor.hashCode),
+        iconUrl.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Feed')
+          ..add('name', name)
           ..add('photosIds', photosIds)
-          ..add('nsfw', nsfw))
+          ..add('photosLoaded', photosLoaded)
+          ..add('nsfw', nsfw)
+          ..add('primaryColor', primaryColor)
+          ..add('iconUrl', iconUrl))
         .toString();
   }
 }
@@ -54,21 +98,41 @@ class _$Feed extends Feed {
 class FeedBuilder implements Builder<Feed, FeedBuilder> {
   _$Feed _$v;
 
+  String _name;
+  String get name => _$this._name;
+  set name(String name) => _$this._name = name;
+
   ListBuilder<String> _photosIds;
   ListBuilder<String> get photosIds =>
       _$this._photosIds ??= new ListBuilder<String>();
   set photosIds(ListBuilder<String> photosIds) => _$this._photosIds = photosIds;
 
+  bool _photosLoaded;
+  bool get photosLoaded => _$this._photosLoaded;
+  set photosLoaded(bool photosLoaded) => _$this._photosLoaded = photosLoaded;
+
   bool _nsfw;
   bool get nsfw => _$this._nsfw;
   set nsfw(bool nsfw) => _$this._nsfw = nsfw;
+
+  String _primaryColor;
+  String get primaryColor => _$this._primaryColor;
+  set primaryColor(String primaryColor) => _$this._primaryColor = primaryColor;
+
+  String _iconUrl;
+  String get iconUrl => _$this._iconUrl;
+  set iconUrl(String iconUrl) => _$this._iconUrl = iconUrl;
 
   FeedBuilder();
 
   FeedBuilder get _$this {
     if (_$v != null) {
+      _name = _$v.name;
       _photosIds = _$v.photosIds?.toBuilder();
+      _photosLoaded = _$v.photosLoaded;
       _nsfw = _$v.nsfw;
+      _primaryColor = _$v.primaryColor;
+      _iconUrl = _$v.iconUrl;
       _$v = null;
     }
     return this;
@@ -91,7 +155,14 @@ class FeedBuilder implements Builder<Feed, FeedBuilder> {
   _$Feed build() {
     _$Feed _$result;
     try {
-      _$result = _$v ?? new _$Feed._(photosIds: photosIds.build(), nsfw: nsfw);
+      _$result = _$v ??
+          new _$Feed._(
+              name: name,
+              photosIds: photosIds.build(),
+              photosLoaded: photosLoaded,
+              nsfw: nsfw,
+              primaryColor: primaryColor,
+              iconUrl: iconUrl);
     } catch (_) {
       String _$failedField;
       try {

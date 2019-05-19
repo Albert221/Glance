@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:reddigram/models/models.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
+import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
 class SubbedTab extends StatelessWidget {
@@ -52,15 +54,15 @@ class SubbedTab extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             children: [
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).cardColor,
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
-                    Icons.add,
+                    Icons.search,
                     color: Theme.of(context).textTheme.body1.color,
                   ),
                 ),
                 title: const Text(
-                  'Subscribe to subreddit',
+                  'Explore subreddits',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -73,22 +75,26 @@ class SubbedTab extends StatelessWidget {
                   dense: true,
                 ),
               ...vm.subreddits
-                  .map((subreddit) => ListTile(
-                        leading: const CircleAvatar(),
-                        title: Text('r/$subreddit'),
-                        contentPadding: const EdgeInsets.only(left: 16.0),
-                        trailing: InkWell(
-                          child: const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Icon(Icons.remove),
-                          ),
-                          onTap: () => _unsubscribe(context, subreddit,
-                              () => vm.unsubscribe(subreddit)),
-                        ),
-                        onTap: () => Navigator.push(
-                            context, SubredditScreen.route(context, subreddit)),
+                  .map((subredditName) => StoreConnector<ReddigramState, Feed>(
+                        converter: (store) =>
+                            store.state.feeds['r/$subredditName'] ??
+                            Feed.blank(subredditName),
+                        builder: (context, subreddit) => SubredditListTile(
+                              subreddit: subreddit,
+                              onTap: () => Navigator.push(
+                                  context,
+                                  SubredditScreen.route(
+                                    context,
+                                    subredditName,
+                                  )),
+                              trailingIcon: const Icon(Icons.remove),
+                              onTrailingTap: () => _unsubscribe(
+                                  context,
+                                  subredditName,
+                                  () => vm.unsubscribe(subredditName)),
+                            ),
                       ))
-                  .toList(),
+                  .toList()
             ],
           ),
     );
