@@ -132,18 +132,19 @@ class PhotoListItem extends StatelessWidget {
           child: Container(
             width: double.infinity,
             height: 56.0,
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: Row(
               children: [
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: photo.upvoted ? onUpvoteCanceled : onUpvote,
-                  icon: Icon(
-                    Icons.arrow_upward,
-                    color: photo.upvoted
-                        ? Colors.red
-                        : Theme.of(context).textTheme.body1.color,
+                InkWell(
+                  onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 16.0),
+                    child: Icon(
+                      Icons.arrow_upward,
+                      color: photo.upvoted
+                          ? Colors.red
+                          : Theme.of(context).textTheme.body1.color,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12.0),
@@ -152,11 +153,16 @@ class PhotoListItem extends StatelessWidget {
                       ? 'You and ${photo.upvotes - 1} others upvoted this.'
                       : '${photo.upvotes} others upvoted this.'),
                 ),
-                IconButton(
-                  onPressed: () async => await launch(photo.redditUrl),
-                  padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.launch),
-                  tooltip: 'Open in Reddit',
+                Tooltip(
+                  message: 'Open in Reddit',
+                  child: InkWell(
+                    onTap: () async => await launch(photo.redditUrl),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 16.0),
+                      child: Icon(Icons.launch),
+                    ),
+                  ),
                 ),
               ],
             ),
