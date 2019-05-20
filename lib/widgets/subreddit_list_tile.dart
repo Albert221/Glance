@@ -21,8 +21,7 @@ class SubredditListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: subreddit.primaryColorMapped ??
-            Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: subreddit.primaryColorMapped ?? Colors.transparent,
         backgroundImage: subreddit.iconUrl.isNotEmpty
             ? CachedNetworkImageProvider(subreddit.iconUrl)
             : null,
