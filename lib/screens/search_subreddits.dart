@@ -7,13 +7,11 @@ import 'package:reddigram/models/models.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
+import 'package:redux/redux.dart';
 
 class SearchSubredditsDelegate extends SearchDelegate<String> {
   Timer _debounce;
   String _lastQuery = '';
-
-  List<Feed> _results = [];
-  String _resultsQuery = '';
 
   @override
   List<Widget> buildActions(BuildContext context) => null;
@@ -21,71 +19,72 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
   @override
   Widget buildLeading(BuildContext context) => const BackButton();
 
-  void stuff(BuildContext context) {
+  void search(BuildContext context) {
     if (_debounce?.isActive ?? false) {
       _debounce.cancel();
     }
 
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      _resultsQuery = query;
-      redditRepository.searchSubreddits(query).then((feeds) {
-        _results = feeds;
-
-        // Invoking showResults just to rebuild the suggestion view afterwards.
-        showResults(context);
-        showSuggestions(context);
-      });
+      StoreProvider.of<ReddigramState>(context)
+          .dispatch(searchSubreddits(query));
     });
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     if (_lastQuery != query) {
-      stuff(context);
+      search(context);
       _lastQuery = query;
     }
 
-    final containsExact = _results
-        .any((feed) => feed.name.toLowerCase() == _resultsQuery.toLowerCase());
-
-    if (_results.isEmpty) {
-      return ListView();
-    }
-
-    return ListView.builder(
-      itemCount: containsExact ? _results.length : _results.length + 1,
-      itemBuilder: (context, i) {
-        if (!containsExact && i == 0) {
-          return ListTile(
-            leading: const Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Icon(Icons.forward),
-            ),
-            title: Text('r/$_resultsQuery'),
-            onTap: () => Navigator.push(
-                  context,
-                  SubredditScreen.route(
-                    context,
-                    _resultsQuery,
-                  ),
-                ),
-          );
+    return StoreConnector<ReddigramState, _SearchViewModel>(
+      converter: (store) => _SearchViewModel.fromStore(store),
+      builder: (context, vm) {
+        if (vm.subreddits.isEmpty) {
+          return ListView();
         }
 
-        final result = containsExact ? _results[i] : _results[i - 1];
+        final containsExact = vm.subreddits.any((feed) =>
+            feed.name.toLowerCase() == vm.state.lastQuery.toLowerCase());
 
-        return StoreConnector<ReddigramState, bool>(
-          converter: (store) => store.state.subscriptions
-              .any((sub) => sub.toLowerCase() == result.name.toLowerCase()),
-          builder: (context, subscribed) => SubredditListTile(
-                subreddit: result,
+        return ListView.builder(
+          itemCount:
+              containsExact ? vm.subreddits.length : vm.subreddits.length + 1,
+          itemBuilder: (context, i) {
+            if (!containsExact && i == 0) {
+              return ListTile(
+                leading: const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Icon(Icons.forward),
+                ),
+                title: Text('r/${vm.state.lastQuery}'),
                 onTap: () => Navigator.push(
                       context,
-                      SubredditScreen.route(context, result.name),
+                      SubredditScreen.route(
+                        context,
+                        vm.state.lastQuery,
+                      ),
                     ),
-                trailingIcon: subscribed ? null : Icon(Icons.add),
-                onTrailingTap: () => close(context, result.name),
-              ),
+              );
+            }
+
+            final result =
+                containsExact ? vm.subreddits[i] : vm.subreddits[i - 1];
+
+            return StoreConnector<ReddigramState, bool>(
+              converter: (store) => store.state.subscriptions
+                  .any((sub) => sub.toLowerCase() == result.name.toLowerCase()),
+              builder: (context, subscribed) => SubredditListTile(
+                    subreddit: result,
+                    onTap: () => Navigator.push(
+                          context,
+                          SubredditScreen.route(context, result.name),
+                        ),
+                    trailingIcon: subscribed ? null : Icon(Icons.add),
+                    onTrailingTap: () => close(context, result.name),
+                  ),
+            );
+          },
         );
       },
     );
@@ -109,6 +108,24 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
           color: Colors.grey,
         ),
       ),
+    );
+  }
+}
+
+class _SearchViewModel {
+  final SubredditsSearchState state;
+  final List<Feed> subreddits;
+
+  _SearchViewModel({@required this.state, @required this.subreddits})
+      : assert(state != null),
+        assert(subreddits != null);
+
+  factory _SearchViewModel.fromStore(Store<ReddigramState> store) {
+    return _SearchViewModel(
+      state: store.state.subredditsSearch,
+      subreddits: store.state.subredditsSearch.resultFeedsNames
+          .map((feedName) => store.state.feeds[feedName])
+          .toList(),
     );
   }
 }

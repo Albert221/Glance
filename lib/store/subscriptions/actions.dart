@@ -9,8 +9,11 @@ ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
   return (Store<ReddigramState> store) {
     subscriptionRepository
         .fetchSubscribedSubreddits()
-        .then((subreddits) =>
-            store.dispatch(FetchedSubscribedSubreddits(subreddits)))
+        .then((subreddits) {
+          // TODO: Fetch feeds metadata from cache.
+
+          store.dispatch(FetchedSubscribedSubreddits(subreddits));
+        })
         .whenComplete(() => completer.complete());
   };
 }

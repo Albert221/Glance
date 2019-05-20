@@ -15,7 +15,10 @@ abstract class ReddigramState
 
   BuiltMap<String, Feed> get feeds;
 
+  // Names of subreddits
   BuiltSet<String> get subscriptions;
+
+  SubredditsSearchState get subredditsSearch;
 
   ReddigramState._();
 
@@ -30,6 +33,7 @@ abstract class ReddigramState
         BEST_SUBSCRIBED: Feed(),
       }),
       subscriptions: BuiltSet(),
+      subredditsSearch: SubredditsSearchState(),
     );
   }
 }

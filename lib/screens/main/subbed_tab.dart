@@ -10,6 +10,7 @@ class SubbedTab extends StatelessWidget {
   const SubbedTab({Key key}) : super(key: key);
 
   void _subscribe(BuildContext context, void Function(String) callback) async {
+    StoreProvider.of<ReddigramState>(context).dispatch(ClearSearch());
     final subreddit = await showSearch<String>(
       context: context,
       delegate: SearchSubredditsDelegate(),

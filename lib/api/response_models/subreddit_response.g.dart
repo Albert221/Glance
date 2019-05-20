@@ -155,6 +155,8 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
   Iterable serialize(Serializers serializers, Subreddit object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'name',
+      serializers.serialize(object.name, specifiedType: const FullType(String)),
       'display_name',
       serializers.serialize(object.displayName,
           specifiedType: const FullType(String)),
@@ -195,6 +197,10 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'name':
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'display_name':
           result.displayName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
@@ -506,6 +512,8 @@ class SubredditResponseBuilder
 
 class _$Subreddit extends Subreddit {
   @override
+  final String name;
+  @override
   final String displayName;
   @override
   final bool nsfw;
@@ -520,12 +528,16 @@ class _$Subreddit extends Subreddit {
       (new SubredditBuilder()..update(updates)).build();
 
   _$Subreddit._(
-      {this.displayName,
+      {this.name,
+      this.displayName,
       this.nsfw,
       this.primaryColor,
       this.iconUrl,
       this.subredditType})
       : super._() {
+    if (name == null) {
+      throw new BuiltValueNullFieldError('Subreddit', 'name');
+    }
     if (displayName == null) {
       throw new BuiltValueNullFieldError('Subreddit', 'displayName');
     }
@@ -545,6 +557,7 @@ class _$Subreddit extends Subreddit {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Subreddit &&
+        name == other.name &&
         displayName == other.displayName &&
         nsfw == other.nsfw &&
         primaryColor == other.primaryColor &&
@@ -556,7 +569,9 @@ class _$Subreddit extends Subreddit {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, displayName.hashCode), nsfw.hashCode),
+            $jc(
+                $jc($jc($jc(0, name.hashCode), displayName.hashCode),
+                    nsfw.hashCode),
                 primaryColor.hashCode),
             iconUrl.hashCode),
         subredditType.hashCode));
@@ -565,6 +580,7 @@ class _$Subreddit extends Subreddit {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Subreddit')
+          ..add('name', name)
           ..add('displayName', displayName)
           ..add('nsfw', nsfw)
           ..add('primaryColor', primaryColor)
@@ -576,6 +592,10 @@ class _$Subreddit extends Subreddit {
 
 class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
   _$Subreddit _$v;
+
+  String _name;
+  String get name => _$this._name;
+  set name(String name) => _$this._name = name;
 
   String _displayName;
   String get displayName => _$this._displayName;
@@ -602,6 +622,7 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
 
   SubredditBuilder get _$this {
     if (_$v != null) {
+      _name = _$v.name;
       _displayName = _$v.displayName;
       _nsfw = _$v.nsfw;
       _primaryColor = _$v.primaryColor;
@@ -629,6 +650,7 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
   _$Subreddit build() {
     final _$result = _$v ??
         new _$Subreddit._(
+            name: name,
             displayName: displayName,
             nsfw: nsfw,
             primaryColor: primaryColor,

@@ -8,6 +8,8 @@ part of 'feed.dart';
 
 class _$Feed extends Feed {
   @override
+  final String id;
+  @override
   final String name;
   @override
   final BuiltList<String> photosIds;
@@ -24,13 +26,17 @@ class _$Feed extends Feed {
       (new FeedBuilder()..update(updates)).build();
 
   _$Feed._(
-      {this.name,
+      {this.id,
+      this.name,
       this.photosIds,
       this.photosLoaded,
       this.nsfw,
       this.primaryColor,
       this.iconUrl})
       : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('Feed', 'id');
+    }
     if (name == null) {
       throw new BuiltValueNullFieldError('Feed', 'name');
     }
@@ -62,6 +68,7 @@ class _$Feed extends Feed {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Feed &&
+        id == other.id &&
         name == other.name &&
         photosIds == other.photosIds &&
         photosLoaded == other.photosLoaded &&
@@ -75,7 +82,9 @@ class _$Feed extends Feed {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, name.hashCode), photosIds.hashCode),
+                $jc(
+                    $jc($jc($jc(0, id.hashCode), name.hashCode),
+                        photosIds.hashCode),
                     photosLoaded.hashCode),
                 nsfw.hashCode),
             primaryColor.hashCode),
@@ -85,6 +94,7 @@ class _$Feed extends Feed {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Feed')
+          ..add('id', id)
           ..add('name', name)
           ..add('photosIds', photosIds)
           ..add('photosLoaded', photosLoaded)
@@ -97,6 +107,10 @@ class _$Feed extends Feed {
 
 class FeedBuilder implements Builder<Feed, FeedBuilder> {
   _$Feed _$v;
+
+  String _id;
+  String get id => _$this._id;
+  set id(String id) => _$this._id = id;
 
   String _name;
   String get name => _$this._name;
@@ -127,6 +141,7 @@ class FeedBuilder implements Builder<Feed, FeedBuilder> {
 
   FeedBuilder get _$this {
     if (_$v != null) {
+      _id = _$v.id;
       _name = _$v.name;
       _photosIds = _$v.photosIds?.toBuilder();
       _photosLoaded = _$v.photosLoaded;
@@ -157,6 +172,7 @@ class FeedBuilder implements Builder<Feed, FeedBuilder> {
     try {
       _$result = _$v ??
           new _$Feed._(
+              id: id,
               name: name,
               photosIds: photosIds.build(),
               photosLoaded: photosLoaded,

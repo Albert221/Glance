@@ -44,6 +44,8 @@ abstract class SubredditResponse
 }
 
 abstract class Subreddit implements Built<Subreddit, SubredditBuilder> {
+  String get name;
+
   @BuiltValueField(wireName: 'display_name')
   String get displayName;
 
