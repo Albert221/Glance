@@ -1,11 +1,13 @@
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/models/models.dart';
+import 'package:validators/validators.dart';
 
 class LinkListingPhotosMapper {
   static List<Photo> map(LinkListingResponse response) {
     return response.data.children
         .map((child) {
-          if (['self', 'spoiler'].contains(child.data.thumbnail)) {
+          if (['self', 'spoiler'].contains(child.data.thumbnail) ||
+              !isURL(child.data.thumbnail) && child.data.thumbnail != 'nsfw') {
             return null;
           }
 
