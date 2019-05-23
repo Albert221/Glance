@@ -56,6 +56,8 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
           ..nsfw = resultFeed.nsfw
           ..primaryColor = resultFeed.primaryColor
           ..iconUrl = resultFeed.iconUrl);
+
+        subredditCache.put(resultFeed);
       }
 
       store.dispatch(FetchedFreshFeed(feedName, feed));

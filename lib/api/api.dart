@@ -12,6 +12,8 @@ export 'response_models/serializers.dart';
 export 'mappers/link_listing_photos_mapper.dart';
 export 'mappers/subreddit_feed_mapper.dart';
 
+export 'subreddit_cache/subreddit_cache.dart';
+
 import 'package:reddigram/api/api.dart';
 
 final redditRepository = RedditRepository();
@@ -20,3 +22,5 @@ final subscriptionRepository = SubscriptionRepositoriesFacade(
   apiRepository: SubscriptionApiRepository(
       fetchRedditAccessToken: redditRepository.getAccessToken),
 );
+
+final subredditCache = SubredditCache();
