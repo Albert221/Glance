@@ -55,6 +55,9 @@ ThunkAction<ReddigramState> loadUser() {
         _loadUserData(store, tokens.accessToken);
       } else {
         subscriptionRepository.useLocal();
+        final subscriptionsCompleter = Completer();
+        store.dispatch(fetchSubscribedSubreddits(subscriptionsCompleter));
+        await subscriptionsCompleter.future;
         await _loadFeeds(store);
 
         store.dispatch(SetAuthStatus(AuthStatus.guest));
@@ -76,17 +79,19 @@ ThunkAction<ReddigramState> authenticateUserFromCode(String code) {
 }
 
 ThunkAction<ReddigramState> signUserOut() {
-  return (Store<ReddigramState> store) {
+  return (Store<ReddigramState> store) async {
     store.dispatch(SetAuthStatus(AuthStatus.signingOut));
 
     redditRepository.clearTokens();
     SharedPreferences.getInstance()
         .then((prefs) => prefs.remove(_refreshTokenKey));
+    store.dispatch(SetUsername(null));
 
     subscriptionRepository.useLocal();
 
-    store.dispatch(SetUsername(null));
-    store.dispatch(FetchedSubscribedSubreddits([]));
+    final subscriptionsCompleter = Completer();
+    store.dispatch(fetchSubscribedSubreddits(subscriptionsCompleter));
+    await subscriptionsCompleter.future;
 
     _loadFeeds(store)
         .whenComplete(() => store.dispatch(SetAuthStatus(AuthStatus.guest)));
