@@ -1,17 +1,12 @@
 package me.wolszon.reddigram
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.webkit.CookieManager
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import java.net.URLDecoder
 
 class OauthActivity : Activity() {
     private val webView by lazy { WebView(this) }
@@ -57,7 +52,7 @@ class OauthActivity : Activity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        setResult(Activity.RESULT_CANCELED)
+        setResult(RESULT_CANCELED)
     }
 
     inner class WebViewClient : android.webkit.WebViewClient() {
@@ -67,7 +62,7 @@ class OauthActivity : Activity() {
                 val resultIntent = Intent().apply {
                     putExtra(CODE_EXTRA, uri.getQueryParameter("code"))
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
+                setResult(RESULT_OK, resultIntent)
                 finish()
             }
 

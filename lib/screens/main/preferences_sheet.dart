@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PreferencesSheet extends StatelessWidget {
-  final _methodChannel = const MethodChannel('me.wolszon.reddigram/oauth');
+  final _methodChannel = const MethodChannel('me.wolszon.reddigram');
 
   void _connectToReddit(_OnConnectCallback onConnect) async {
     try {
