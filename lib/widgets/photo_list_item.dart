@@ -43,6 +43,10 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildTopBar(BuildContext context) {
+    final authorStyle = Theme.of(context).textTheme.caption.copyWith(
+          color: Theme.of(context).textTheme.caption.color.withOpacity(0.67),
+        );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -53,7 +57,7 @@ class PhotoListItem extends StatelessWidget {
               'u/${photo.authorName}',
               softWrap: false,
               overflow: TextOverflow.fade,
-              style: Theme.of(context).textTheme.caption,
+              style: authorStyle,
             ),
           ),
         ),
