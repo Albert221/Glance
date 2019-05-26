@@ -112,7 +112,13 @@ class MainActivity : FlutterActivity() {
             OAUTH_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val code = data?.getStringExtra(OauthActivity.CODE_EXTRA)
-                    oauthResult?.success(hashMapOf("code" to code))
+
+                    try {
+                        oauthResult?.success(hashMapOf("code" to code))
+                    } catch (e: IllegalStateException) {
+                        // Sometimes Result.success can be called more than once
+                        // which results in a fatal exception, we can safely ignore it.
+                    }
                 } else {
                     oauthResult?.error("No response", null, null)
                 }
