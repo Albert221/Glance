@@ -6,6 +6,7 @@ import 'package:reddigram/widgets/widgets.dart';
 
 class PhotoListItem extends StatelessWidget {
   final Photo photo;
+  final bool upvotingEnabled;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
 
@@ -18,6 +19,7 @@ class PhotoListItem extends StatelessWidget {
   const PhotoListItem(
       {Key key,
       @required this.photo,
+      this.upvotingEnabled = true,
       this.onUpvote,
       this.onUpvoteCanceled,
       this.onPhotoTap,
@@ -43,7 +45,7 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildTopBar(BuildContext context) {
-    final authorStyle = Theme.of(context).textTheme.caption.copyWith(
+    final mutedStyle = Theme.of(context).textTheme.caption.copyWith(
           color: Theme.of(context).textTheme.caption.color.withOpacity(0.67),
         );
 
@@ -57,7 +59,7 @@ class PhotoListItem extends StatelessWidget {
               'u/${photo.authorName}',
               softWrap: false,
               overflow: TextOverflow.fade,
-              style: authorStyle,
+              style: mutedStyle,
             ),
           ),
         ),
@@ -67,7 +69,9 @@ class PhotoListItem extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'r/${photo.subredditName}',
-              style: Theme.of(context).textTheme.caption,
+              style: onSubredditTap != null
+                  ? Theme.of(context).textTheme.caption
+                  : mutedStyle,
             ),
           ),
         ),
@@ -80,23 +84,31 @@ class PhotoListItem extends StatelessWidget {
     final pictureHeight = width / photo.fullImage.aspectRatio;
     final height = pictureHeight > width ? width : pictureHeight;
 
+    final image = CachedNetworkImage(
+      fit: BoxFit.cover,
+      imageUrl: photo.fullImage.url,
+      fadeInDuration: Duration.zero,
+      placeholder: (context, url) => _buildPlaceholder(context),
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: Stack(
           children: [
-            GestureDetector(
-              onTap: onPhotoTap,
-              child: Upvoteable(
-                height: height,
-                onUpvote: photo.upvoted ? null : onUpvote,
-                child: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: photo.fullImage.url,
-                  fadeInDuration: Duration.zero,
-                  placeholder: (context, url) => _buildPlaceholder(context),
-                ),
+            ConstrainedBox(
+              constraints: BoxConstraints.tightFor(
+                  height: height, width: double.infinity),
+              child: GestureDetector(
+                onTap: onPhotoTap,
+                child: upvotingEnabled
+                    ? Upvoteable(
+                        height: height,
+                        onUpvote: photo.upvoted ? null : onUpvote,
+                        child: image,
+                      )
+                    : image,
               ),
             ),
             if (photo.nsfw)
@@ -138,19 +150,32 @@ class PhotoListItem extends StatelessWidget {
             height: 56.0,
             child: Row(
               children: [
-                InkWell(
-                  onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 16.0),
-                    child: Icon(
-                      Icons.arrow_upward,
-                      color: photo.upvoted
-                          ? Colors.red
-                          : Theme.of(context).textTheme.body1.color,
-                    ),
-                  ),
-                ),
+                upvotingEnabled
+                    ? InkWell(
+                        onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 16.0),
+                          child: Icon(
+                            Icons.arrow_upward,
+                            color: photo.upvoted
+                                ? Colors.red
+                                : Theme.of(context).textTheme.body1.color,
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 16.0),
+                        child: Icon(
+                          Icons.arrow_upward,
+                          color: Theme.of(context)
+                              .textTheme
+                              .body1
+                              .color
+                              .withOpacity(0.67),
+                        ),
+                      ),
                 const SizedBox(width: 12.0),
                 Expanded(
                   child: Text(photo.upvoted

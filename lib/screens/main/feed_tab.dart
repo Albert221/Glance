@@ -66,6 +66,7 @@ class _FeedTabState extends State<FeedTab> {
           _PhotoViewModel.fromStore(store, widget.feedName, index),
       builder: (context, vm) => PhotoListItem(
             photo: vm.photo,
+            upvotingEnabled: vm.authenticated,
             onUpvote: vm.onUpvote,
             onUpvoteCanceled: vm.onUpvoteCanceled,
             onPhotoTap: () => Navigator.push(
@@ -108,15 +109,18 @@ class _BodyViewModel {
 }
 
 class _PhotoViewModel {
+  final bool authenticated;
   final Photo photo;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
 
   _PhotoViewModel(
-      {@required this.photo,
+      {@required this.authenticated,
+      @required this.photo,
       @required this.onUpvote,
       @required this.onUpvoteCanceled})
-      : assert(photo != null);
+      : assert(authenticated != null),
+        assert(photo != null);
 
   factory _PhotoViewModel.fromStore(
       Store<ReddigramState> store, String feedName, int index) {
@@ -124,13 +128,10 @@ class _PhotoViewModel {
     final photo = store.state.photos[photoId];
 
     return _PhotoViewModel(
+      authenticated: store.state.authState.status == AuthStatus.authenticated,
       photo: photo,
-      onUpvote: store.state.authState.status == AuthStatus.authenticated
-          ? () => store.dispatch(upvote(photo))
-          : null,
-      onUpvoteCanceled: store.state.authState.status == AuthStatus.authenticated
-          ? () => store.dispatch(cancelUpvote(photo))
-          : null,
+      onUpvote: () => store.dispatch(upvote(photo)),
+      onUpvoteCanceled: () => store.dispatch(cancelUpvote(photo)),
     );
   }
 }

@@ -75,26 +75,23 @@ class _UpvoteableState extends State<Upvoteable>
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onUpvote,
-      child: ConstrainedBox(
-        constraints: BoxConstraints.tightFor(height: widget.height),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            widget.child,
-            Opacity(
-              opacity: _opacityFirst.value - _opacitySecond.value,
-              child: Container(
-                color: Colors.black45,
-                alignment: _alignmentFirst.value - _alignmentSecond.value,
-                child: const Icon(
-                  Icons.arrow_upward,
-                  color: Colors.white54,
-                  size: 128.0,
-                ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          widget.child,
+          Opacity(
+            opacity: _opacityFirst.value - _opacitySecond.value,
+            child: Container(
+              color: Colors.black45,
+              alignment: _alignmentFirst.value - _alignmentSecond.value,
+              child: const Icon(
+                Icons.arrow_upward,
+                color: Colors.white54,
+                size: 128.0,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
