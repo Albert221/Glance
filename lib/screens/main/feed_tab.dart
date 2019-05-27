@@ -25,6 +25,8 @@ class _FeedTabState extends State<FeedTab> {
 
   @override
   Widget build(BuildContext context) {
+    final subheadTheme = Theme.of(context).textTheme.subhead;
+
     return StoreConnector<ReddigramState, _BodyViewModel>(
       converter: (store) => _BodyViewModel.fromStore(store, widget.feedName),
       builder: (context, vm) {
@@ -35,26 +37,46 @@ class _FeedTabState extends State<FeedTab> {
 
             return completer.future;
           },
-          child: InfiniteList(
-            key: widget.infiniteListKey,
-            keepAlive: true,
-            fetchMore: vm.fetchMore,
-            itemCount: vm.photos.length + 1,
-            itemBuilder: (context, i) {
-              // Last item is a loading indicator.
-              if (i == vm.photos.length) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  alignment: Alignment.center,
-                  child: vm.photos.isEmpty
-                      ? const Text('That feed is empty! 😲')
-                      : const CircularProgressIndicator(),
-                );
-              }
+          child: vm.photos.isNotEmpty
+              ? InfiniteList(
+                  key: widget.infiniteListKey,
+                  keepAlive: true,
+                  fetchMore: vm.fetchMore,
+                  itemCount: vm.photos.length + 1,
+                  itemBuilder: (context, i) {
+                    // Last item is a loading indicator.
+                    if (i == vm.photos.length) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(vertical: 32.0),
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator(),
+                      );
+                    }
 
-              return _buildPhoto(context, i);
-            },
-          ),
+                    return _buildPhoto(context, i);
+                  },
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No', style: subheadTheme),
+                        const Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Icon(
+                            Icons.short_text,
+                            size: 28.0,
+                          ),
+                        ),
+                        Text('yet.', style: subheadTheme)
+                      ],
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Text('Subscribe to something!'),
+                  ],
+                ),
         );
       },
     );

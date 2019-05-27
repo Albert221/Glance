@@ -72,8 +72,10 @@ class SubbedTab extends StatelessWidget {
               ),
               if (vm.subreddits.isEmpty)
                 const ListTile(
-                  title: Text('No subreddits'),
-                  dense: true,
+                  leading: SizedBox(),
+                  title: Text(
+                    'No subreddits. Subscribe to some!',
+                  ),
                 ),
               ...vm.subreddits
                   .map((subredditName) => StoreConnector<ReddigramState, Feed>(
