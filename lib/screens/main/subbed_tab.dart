@@ -77,6 +77,7 @@ class SubbedTab extends StatelessWidget {
                 ),
               ...vm.subreddits
                   .map((subredditName) => StoreConnector<ReddigramState, Feed>(
+                        key: ValueKey(subredditName),
                         converter: (store) =>
                             store.state.feeds['r/$subredditName'] ??
                             Feed.blank(subredditName),
