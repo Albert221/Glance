@@ -110,17 +110,18 @@ class MainActivity : FlutterActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             OAUTH_REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val code = data?.getStringExtra(OauthActivity.CODE_EXTRA)
-
-                    try {
+                try {
+                    if (resultCode == Activity.RESULT_OK) {
+                        val code = data?.getStringExtra(OauthActivity.CODE_EXTRA)
                         oauthResult?.success(hashMapOf("code" to code))
-                    } catch (e: IllegalStateException) {
-                        // Sometimes Result.success can be called more than once
-                        // which results in a fatal exception, we can safely ignore it.
+                    } else {
+                        oauthResult?.error("No response", null, null)
                     }
-                } else {
-                    oauthResult?.error("No response", null, null)
+                } catch (e: IllegalStateException) {
+                    // Sometimes Result#success/error can be called more than once
+                    // which results in a fatal exception, we can safely ignore it.
+
+                    // Or maybe it's onActivityResult that's being called multiple times? :thinking:
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
