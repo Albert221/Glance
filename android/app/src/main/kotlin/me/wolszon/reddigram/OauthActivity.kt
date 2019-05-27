@@ -50,15 +50,15 @@ class OauthActivity : Activity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        setResult(RESULT_CANCELED)
-    }
-
     inner class WebViewClient : android.webkit.WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
             val uri = Uri.parse(url)
             if (uri.host?.contains("reddigram.wolszon.me") == true) {
+                if (uri.queryParameterNames.contains("error")) {
+                    // access_denied for example, on Disallow click
+                    finish()
+                }
+
                 val resultIntent = Intent().apply {
                     putExtra(CODE_EXTRA, uri.getQueryParameter("code"))
                 }
