@@ -30,7 +30,6 @@ ThunkAction<ReddigramState> subscribeSubreddit(String name) {
   return (Store<ReddigramState> store) {
     redditRepository.subreddit(name).then((feed) {
       subredditCache.put(feed);
-      store.dispatch(FetchedFreshFeed('r/$name', feed));
     });
 
     subscriptionRepository.subscribeSubreddit(name).then((_) {
