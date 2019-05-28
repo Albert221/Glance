@@ -7,7 +7,7 @@ import 'package:reddigram/models/models.dart';
 class PhotoPreviewScreen extends StatelessWidget {
   static const _methodChannel = const MethodChannel('me.wolszon.reddigram');
 
-  static PageRoute route(BuildContext context, Photo photo) {
+  static PageRoute route(Photo photo) {
     return MaterialPageRoute(
       settings: const RouteSettings(name: 'PhotoPreviewScreen'),
       builder: (context) => PhotoPreviewScreen(photo: photo),
@@ -21,7 +21,6 @@ class PhotoPreviewScreen extends StatelessWidget {
         super(key: key);
 
   void downloadPhoto(BuildContext context) async {
-    // TODO: Use native code here and get rid of path_provider and permissions
     try {
       final result = await _methodChannel
           .invokeMethod('downloadPhoto', {'url': photo.source.url});

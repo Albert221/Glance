@@ -9,12 +9,15 @@ abstract class PreferencesState
 
   bool get showNsfw;
 
+  bool get cutLongPhotos;
+
   PreferencesState._();
 
   factory PreferencesState([updates(PreferencesStateBuilder b)]) {
     return _$PreferencesState._(
       theme: AppTheme.light,
       showNsfw: false,
+      cutLongPhotos: false,
     );
   }
 }

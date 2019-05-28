@@ -30,17 +30,23 @@ class _$PreferencesState extends PreferencesState {
   final AppTheme theme;
   @override
   final bool showNsfw;
+  @override
+  final bool cutLongPhotos;
 
   factory _$PreferencesState(
           [void Function(PreferencesStateBuilder) updates]) =>
       (new PreferencesStateBuilder()..update(updates)).build();
 
-  _$PreferencesState._({this.theme, this.showNsfw}) : super._() {
+  _$PreferencesState._({this.theme, this.showNsfw, this.cutLongPhotos})
+      : super._() {
     if (theme == null) {
       throw new BuiltValueNullFieldError('PreferencesState', 'theme');
     }
     if (showNsfw == null) {
       throw new BuiltValueNullFieldError('PreferencesState', 'showNsfw');
+    }
+    if (cutLongPhotos == null) {
+      throw new BuiltValueNullFieldError('PreferencesState', 'cutLongPhotos');
     }
   }
 
@@ -57,19 +63,22 @@ class _$PreferencesState extends PreferencesState {
     if (identical(other, this)) return true;
     return other is PreferencesState &&
         theme == other.theme &&
-        showNsfw == other.showNsfw;
+        showNsfw == other.showNsfw &&
+        cutLongPhotos == other.cutLongPhotos;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, theme.hashCode), showNsfw.hashCode));
+    return $jf($jc($jc($jc(0, theme.hashCode), showNsfw.hashCode),
+        cutLongPhotos.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('PreferencesState')
           ..add('theme', theme)
-          ..add('showNsfw', showNsfw))
+          ..add('showNsfw', showNsfw)
+          ..add('cutLongPhotos', cutLongPhotos))
         .toString();
   }
 }
@@ -86,12 +95,18 @@ class PreferencesStateBuilder
   bool get showNsfw => _$this._showNsfw;
   set showNsfw(bool showNsfw) => _$this._showNsfw = showNsfw;
 
+  bool _cutLongPhotos;
+  bool get cutLongPhotos => _$this._cutLongPhotos;
+  set cutLongPhotos(bool cutLongPhotos) =>
+      _$this._cutLongPhotos = cutLongPhotos;
+
   PreferencesStateBuilder();
 
   PreferencesStateBuilder get _$this {
     if (_$v != null) {
       _theme = _$v.theme;
       _showNsfw = _$v.showNsfw;
+      _cutLongPhotos = _$v.cutLongPhotos;
       _$v = null;
     }
     return this;
@@ -112,8 +127,9 @@ class PreferencesStateBuilder
 
   @override
   _$PreferencesState build() {
-    final _$result =
-        _$v ?? new _$PreferencesState._(theme: theme, showNsfw: showNsfw);
+    final _$result = _$v ??
+        new _$PreferencesState._(
+            theme: theme, showNsfw: showNsfw, cutLongPhotos: cutLongPhotos);
     replace(_$result);
     return _$result;
   }

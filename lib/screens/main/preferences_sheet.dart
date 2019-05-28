@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/consts.dart';
+import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -80,6 +81,12 @@ class PreferencesSheet extends StatelessWidget {
                 value: vm.value,
                 onChanged: vm.onSwitch,
               ),
+        ),
+        ListTile(
+          leading: SizedBox(),
+          title: Text('More preferences'),
+          trailing: Icon(Icons.chevron_right),
+          onTap: () => Navigator.push(context, PreferencesScreen.route()),
         ),
         ListTile(
           enabled: false,

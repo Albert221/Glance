@@ -91,10 +91,10 @@ class _FeedTabState extends State<FeedTab> {
             upvotingEnabled: vm.authenticated,
             onUpvote: vm.onUpvote,
             onUpvoteCanceled: vm.onUpvoteCanceled,
-            onPhotoTap: () => Navigator.push(
-                context, PhotoPreviewScreen.route(context, vm.photo)),
-            onSubredditTap: () => Navigator.push(context,
-                SubredditScreen.route(context, vm.photo.subredditName)),
+            onPhotoTap: () =>
+                Navigator.push(context, PhotoPreviewScreen.route(vm.photo)),
+            onSubredditTap: () => Navigator.push(
+                context, SubredditScreen.route(vm.photo.subredditName)),
             showNsfw: _shownNsfwIds.contains(vm.photo.id) ||
                 PreferencesProvider.of(context).showNsfw,
             onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),

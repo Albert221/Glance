@@ -59,10 +59,7 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
                 title: Text('r/${vm.state.lastQuery}'),
                 onTap: () => Navigator.push(
                       context,
-                      SubredditScreen.route(
-                        context,
-                        vm.state.lastQuery,
-                      ),
+                      SubredditScreen.route(vm.state.lastQuery),
                     ),
               );
             }
@@ -77,7 +74,7 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
                     subreddit: result,
                     onTap: () => Navigator.push(
                           context,
-                          SubredditScreen.route(context, result.name),
+                          SubredditScreen.route(result.name),
                         ),
                     trailingIcon: subscribed ? null : Icon(Icons.add),
                     onTrailingTap: () => close(context, result.name),

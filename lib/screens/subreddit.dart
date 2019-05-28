@@ -9,7 +9,7 @@ import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
 class SubredditScreen extends StatefulWidget {
-  static PageRoute route(BuildContext context, String subredditName) {
+  static PageRoute route(String subredditName) {
     return MaterialPageRoute(
       settings: const RouteSettings(name: 'SubredditScreen'),
       builder: (context) => SubredditScreen(subredditName: subredditName),
@@ -224,8 +224,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
             onUpvoteCanceled: vm.onUpvoteCanceled,
             showNsfw: _nsfwPhotoShown(context, feedVm, vm.photo),
             onShowNsfw: () => setState(() => _shownNsfwIds.add(vm.photo.id)),
-            onPhotoTap: () => Navigator.push(
-                context, PhotoPreviewScreen.route(context, vm.photo)),
+            onPhotoTap: () =>
+                Navigator.push(context, PhotoPreviewScreen.route(vm.photo)),
           ),
     );
   }

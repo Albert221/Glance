@@ -8,11 +8,11 @@ ThunkAction<ReddigramState> loadPreferences() {
   return (Store<ReddigramState> store) async {
     final prefs = await SharedPreferences.getInstance();
 
-    store.dispatch(SetPreferencesBulk(
-      theme:
-          prefs.getString('theme') == 'dark' ? AppTheme.dark : AppTheme.light,
-      showNsfw: prefs.getBool('show_nsfw') ?? false,
-    ));
+    store.dispatch(SetPreferencesBulk(PreferencesState((b) => b
+      ..theme =
+          prefs.getString('theme') == 'dark' ? AppTheme.dark : AppTheme.light
+      ..showNsfw = prefs.getBool('show_nsfw') ?? false
+      ..cutLongPhotos = prefs.getBool('cut_long_photos') ?? false)));
   };
 }
 
@@ -33,13 +33,19 @@ ThunkAction<ReddigramState> setShowNsfw(bool showNsfw) {
   };
 }
 
-class SetPreferencesBulk {
-  final AppTheme theme;
-  final bool showNsfw;
+ThunkAction<ReddigramState> setCutLongPhotos(bool cutLongPhotos) {
+  return (Store<ReddigramState> store) async {
+    (await SharedPreferences.getInstance())
+        .setBool('cut_long_photos', cutLongPhotos);
 
-  SetPreferencesBulk({@required this.theme, @required this.showNsfw})
-      : assert(theme != null),
-        assert(showNsfw != null);
+    store.dispatch(SetCutLongPhotos(cutLongPhotos));
+  };
+}
+
+class SetPreferencesBulk {
+  final PreferencesState preferences;
+
+  SetPreferencesBulk(this.preferences);
 }
 
 class SetTheme {
@@ -52,4 +58,10 @@ class SetShowNsfw {
   final bool showNsfw;
 
   SetShowNsfw(this.showNsfw);
+}
+
+class SetCutLongPhotos {
+  final bool cutLongPhotos;
+
+  SetCutLongPhotos(this.cutLongPhotos);
 }

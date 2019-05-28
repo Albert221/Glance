@@ -85,12 +85,8 @@ class SubbedTab extends StatelessWidget {
                             Feed.blank(subredditName),
                         builder: (context, subreddit) => SubredditListTile(
                               subreddit: subreddit,
-                              onTap: () => Navigator.push(
-                                  context,
-                                  SubredditScreen.route(
-                                    context,
-                                    subredditName,
-                                  )),
+                              onTap: () => Navigator.push(context,
+                                  SubredditScreen.route(subredditName)),
                               trailingIcon: const Icon(Icons.remove),
                               onTrailingTap: () => _unsubscribe(
                                   context,

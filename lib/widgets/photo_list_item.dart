@@ -80,9 +80,15 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    final width = MediaQuery.of(context).size.width - 16;
-    final pictureHeight = width / photo.fullImage.aspectRatio;
-    final height = pictureHeight > width ? width : pictureHeight;
+    final pictureWidth = MediaQuery.of(context).size.width - 16;
+    final pictureHeight = pictureWidth / photo.source.aspectRatio;
+
+    final maxPictureHeight = PreferencesProvider.of(context).cutLongPhotos
+        ? pictureWidth * 1.4
+        : pictureHeight;
+
+    final height =
+        pictureHeight > maxPictureHeight ? maxPictureHeight : pictureHeight;
 
     final image = CachedNetworkImage(
       fit: BoxFit.cover,
