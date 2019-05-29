@@ -79,7 +79,7 @@ class PhotoListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(BuildContext context) {
+  static double calculateImageHeight(BuildContext context, Photo photo) {
     final pictureWidth = MediaQuery.of(context).size.width - 16;
     final pictureHeight = pictureWidth / photo.source.aspectRatio;
 
@@ -87,8 +87,11 @@ class PhotoListItem extends StatelessWidget {
         ? pictureWidth * 1.4
         : pictureHeight;
 
-    final height =
-        pictureHeight > maxPictureHeight ? maxPictureHeight : pictureHeight;
+    return pictureHeight > maxPictureHeight ? maxPictureHeight : pictureHeight;
+  }
+
+  Widget _buildImage(BuildContext context) {
+    final height = calculateImageHeight(context, photo);
 
     final image = CachedNetworkImage(
       fit: BoxFit.cover,

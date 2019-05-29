@@ -166,15 +166,13 @@ class _SubredditScreenState extends State<SubredditScreen> {
     return PhotoGridItem(
       photo: photo,
       onTap: () {
-        final width = MediaQuery.of(context).size.width - 16;
-
         final offset = photoIndex == 0
             ? 0.0
             : vm.photos
                 .sublist(0, photoIndex)
-                .map((photo) => width / photo.fullImage.aspectRatio)
                 // 123 is the padding (2*8) + top and bottom bar height (51, 56)
-                .map((height) => (height > width ? width : height) + 123)
+                .map((photo) =>
+                    PhotoListItem.calculateImageHeight(context, photo) + 123)
                 .reduce((a, b) => a + b);
 
         DefaultTabController.of(context).animateTo(1);
