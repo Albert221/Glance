@@ -10,8 +10,8 @@ import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
 class ReddigramApp extends StatelessWidget {
-  static final _analytics = FirebaseAnalytics();
-  static final _navObserver = FirebaseAnalyticsObserver(analytics: _analytics);
+  static final analytics = FirebaseAnalytics();
+  static final _navObserver = FirebaseAnalyticsObserver(analytics: analytics);
 
   final Store<ReddigramState> store;
 
