@@ -165,7 +165,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
     return PhotoGridItem(
       photo: photo,
-      onTap: () {
+      onTap: () async {
         final offset = photoIndex == 0
             ? 0.0
             : vm.photos
@@ -176,10 +176,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 .reduce((a, b) => a + b);
 
         DefaultTabController.of(context).animateTo(1);
+
         // Delay so that the column InfiniteList can get its state built
-        Future.delayed(Duration(milliseconds: 300), () {
-          _columnListKey.currentState.scrollToOffset(offset);
-        });
+        while (true) {
+          if (_columnListKey.currentState != null) {
+            _columnListKey.currentState.scrollToOffset(offset);
+            break;
+          }
+
+          await Future.delayed(Duration(milliseconds: 50));
+        }
       },
       showNsfw: _nsfwPhotoShown(context, vm, photo),
       onShowNsfw: () => setState(() => _shownNsfwIds.add(photo.id)),
