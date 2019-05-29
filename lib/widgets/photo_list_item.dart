@@ -29,6 +29,8 @@ class PhotoListItem extends StatelessWidget {
       : assert(photo != null),
         super(key: key);
 
+  static Widget placeholder({Key key}) => _Placeholder(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -207,6 +209,108 @@ class PhotoListItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Placeholder extends StatefulWidget {
+  const _Placeholder({Key key}) : super(key: key);
+
+  @override
+  _PlaceholderState createState() => _PlaceholderState();
+}
+
+class _PlaceholderState extends State<_Placeholder>
+    with SingleTickerProviderStateMixin {
+  Animation<double> _animation;
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this)
+      ..addListener(() => setState(() {}));
+    _animation = Tween<double>(begin: 1, end: 0.4).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Cubic(1, 0, .8, 1),
+    ));
+
+    _controller.repeat(
+        period: const Duration(milliseconds: 2000), reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context)
+        .textTheme
+        .caption
+        .color
+        .withOpacity(0.5 * _animation.value);
+    final mutedColor = color.withOpacity(0.3 * _animation.value);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                height: 14.0,
+                width: 100.0,
+                color: mutedColor,
+              ),
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                height: 14.0,
+                width: 70.0,
+                color: color,
+              ),
+            ],
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: mutedColor,
+            ),
+            height: 300.0,
+          ),
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 16.0),
+                width: 24.0,
+                height: 24.0,
+                color: color,
+              ),
+              const SizedBox(width: 12.0),
+              Container(
+                width: 200.0,
+                height: 14.0,
+                color: mutedColor,
+              ),
+              const Expanded(child: SizedBox()),
+              Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 16.0),
+                width: 24.0,
+                height: 24.0,
+                color: color,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
