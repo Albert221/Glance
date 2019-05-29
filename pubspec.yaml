@@ -20,7 +20,7 @@ dependencies:
   flutter_redux: ^0.5.3
   jaguar_jwt: ^2.1.6
   package_info: ^0.4.0+3
-  photo_view: ^0.3.1
+  photo_view: ^0.4.0
   redux: ^3.0.0
   redux_thunk: ^0.2.1
   shared_preferences: ^0.5.2
