@@ -22,14 +22,11 @@ import java.io.FileOutputStream
 import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
-    private var oauthResult: MethodChannel.Result? = null
-
     private var photoDownloadResult: MethodChannel.Result? = null
     private var photoDownloadUrl: String? = null
 
     companion object {
         private const val CHANNEL = "me.wolszon.reddigram"
-        private const val OAUTH_REQUEST_CODE = 1
         private const val WRITE_STORAGE_REQUEST_CODE = 2
     }
 
@@ -39,16 +36,6 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(flutterView, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
-                "showOauthScreen" -> {
-                    val clientId = call.argument<String>("clientId")
-                    if (clientId.isNullOrEmpty()) {
-                        result.error("No clientId", null, null)
-                        return@setMethodCallHandler
-                    }
-
-                    oauthResult = result
-                    startActivityForResult(OauthActivity.createIntent(this, clientId!!), OAUTH_REQUEST_CODE)
-                }
                 "downloadPhoto" -> {
                     val photoUrl = call.argument<String>("url")
                     if (photoUrl.isNullOrEmpty()) {
@@ -104,27 +91,6 @@ class MainActivity : FlutterActivity() {
                     }.start()
                 }
             })
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            OAUTH_REQUEST_CODE -> {
-                try {
-                    if (resultCode == Activity.RESULT_OK) {
-                        val code = data?.getStringExtra(OauthActivity.CODE_EXTRA)
-                        oauthResult?.success(hashMapOf("code" to code))
-                    } else {
-                        oauthResult?.error("No response", null, null)
-                    }
-                } catch (e: IllegalStateException) {
-                    // Sometimes Result#success/error can be called more than once
-                    // which results in a fatal exception, we can safely ignore it.
-
-                    // Or maybe it's onActivityResult that's being called multiple times? :thinking:
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 

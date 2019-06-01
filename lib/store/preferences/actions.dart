@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';

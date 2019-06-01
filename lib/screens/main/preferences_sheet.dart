@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,24 +9,40 @@ import 'package:reddigram/consts.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PreferencesSheet extends StatelessWidget {
-  final _methodChannel = const MethodChannel('me.wolszon.reddigram');
+class PreferencesSheet extends StatefulWidget {
+  @override
+  _PreferencesSheetState createState() => _PreferencesSheetState();
+}
+
+class _PreferencesSheetState extends State<PreferencesSheet> {
+  StreamSubscription<Uri> _linkStream;
+
+  @override
+  void dispose() {
+    _linkStream?.cancel();
+    super.dispose();
+  }
 
   void _connectToReddit(BuildContext context) async {
-    try {
-      ReddigramApp.analytics.logEvent(name: 'login_attempt');
+    ReddigramApp.analytics.logEvent(name: 'login_attempt');
 
-      final response = await _methodChannel.invokeMethod(
-          'showOauthScreen', {'clientId': ReddigramConsts.oauthClientId});
+    launch('https://www.reddit.com/api/v1/authorize'
+        '?client_id=${ReddigramConsts.oauthClientId}&response_type=code'
+        '&state=x&scope=read+mysubreddits+vote+identity&duration=permanent'
+        '&redirect_uri=https://reddigram.wolszon.me/redirect');
 
-      StoreProvider.of<ReddigramState>(context)
-          .dispatch(authenticateUserFromCode(response['code']));
-      ReddigramApp.analytics.logLogin(loginMethod: 'Reddit');
-    } on PlatformException catch (e) {
-      debugPrint(e.toString());
-    }
+    _linkStream = getUriLinksStream().listen((uri) {
+      if (uri.queryParameters.containsKey('code')) {
+        StoreProvider.of<ReddigramState>(context)
+            .dispatch(authenticateUserFromCode(uri.queryParameters['code']));
+
+        _linkStream.cancel();
+        ReddigramApp.analytics.logLogin(loginMethod: 'Reddit');
+      }
+    });
   }
 
   void _signOut(BuildContext context) {
