@@ -13,34 +13,74 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  static const _TAB_POPULAR = 0;
+  static const _TAB_NEWEST = 1; // ignore: unused_field
+  static const _TAB_BEST = 2; // ignore: unused_field
+  static const _TAB_SUBBED = 3;
+
   final feedKeys = List.generate(3, (i) => GlobalKey<InfiniteListState>());
 
   final _pageController = PageController();
-  int _currentTab = 0;
+  int _currentTab = _TAB_POPULAR;
 
   @override
   Widget build(BuildContext context) {
+    final subheadTheme = Theme.of(context).textTheme.subhead;
+
+    final subscribeCTA = GestureDetector(
+      onTap: () => _changeTab(_TAB_SUBBED),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('No', style: subheadTheme),
+              const Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Icon(
+                  Icons.short_text,
+                  size: 28.0,
+                ),
+              ),
+              Text('yet.', style: subheadTheme)
+            ],
+          ),
+          const SizedBox(height: 12.0),
+          const Text('Subscribe to something!'),
+        ],
+      ),
+    );
+
+    final itemsPlaceholder = ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, i) => PhotoListItem.placeholder(),
+    );
+
     return Scaffold(
       key: MainScreen.scaffoldKey,
       appBar: _buildAppBar(context),
-      body: StoreConnector<ReddigramState, void>(
+      body: StoreConnector<ReddigramState, bool>(
         onInit: (store) => store.dispatch(fetchFreshFeed(POPULAR)),
-        converter: (store) => null,
-        builder: (context, _) => PageView(
+        converter: (store) => store.state.subscriptions.isNotEmpty,
+        builder: (context, anySubs) => PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: [
                 FeedTab(
                   feedName: POPULAR,
                   infiniteListKey: feedKeys[0],
+                  placeholder: itemsPlaceholder,
                 ),
                 FeedTab(
                   feedName: NEW_SUBSCRIBED,
                   infiniteListKey: feedKeys[1],
+                  placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
                 ),
                 FeedTab(
                   feedName: BEST_SUBSCRIBED,
                   infiniteListKey: feedKeys[2],
+                  placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
                 ),
                 const SubbedTab(),
               ],
@@ -67,23 +107,27 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         onTap: (index) {
-          setState(() {
-            if (_currentTab != index) {
-              // Change the current tab
-              _currentTab = index;
-              _pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.ease,
-              );
-            } else {
-              // Scroll to the top
-              feedKeys[index].currentState.scrollToOffset(0);
-            }
-          });
+          if (_currentTab != index) {
+            // Change the current tab
+            _changeTab(index);
+          } else {
+            // Scroll to the top
+            setState(() => feedKeys[index].currentState.scrollToOffset(0));
+          }
         },
       ),
     );
+  }
+
+  void _changeTab(int tab) {
+    setState(() {
+      _currentTab = tab;
+      _pageController.animateToPage(
+        tab,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
+    });
   }
 
   Widget _buildAppBar(BuildContext context) {

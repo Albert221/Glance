@@ -11,9 +11,15 @@ import 'package:redux/redux.dart';
 class FeedTab extends StatefulWidget {
   final String feedName;
   final Key infiniteListKey;
+  final Widget placeholder;
 
-  const FeedTab({Key key, @required this.feedName, this.infiniteListKey})
+  const FeedTab(
+      {Key key,
+      @required this.feedName,
+      this.infiniteListKey,
+      this.placeholder = const SizedBox()})
       : assert(feedName != null),
+        assert(placeholder != null),
         super(key: key);
 
   @override
@@ -25,8 +31,6 @@ class _FeedTabState extends State<FeedTab> {
 
   @override
   Widget build(BuildContext context) {
-    final subheadTheme = Theme.of(context).textTheme.subhead;
-
     return StoreConnector<ReddigramState, _BodyViewModel>(
       converter: (store) => _BodyViewModel.fromStore(store, widget.feedName),
       builder: (context, vm) {
@@ -56,27 +60,7 @@ class _FeedTabState extends State<FeedTab> {
                     return _buildPhoto(context, i);
                   },
                 )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('No', style: subheadTheme),
-                        const Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Icon(
-                            Icons.short_text,
-                            size: 28.0,
-                          ),
-                        ),
-                        Text('yet.', style: subheadTheme)
-                      ],
-                    ),
-                    const SizedBox(height: 12.0),
-                    const Text('Subscribe to something!'),
-                  ],
-                ),
+              : widget.placeholder,
         );
       },
     );

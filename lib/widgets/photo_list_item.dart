@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -225,18 +227,26 @@ class _PlaceholderState extends State<_Placeholder>
   Animation<double> _animation;
   AnimationController _controller;
 
+  double usernameWidth;
+  double subredditWidth;
+
   @override
   void initState() {
     super.initState();
+
+    final random = Random();
+    usernameWidth = 60.0 + random.nextInt(60);
+    subredditWidth = 60.0 + random.nextInt(60);
+
     _controller = AnimationController(vsync: this)
       ..addListener(() => setState(() {}));
-    _animation = Tween<double>(begin: 1, end: 0.4).animate(CurvedAnimation(
+    _animation = Tween<double>(begin: 1, end: 0.5).animate(CurvedAnimation(
       parent: _controller,
       curve: const Cubic(1, 0, .8, 1),
     ));
 
     _controller.repeat(
-        period: const Duration(milliseconds: 2000), reverse: true);
+        period: const Duration(milliseconds: 1500), reverse: true);
   }
 
   @override
@@ -251,8 +261,8 @@ class _PlaceholderState extends State<_Placeholder>
         .textTheme
         .caption
         .color
-        .withOpacity(0.5 * _animation.value);
-    final mutedColor = color.withOpacity(0.3 * _animation.value);
+        .withOpacity(0.4 * _animation.value);
+    final mutedColor = color.withOpacity(0.2 * _animation.value);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -265,13 +275,13 @@ class _PlaceholderState extends State<_Placeholder>
               Container(
                 margin: const EdgeInsets.all(16.0),
                 height: 14.0,
-                width: 100.0,
+                width: usernameWidth,
                 color: mutedColor,
               ),
               Container(
                 margin: const EdgeInsets.all(16.0),
                 height: 14.0,
-                width: 70.0,
+                width: subredditWidth,
                 color: color,
               ),
             ],

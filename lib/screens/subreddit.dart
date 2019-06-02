@@ -39,29 +39,25 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<ReddigramState, bool>(
+    return StoreConnector<ReddigramState, void>(
       onInit: (store) {
         if (!_subredditLoaded(store)) {
           store
               .dispatch(fetchFreshFeed('r/${widget.subredditName}', limit: 99));
         }
       },
-      converter: (store) => _subredditLoaded(store),
-      builder: (context, loaded) => DefaultTabController(
+      converter: (store) => null,
+      builder: (context, _) => DefaultTabController(
             length: 2,
             child: Scaffold(
               appBar: _buildAppBar(context),
-              body: !loaded
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        _buildGrid(context),
-                        _buildList(context),
-                      ],
-                    ),
+              body: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildGrid(context),
+                  _buildList(context),
+                ],
+              ),
             ),
           ),
     );
@@ -130,32 +126,42 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   Widget _buildGrid(BuildContext context) {
-    return StoreConnector<ReddigramState, _FeedViewModel>(
-      converter: (store) =>
-          _FeedViewModel.fromStore(store, widget.subredditName),
-      builder: (context, feedVm) => InfiniteList(
-            fetchMore: feedVm.fetchMore,
-            keepAlive: true,
-            itemCount: 2,
-            itemBuilder: (context, i) => [
-                  GridView.builder(
-                    padding: const EdgeInsets.all(2.0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: feedVm.photos.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
-                    itemBuilder: (context, i) =>
-                        _buildPhotoGridItem(context, feedVm, i),
+    return StoreConnector<ReddigramState, bool>(
+      converter: _subredditLoaded,
+      builder: (context, loaded) => loaded
+          ? StoreConnector<ReddigramState, _FeedViewModel>(
+              converter: (store) =>
+                  _FeedViewModel.fromStore(store, widget.subredditName),
+              builder: (context, feedVm) => InfiniteList(
+                    fetchMore: feedVm.fetchMore,
+                    keepAlive: true,
+                    itemCount: 2,
+                    itemBuilder: (context, i) => [
+                          GridView.builder(
+                            padding: const EdgeInsets.all(2.0),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: feedVm.photos.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3),
+                            itemBuilder: (context, i) =>
+                                _buildPhotoGridItem(context, feedVm, i),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(),
+                          ),
+                        ][i],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0),
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(),
-                  ),
-                ][i],
-          ),
+            )
+          : GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
+              itemBuilder: (context, i) => PhotoGridItem.placeholder(),
+            ),
     );
   }
 
@@ -193,26 +199,34 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   Widget _buildList(BuildContext context) {
-    return StoreConnector<ReddigramState, _FeedViewModel>(
-      converter: (store) =>
-          _FeedViewModel.fromStore(store, widget.subredditName),
-      builder: (context, feedVm) => InfiniteList(
-            key: _columnListKey,
-            fetchMore: feedVm.fetchMore,
-            keepAlive: true,
-            itemCount: feedVm.photos.length + 1,
-            itemBuilder: (context, i) {
-              if (i == feedVm.photos.length) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(),
-                );
-              }
+    return StoreConnector<ReddigramState, bool>(
+      converter: _subredditLoaded,
+      builder: (context, loaded) => loaded
+          ? StoreConnector<ReddigramState, _FeedViewModel>(
+              converter: (store) =>
+                  _FeedViewModel.fromStore(store, widget.subredditName),
+              builder: (context, feedVm) => InfiniteList(
+                    key: _columnListKey,
+                    fetchMore: feedVm.fetchMore,
+                    keepAlive: true,
+                    itemCount: feedVm.photos.length + 1,
+                    itemBuilder: (context, i) {
+                      if (i == feedVm.photos.length) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(),
+                        );
+                      }
 
-              return _buildPhotoListItem(context, feedVm, i);
-            },
-          ),
+                      return _buildPhotoListItem(context, feedVm, i);
+                    },
+                  ),
+            )
+          : ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, i) => PhotoListItem.placeholder(),
+            ),
     );
   }
 
