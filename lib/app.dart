@@ -47,15 +47,6 @@ class ReddigramApp extends StatelessWidget {
                     '/': (context) => MainScreen(),
                   },
                   navigatorObservers: [_navObserver],
-                  builder: (context, child) {
-                    return Stack(
-                      children: [
-                        child,
-                        if (authStatus == AuthStatus.unknown)
-                          const FullscreenProgressIndicator(),
-                      ],
-                    );
-                  },
                 );
               },
             ),
