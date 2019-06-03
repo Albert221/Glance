@@ -20,9 +20,8 @@ class PhotoPreviewScreen extends StatelessWidget {
       : assert(photo != null),
         super(key: key);
 
-  void downloadPhoto(BuildContext context) {
-    _methodChannel
-        .invokeMethod('downloadPhoto', {'url': photo.source.url});
+  void _downloadPhoto() {
+    _methodChannel.invokeMethod('downloadPhoto', {'url': photo.source.url});
   }
 
   @override
@@ -32,12 +31,10 @@ class PhotoPreviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Builder(
-            builder: (context) => IconButton(
-                  icon: Icon(Icons.file_download),
-                  tooltip: 'Download',
-                  onPressed: () => downloadPhoto(context),
-                ),
+          IconButton(
+            icon: Icon(Icons.file_download),
+            tooltip: 'Download',
+            onPressed: _downloadPhoto,
           ),
         ],
       ),
