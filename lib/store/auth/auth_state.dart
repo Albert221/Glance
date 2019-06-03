@@ -15,7 +15,7 @@ abstract class AuthState implements Built<AuthState, AuthStateBuilder> {
     return _$AuthState._(
       username: null,
       status: AuthStatus.unknown,
-    );
+    ).rebuild(updates);
   }
 }
 

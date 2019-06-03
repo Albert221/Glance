@@ -18,7 +18,7 @@ abstract class PreferencesState
       theme: AppTheme.light,
       showNsfw: false,
       cutLongPhotos: false,
-    );
+    ).rebuild(updates);
   }
 }
 

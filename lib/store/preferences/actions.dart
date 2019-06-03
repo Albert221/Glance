@@ -7,13 +7,11 @@ ThunkAction<ReddigramState> loadPreferences() {
   return (Store<ReddigramState> store) async {
     final prefs = await SharedPreferences.getInstance();
 
-    store.dispatch(SetPreferencesBulk((PreferencesStateBuilder()
-          ..theme = prefs.getString('theme') == 'dark'
-              ? AppTheme.dark
-              : AppTheme.light
-          ..showNsfw = prefs.getBool('show_nsfw') ?? false
-          ..cutLongPhotos = prefs.getBool('cut_long_photos') ?? false)
-        .build()));
+    store.dispatch(SetPreferencesBulk(PreferencesState((b) => b
+      ..theme =
+          prefs.getString('theme') == 'dark' ? AppTheme.dark : AppTheme.light
+      ..showNsfw = prefs.getBool('show_nsfw') ?? false
+      ..cutLongPhotos = prefs.getBool('cut_long_photos') ?? false)));
   };
 }
 

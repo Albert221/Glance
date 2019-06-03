@@ -34,6 +34,6 @@ abstract class ReddigramState
       }),
       subscriptions: BuiltSet(),
       subredditsSearch: SubredditsSearchState(),
-    );
+    ).rebuild(updates);
   }
 }

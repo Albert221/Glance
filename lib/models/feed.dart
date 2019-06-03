@@ -37,7 +37,7 @@ abstract class Feed implements Built<Feed, FeedBuilder> {
       nsfw: false,
       primaryColor: '',
       iconUrl: '',
-    );
+    ).rebuild(updates);
   }
 
   factory Feed.blank(String name) {

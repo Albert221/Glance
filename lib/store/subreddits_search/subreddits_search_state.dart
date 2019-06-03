@@ -16,6 +16,6 @@ abstract class SubredditsSearchState
     return _$SubredditsSearchState._(
       lastQuery: '',
       resultFeedsNames: BuiltList<String>([]),
-    );
+    ).rebuild(updates);
   }
 }
