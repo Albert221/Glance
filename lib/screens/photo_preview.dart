@@ -20,20 +20,9 @@ class PhotoPreviewScreen extends StatelessWidget {
       : assert(photo != null),
         super(key: key);
 
-  void downloadPhoto(BuildContext context) async {
-    try {
-      final result = await _methodChannel
-          .invokeMethod('downloadPhoto', {'url': photo.source.url});
-
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(result),
-      ));
-    } on PlatformException catch (e) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(e.code),
-        backgroundColor: Colors.redAccent,
-      ));
-    }
+  void downloadPhoto(BuildContext context) {
+    _methodChannel
+        .invokeMethod('downloadPhoto', {'url': photo.source.url});
   }
 
   @override
