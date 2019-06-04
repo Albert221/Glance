@@ -56,7 +56,7 @@ class DownloadPhotoService : IntentService("DownloadPhotoService") {
             target.createNewFile()
             val stream = FileOutputStream(target)
 
-            val inputStream = response.body!!.byteStream()
+            val inputStream = response.body()!!.byteStream()
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
