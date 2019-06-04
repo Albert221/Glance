@@ -6,6 +6,8 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
+-dontwarn android.arch.lifecycle.DefaultLifecycleObserver
+
 # JSR 305 annotations are for embedding nullability information.
 -dontwarn javax.annotation.**
 
