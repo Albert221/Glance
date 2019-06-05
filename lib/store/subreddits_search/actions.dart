@@ -9,12 +9,11 @@ ThunkAction<ReddigramState> searchSubreddits(String query) {
       // Call fetched fresh feed on all subreddits that are not
       // already present in the app state.
       feeds
-          .where((feed) => !store.state.feeds.containsKey('r/${feed.name}'))
-          .forEach((feed) =>
-              store.dispatch(FetchedFreshFeed('r/${feed.name}', feed)));
+          .where((feed) => !store.state.subreddits.containsKey(feed.name))
+          .forEach((feed) => store.dispatch(FetchedSubredditInfo(feed)));
 
       store.dispatch(FetchedSearchSubreddits(
-          query, feeds.map((feed) => 'r/${feed.name}').toList()));
+          query, feeds.map((feed) => feed.name).toList()));
     });
   };
 }

@@ -7,7 +7,6 @@ abstract class SubredditsSearchState
     implements Built<SubredditsSearchState, SubredditsSearchStateBuilder> {
   String get lastQuery;
 
-  // Full names with the `r/` prefix
   BuiltList<String> get resultFeedsNames;
 
   SubredditsSearchState._();

@@ -1,16 +1,13 @@
-import 'package:reddigram/api/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SubscriptionsLocalRepository implements SubscriptionRepository {
+class ApiLocalRepository {
   static const preferencesKey = "local_subscriptions";
 
-  @override
   Future<List<String>> fetchSubscribedSubreddits() {
     return SharedPreferences.getInstance()
         .then((prefs) => prefs.getStringList(preferencesKey) ?? []);
   }
 
-  @override
   Future<void> subscribeSubreddit(String name) {
     return SharedPreferences.getInstance().then((prefs) {
       final subs = prefs.getStringList(preferencesKey) ?? [];
@@ -22,7 +19,6 @@ class SubscriptionsLocalRepository implements SubscriptionRepository {
     });
   }
 
-  @override
   Future<void> unsubscribeSubreddit(String name) {
     return SharedPreferences.getInstance().then((prefs) {
       final subs = prefs.getStringList(preferencesKey) ?? [];

@@ -78,11 +78,12 @@ class SubbedTab extends StatelessWidget {
                   ),
                 ),
               ...vm.subreddits
-                  .map((subredditName) => StoreConnector<ReddigramState, Feed>(
+                  .map((subredditName) =>
+                      StoreConnector<ReddigramState, SubredditInfo>(
                         key: ValueKey(subredditName),
                         converter: (store) =>
-                            store.state.feeds['r/$subredditName'] ??
-                            Feed.blank(subredditName),
+                            store.state.subreddits[subredditName] ??
+                            SubredditInfo((b) => b..name = subredditName),
                         builder: (context, subreddit) => SubredditListTile(
                               subreddit: subreddit,
                               onTap: () => Navigator.push(context,

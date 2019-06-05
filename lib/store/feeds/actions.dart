@@ -44,21 +44,18 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
 
       store.dispatch(FetchedPhotos(photos));
 
-      var feed = Feed().rebuild((b) => b
-        ..photosIds.replace(photosIds(photos))
-        ..photosLoaded = true);
+      var name = feedName;
 
       if (results.length == 2) {
-        final resultFeed = results[1] as Feed;
+        final subreddit = results[1] as SubredditInfo;
+        name = 'r/${subreddit.name}';
 
-        feed = feed.rebuild((b) => b
-          ..name = resultFeed.name
-          ..nsfw = resultFeed.nsfw
-          ..primaryColor = resultFeed.primaryColor
-          ..iconUrl = resultFeed.iconUrl);
-
-        subredditCache.put(resultFeed);
+        store.dispatch(FetchedSubredditInfo(subreddit));
       }
+
+      final feed = Feed((b) => b
+        ..name = name
+        ..photosIds.replace(photosIds(photos)));
 
       store.dispatch(FetchedFreshFeed(feedName, feed));
     }).whenComplete(() => completer?.complete());

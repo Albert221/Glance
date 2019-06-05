@@ -110,7 +110,7 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
 
 class _SearchViewModel {
   final SubredditsSearchState state;
-  final List<Feed> subreddits;
+  final List<SubredditInfo> subreddits;
 
   _SearchViewModel({@required this.state, @required this.subreddits})
       : assert(state != null),
@@ -120,7 +120,7 @@ class _SearchViewModel {
     return _SearchViewModel(
       state: store.state.subredditsSearch,
       subreddits: store.state.subredditsSearch.resultFeedsNames
-          .map((feedName) => store.state.feeds[feedName])
+          .map((feedName) => store.state.subreddits[feedName])
           .toList(),
     );
   }

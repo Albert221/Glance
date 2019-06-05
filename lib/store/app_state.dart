@@ -18,22 +18,26 @@ abstract class ReddigramState
   // Names of subreddits
   BuiltSet<String> get subscriptions;
 
+  BuiltMap<String, SubredditInfo> get subreddits;
+
   SubredditsSearchState get subredditsSearch;
 
   ReddigramState._();
 
   factory ReddigramState([updates(ReddigramStateBuilder b)]) {
     return _$ReddigramState._(
-      authState: AuthState(),
-      preferences: PreferencesState(),
-      photos: BuiltMap<String, Photo>(),
-      feeds: BuiltMap<String, Feed>({
-        POPULAR: Feed(),
-        NEW_SUBSCRIBED: Feed(),
-        BEST_SUBSCRIBED: Feed(),
-      }),
-      subscriptions: BuiltSet(),
-      subredditsSearch: SubredditsSearchState(),
-    ).rebuild(updates);
+          authState: AuthState(),
+          preferences: PreferencesState(),
+          photos: BuiltMap<String, Photo>(),
+          feeds: BuiltMap<String, Feed>({
+            POPULAR: Feed(),
+            NEW_SUBSCRIBED: Feed(),
+            BEST_SUBSCRIBED: Feed(),
+          }),
+          subscriptions: BuiltSet(),
+          subreddits: BuiltMap<String, SubredditInfo>(),
+          subredditsSearch: SubredditsSearchState(),
+        )
+        .rebuild(updates);
   }
 }

@@ -148,22 +148,22 @@ class RedditRepository {
     return _post('/api/vote', data: 'dir=0&id=$id');
   }
 
-  Future<Feed> subreddit(String name) async {
+  Future<SubredditInfo> subreddit(String name) async {
     return _client
         .get('/r/$name/about.json')
         .then((response) => serializers.deserializeWith(
             SubredditResponse.serializer, response.data))
-        .then(SubredditFeedMapper.map);
+        .then(SubredditInfoMapper.mapSubredditResponse);
   }
 
-  Future<List<Feed>> searchSubreddits(String query) async {
+  Future<List<SubredditInfo>> searchSubreddits(String query) async {
     return _client
         .get('/api/subreddit_autocomplete_v2.json?query=$query&limit=10'
             '&include_profiles=false&include_categories=false'
             '&include_over_18=on')
         .then((response) => serializers.deserializeWith(
             SubredditListResponse.serializer, response.data))
-        .then(SubredditFeedMapper.mapList);
+        .then(SubredditInfoMapper.mapSubredditResponseList);
   }
 }
 

@@ -4,9 +4,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:reddigram/api/api.dart';
+import 'package:reddigram/models/models.dart';
 import 'package:reddigram/utils/jwt.dart';
 
-class SubscriptionApiRepository implements SubscriptionRepository {
+class ApiApiRepository {
   final String Function() fetchRedditAccessToken;
 
   Dio _client;
@@ -14,7 +15,7 @@ class SubscriptionApiRepository implements SubscriptionRepository {
 
   DateTime get _tokenExpiration => jwtExp(_token);
 
-  SubscriptionApiRepository({@required this.fetchRedditAccessToken})
+  ApiApiRepository({@required this.fetchRedditAccessToken})
       : assert(fetchRedditAccessToken != null) {
     _client = Dio(BaseOptions(
       baseUrl: 'https://reddigram-api.herokuapp.com',
@@ -74,5 +75,15 @@ class SubscriptionApiRepository implements SubscriptionRepository {
 
   Future<void> unsubscribeSubreddit(String name) async {
     return _client.delete('/subscriptions/$name');
+  }
+
+  Future<List<SubredditInfo>> fetchSubredditInfos(
+      List<String> subreddits) async {
+    return _client
+        .get('/subreddit-info/${subreddits.join('+')}')
+        .then((response) => serializers.deserializeWith(
+            SubredditsInfoResponse.serializer, response.data))
+        .then(
+            (response) => response.items.map(SubredditInfoMapper.map).toList());
   }
 }

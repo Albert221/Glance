@@ -182,7 +182,6 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
         ..add(serializers.serialize(object.iconUrl,
             specifiedType: const FullType(String)));
     }
-
     return result;
   }
 

@@ -3,16 +3,14 @@ import 'package:reddigram/api/api.dart';
 
 enum SubscriptionsBackendType { Api, Local }
 
-class SubscriptionRepositoriesFacade implements SubscriptionRepository {
-  final SubscriptionApiRepository apiRepository;
-  final SubscriptionsLocalRepository localRepository;
+class ApiRepositoriesFacade extends ApiApiRepository {
+  final ApiLocalRepository localRepository = ApiLocalRepository();
 
   SubscriptionsBackendType _backendType = SubscriptionsBackendType.Local;
 
-  SubscriptionRepositoriesFacade(
-      {@required this.apiRepository, @required this.localRepository})
-      : assert(apiRepository != null),
-        assert(localRepository != null);
+  ApiRepositoriesFacade({@required fetchRedditAccessToken})
+      : assert(fetchRedditAccessToken != null),
+        super(fetchRedditAccessToken: fetchRedditAccessToken);
 
   Future<void> useApi(String redditAccessToken) {
     return apiRepository
@@ -26,18 +24,18 @@ class SubscriptionRepositoriesFacade implements SubscriptionRepository {
   Future<List<String>> fetchSubscribedSubreddits(
           {SubscriptionsBackendType forceBackend}) =>
       (forceBackend ?? _backendType) == SubscriptionsBackendType.Api
-          ? apiRepository.fetchSubscribedSubreddits()
+          ? super.fetchSubscribedSubreddits()
           : localRepository.fetchSubscribedSubreddits();
 
   @override
   Future<void> subscribeSubreddit(String name) =>
       _backendType == SubscriptionsBackendType.Api
-          ? apiRepository.subscribeSubreddit(name)
+          ? super.subscribeSubreddit(name)
           : localRepository.subscribeSubreddit(name);
 
   @override
   Future<void> unsubscribeSubreddit(String name) =>
       _backendType == SubscriptionsBackendType.Api
-          ? apiRepository.unsubscribeSubreddit(name)
+          ? super.unsubscribeSubreddit(name)
           : localRepository.unsubscribeSubreddit(name);
 }

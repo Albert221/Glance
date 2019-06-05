@@ -7,6 +7,7 @@ ReddigramState rootReducer(ReddigramState state, action) {
     ..photos.replace(photosReducer(state.photos, action))
     ..feeds.replace(feedsReducer(state.feeds, action))
     ..subscriptions.replace(subscriptionsReducer(state.subscriptions, action))
+    ..subreddits.replace(subredditsReducer(state.subreddits, action))
     ..subredditsSearch
         .replace(subredditsSearchReducer(state.subredditsSearch, action)));
 }

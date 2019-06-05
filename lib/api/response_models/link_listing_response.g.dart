@@ -91,7 +91,6 @@ class _$LinkListingDataSerializer
         ..add(serializers.serialize(object.before,
             specifiedType: const FullType(String)));
     }
-
     return result;
   }
 
@@ -222,7 +221,6 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
         ..add(serializers.serialize(object.preview,
             specifiedType: const FullType(Preview)));
     }
-
     return result;
   }
 

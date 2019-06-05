@@ -18,6 +18,9 @@ export 'feeds/actions.dart';
 export 'subscriptions/reducer.dart';
 export 'subscriptions/actions.dart';
 
+export 'subreddits/reducer.dart';
+export 'subreddits/actions.dart';
+
 export 'subreddits_search/subreddits_search_state.dart';
 export 'subreddits_search/reducer.dart';
 export 'subreddits_search/actions.dart';

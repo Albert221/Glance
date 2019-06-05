@@ -8,6 +8,7 @@ part 'serializers.g.dart';
 @SerializersFor(const [
   LinkListingResponse,
   SubredditListResponse,
+  SubredditListResponse,
 ])
 final Serializers serializers =
     (_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
