@@ -19,8 +19,8 @@ class PreferencesScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const DarkThemeTile(),
-          const ShowNsfwTile(),
+          const DarkThemePreferenceTile(),
+          const ShowNsfwPreferenceTile(),
           StoreConnector<ReddigramState, PreferenceViewModel>(
             converter: (store) => PreferenceViewModel<bool>(
                   value: store.state.preferences.cutLongPhotos,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:reddigram/models/models.dart';
 
 class SubredditListTile extends StatelessWidget {
-  final SubredditInfo subreddit;
+  final Subreddit subreddit;
   final VoidCallback onTap;
   final Widget trailingIcon;
   final VoidCallback onTrailingTap;

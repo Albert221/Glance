@@ -1,4 +1,4 @@
-import 'package:reddigram/api/api.dart';
+import 'package:reddigram/api/response_models/response_models.dart';
 import 'package:reddigram/models/models.dart';
 import 'package:validators/validators.dart';
 
@@ -16,6 +16,7 @@ class LinkListingPhotosMapper {
               ..id = child.data.name
               ..authorName = child.data.author
               ..subredditName = child.data.subreddit
+              ..subredditId = child.data.subredditId
               ..source = PhotoMedia((b) => b
                     ..url = child.data.preview.images.first.source.url
                         .replaceAll('&amp;', '&')

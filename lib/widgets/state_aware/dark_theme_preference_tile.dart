@@ -3,8 +3,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 
-class DarkThemeTile extends StatelessWidget {
-  const DarkThemeTile({Key key}) : super(key: key);
+class DarkThemePreferenceTile extends StatelessWidget {
+  const DarkThemePreferenceTile({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

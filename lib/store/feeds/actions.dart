@@ -33,28 +33,30 @@ String _getProperFeedName(Store<ReddigramState> store, String feed) {
 ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
     {int limit, Completer completer}) {
   return (Store<ReddigramState> store) {
-    final futures = <Future>[
-      redditRepository.feed(_getProperFeedName(store, feedName), limit: limit),
-      if (isSubreddit(feedName))
-        redditRepository.subreddit(feedName.substring(2)),
-    ];
-
-    Future.wait(futures).then((results) {
-      final photos = results[0] as List<Photo>;
-
+    redditRepository
+        .feed(_getProperFeedName(store, feedName), limit: limit)
+        .then((photos) async {
       store.dispatch(FetchedPhotos(photos));
 
-      var name = feedName;
+      final subredditIds = photos.map((photo) => photo.subredditId).toList();
+      final subredditCompleter = Completer();
+      store.dispatch(
+          fetchSubreddits(subredditIds, completer: subredditCompleter));
 
-      if (results.length == 2) {
-        final subreddit = results[1] as SubredditInfo;
-        name = 'r/${subreddit.name}';
+      await subredditCompleter.future;
 
-        store.dispatch(FetchedSubredditInfo(subreddit));
+      if (isSubreddit(feedName)) {
+        final subreditName = feedName.substring(2);
+
+        feedName = 'r/' +
+            store.state.subreddits.entries
+                .singleWhere((entry) =>
+                    entry.key.toLowerCase() == subreditName.toLowerCase())
+                .key;
       }
 
       final feed = Feed((b) => b
-        ..name = name
+        ..name = feedName
         ..photosIds.replace(photosIds(photos)));
 
       store.dispatch(FetchedFreshFeed(feedName, feed));
@@ -70,9 +72,15 @@ ThunkAction<ReddigramState> fetchMoreFeed(String feedName,
 
     redditRepository
         .feed(_getProperFeedName(store, feedName), after: after, limit: limit)
-        .then((photos) {
+        .then((photos) async {
       store.dispatch(FetchedPhotos(photos));
       store.dispatch(FetchedMoreFeed(feedName, photosIds(photos)));
+
+      final subredditIds = photos.map((photo) => photo.subredditId).toList();
+      final subredditCompleter = Completer();
+      store.dispatch(
+          fetchSubreddits(subredditIds, completer: subredditCompleter));
+      await subredditCompleter.future;
     }).whenComplete(() => completer?.complete());
   };
 }

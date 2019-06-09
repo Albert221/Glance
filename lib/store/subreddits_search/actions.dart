@@ -6,11 +6,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 ThunkAction<ReddigramState> searchSubreddits(String query) {
   return (Store<ReddigramState> store) {
     redditRepository.searchSubreddits(query).then((feeds) {
-      // Call fetched fresh feed on all subreddits that are not
-      // already present in the app state.
-      feeds
-          .where((feed) => !store.state.subreddits.containsKey(feed.name))
-          .forEach((feed) => store.dispatch(FetchedSubredditInfo(feed)));
+      store.dispatch(FetchedSubreddits(feeds));
 
       store.dispatch(FetchedSearchSubreddits(
           query, feeds.map((feed) => feed.name).toList()));

@@ -1,22 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'subreddit_info.dart';
+part of 'subreddit.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<SubredditInfo> _$subredditInfoSerializer =
-    new _$SubredditInfoSerializer();
+Serializer<Subreddit> _$subredditSerializer = new _$SubredditSerializer();
 
-class _$SubredditInfoSerializer implements StructuredSerializer<SubredditInfo> {
+class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
   @override
-  final Iterable<Type> types = const [SubredditInfo, _$SubredditInfo];
+  final Iterable<Type> types = const [Subreddit, _$Subreddit];
   @override
-  final String wireName = 'SubredditInfo';
+  final String wireName = 'Subreddit';
 
   @override
-  Iterable serialize(Serializers serializers, SubredditInfo object,
+  Iterable serialize(Serializers serializers, Subreddit object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'id',
@@ -37,9 +36,9 @@ class _$SubredditInfoSerializer implements StructuredSerializer<SubredditInfo> {
   }
 
   @override
-  SubredditInfo deserialize(Serializers serializers, Iterable serialized,
+  Subreddit deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new SubredditInfoBuilder();
+    final result = new SubredditBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -74,7 +73,7 @@ class _$SubredditInfoSerializer implements StructuredSerializer<SubredditInfo> {
   }
 }
 
-class _$SubredditInfo extends SubredditInfo {
+class _$Subreddit extends Subreddit {
   @override
   final String id;
   @override
@@ -86,40 +85,40 @@ class _$SubredditInfo extends SubredditInfo {
   @override
   final String iconUrl;
 
-  factory _$SubredditInfo([void Function(SubredditInfoBuilder) updates]) =>
-      (new SubredditInfoBuilder()..update(updates)).build();
+  factory _$Subreddit([void Function(SubredditBuilder) updates]) =>
+      (new SubredditBuilder()..update(updates)).build();
 
-  _$SubredditInfo._(
+  _$Subreddit._(
       {this.id, this.name, this.nsfw, this.primaryColor, this.iconUrl})
       : super._() {
     if (id == null) {
-      throw new BuiltValueNullFieldError('SubredditInfo', 'id');
+      throw new BuiltValueNullFieldError('Subreddit', 'id');
     }
     if (name == null) {
-      throw new BuiltValueNullFieldError('SubredditInfo', 'name');
+      throw new BuiltValueNullFieldError('Subreddit', 'name');
     }
     if (nsfw == null) {
-      throw new BuiltValueNullFieldError('SubredditInfo', 'nsfw');
+      throw new BuiltValueNullFieldError('Subreddit', 'nsfw');
     }
     if (primaryColor == null) {
-      throw new BuiltValueNullFieldError('SubredditInfo', 'primaryColor');
+      throw new BuiltValueNullFieldError('Subreddit', 'primaryColor');
     }
     if (iconUrl == null) {
-      throw new BuiltValueNullFieldError('SubredditInfo', 'iconUrl');
+      throw new BuiltValueNullFieldError('Subreddit', 'iconUrl');
     }
   }
 
   @override
-  SubredditInfo rebuild(void Function(SubredditInfoBuilder) updates) =>
+  Subreddit rebuild(void Function(SubredditBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SubredditInfoBuilder toBuilder() => new SubredditInfoBuilder()..replace(this);
+  SubredditBuilder toBuilder() => new SubredditBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SubredditInfo &&
+    return other is Subreddit &&
         id == other.id &&
         name == other.name &&
         nsfw == other.nsfw &&
@@ -137,7 +136,7 @@ class _$SubredditInfo extends SubredditInfo {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SubredditInfo')
+    return (newBuiltValueToStringHelper('Subreddit')
           ..add('id', id)
           ..add('name', name)
           ..add('nsfw', nsfw)
@@ -147,9 +146,8 @@ class _$SubredditInfo extends SubredditInfo {
   }
 }
 
-class SubredditInfoBuilder
-    implements Builder<SubredditInfo, SubredditInfoBuilder> {
-  _$SubredditInfo _$v;
+class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
+  _$Subreddit _$v;
 
   String _id;
   String get id => _$this._id;
@@ -171,9 +169,9 @@ class SubredditInfoBuilder
   String get iconUrl => _$this._iconUrl;
   set iconUrl(String iconUrl) => _$this._iconUrl = iconUrl;
 
-  SubredditInfoBuilder();
+  SubredditBuilder();
 
-  SubredditInfoBuilder get _$this {
+  SubredditBuilder get _$this {
     if (_$v != null) {
       _id = _$v.id;
       _name = _$v.name;
@@ -186,22 +184,22 @@ class SubredditInfoBuilder
   }
 
   @override
-  void replace(SubredditInfo other) {
+  void replace(Subreddit other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$SubredditInfo;
+    _$v = other as _$Subreddit;
   }
 
   @override
-  void update(void Function(SubredditInfoBuilder) updates) {
+  void update(void Function(SubredditBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$SubredditInfo build() {
+  _$Subreddit build() {
     final _$result = _$v ??
-        new _$SubredditInfo._(
+        new _$Subreddit._(
             id: id,
             name: name,
             nsfw: nsfw,

@@ -13,7 +13,7 @@ ThunkAction<ReddigramState> fetchSubscribedSubreddits([Completer completer]) {
       // but it's impossible to fetch this data from Reddit API in a single
       // request. We just cache that metadata on every fetch and retrieve it
       // here.
-      store.dispatch(fetchSubredditInfo(subreddits));
+      store.dispatch(fetchSubreddits(subreddits));
       store.dispatch(FetchedSubscribedSubreddits(subreddits));
     }).whenComplete(() => completer.complete());
   };

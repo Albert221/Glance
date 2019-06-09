@@ -76,14 +76,4 @@ class ApiApiRepository {
   Future<void> unsubscribeSubreddit(String name) async {
     return _client.delete('/subscriptions/$name');
   }
-
-  Future<List<SubredditInfo>> fetchSubredditInfos(
-      List<String> subreddits) async {
-    return _client
-        .get('/subreddit-info/${subreddits.join('+')}')
-        .then((response) => serializers.deserializeWith(
-            SubredditsInfoResponse.serializer, response.data))
-        .then(
-            (response) => response.items.map(SubredditInfoMapper.map).toList());
-  }
 }

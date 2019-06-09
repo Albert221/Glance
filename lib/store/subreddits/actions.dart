@@ -6,21 +6,31 @@ import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-ThunkAction<ReddigramState> fetchSubredditInfo(List<String> subreddits,
+ThunkAction<ReddigramState> fetchSubreddits(List<String> ids,
     {Completer completer}) {
+  assert(ids.length <= 100, 'there\'s more than 100 ids. what.');
+
   return (Store<ReddigramState> store) {
-    apiRepository
-        .fetchSubredditInfos(subreddits)
-        .then((infos) => infos.forEach((info) {
-              // FIXME: Create new action for bulk stuff
-              store.dispatch(FetchedSubredditInfo(info));
-            }))
+    // Firstly check the state for already fetched subreddits so we don't
+    // have to call the API for the data we have.
+    final storedSubsIds =
+        store.state.subreddits.entries.map((entry) => entry.value.id);
+    ids.removeWhere((id) => storedSubsIds.contains(id));
+    // Remove duplicates.
+    ids = ids.toSet().toList();
+
+    redditRepository
+        .subredditsBulk(ids)
+        .then((subredits) => store.dispatch(FetchedSubreddits(subredits)))
         .whenComplete(() => completer?.complete());
   };
 }
 
-class FetchedSubredditInfo {
-  final SubredditInfo info;
+/// [FetchedSubreddits] is called whenever we fetch the subreddit data.
+/// It's used to show subreddits data to the user in various locations
+/// across the application.
+class FetchedSubreddits {
+  final List<Subreddit> subreddits;
 
-  FetchedSubredditInfo(this.info);
+  FetchedSubreddits(this.subreddits);
 }

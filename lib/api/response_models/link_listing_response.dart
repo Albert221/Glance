@@ -50,6 +50,9 @@ abstract class LinkChildData implements Built<LinkChildData, LinkChildDataBuilde
 
   String get subreddit;
 
+  @BuiltValueField(wireName: 'subreddit_id')
+  String get subredditId;
+
   String get permalink;
 
   String get author;

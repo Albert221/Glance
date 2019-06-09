@@ -9,6 +9,8 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   String get subredditName;
 
+  String get subredditId;
+
   PhotoMedia get source;
 
   PhotoMedia get fullImage;

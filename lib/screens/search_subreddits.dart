@@ -110,7 +110,7 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
 
 class _SearchViewModel {
   final SubredditsSearchState state;
-  final List<SubredditInfo> subreddits;
+  final List<Subreddit> subreddits;
 
   _SearchViewModel({@required this.state, @required this.subreddits})
       : assert(state != null),

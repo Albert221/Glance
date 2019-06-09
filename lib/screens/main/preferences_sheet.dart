@@ -69,7 +69,7 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
           ),
           dense: true,
         ),
-        const DarkThemeTile(),
+        const DarkThemePreferenceTile(),
         ListTile(
           leading: const SizedBox(),
           title: const Text('More preferences'),

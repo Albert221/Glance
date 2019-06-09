@@ -183,6 +183,9 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
       'subreddit',
       serializers.serialize(object.subreddit,
           specifiedType: const FullType(String)),
+      'subreddit_id',
+      serializers.serialize(object.subredditId,
+          specifiedType: const FullType(String)),
       'permalink',
       serializers.serialize(object.permalink,
           specifiedType: const FullType(String)),
@@ -245,6 +248,10 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
           break;
         case 'subreddit':
           result.subreddit = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'subreddit_id':
+          result.subredditId = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'permalink':
@@ -741,6 +748,8 @@ class _$LinkChildData extends LinkChildData {
   @override
   final String subreddit;
   @override
+  final String subredditId;
+  @override
   final String permalink;
   @override
   final String author;
@@ -766,6 +775,7 @@ class _$LinkChildData extends LinkChildData {
       {this.name,
       this.title,
       this.subreddit,
+      this.subredditId,
       this.permalink,
       this.author,
       this.score,
@@ -784,6 +794,9 @@ class _$LinkChildData extends LinkChildData {
     }
     if (subreddit == null) {
       throw new BuiltValueNullFieldError('LinkChildData', 'subreddit');
+    }
+    if (subredditId == null) {
+      throw new BuiltValueNullFieldError('LinkChildData', 'subredditId');
     }
     if (permalink == null) {
       throw new BuiltValueNullFieldError('LinkChildData', 'permalink');
@@ -816,6 +829,7 @@ class _$LinkChildData extends LinkChildData {
         name == other.name &&
         title == other.title &&
         subreddit == other.subreddit &&
+        subredditId == other.subredditId &&
         permalink == other.permalink &&
         author == other.author &&
         score == other.score &&
@@ -839,9 +853,11 @@ class _$LinkChildData extends LinkChildData {
                                 $jc(
                                     $jc(
                                         $jc(
-                                            $jc($jc(0, name.hashCode),
-                                                title.hashCode),
-                                            subreddit.hashCode),
+                                            $jc(
+                                                $jc($jc(0, name.hashCode),
+                                                    title.hashCode),
+                                                subreddit.hashCode),
+                                            subredditId.hashCode),
                                         permalink.hashCode),
                                     author.hashCode),
                                 score.hashCode),
@@ -859,6 +875,7 @@ class _$LinkChildData extends LinkChildData {
           ..add('name', name)
           ..add('title', title)
           ..add('subreddit', subreddit)
+          ..add('subredditId', subredditId)
           ..add('permalink', permalink)
           ..add('author', author)
           ..add('score', score)
@@ -887,6 +904,10 @@ class LinkChildDataBuilder
   String _subreddit;
   String get subreddit => _$this._subreddit;
   set subreddit(String subreddit) => _$this._subreddit = subreddit;
+
+  String _subredditId;
+  String get subredditId => _$this._subredditId;
+  set subredditId(String subredditId) => _$this._subredditId = subredditId;
 
   String _permalink;
   String get permalink => _$this._permalink;
@@ -933,6 +954,7 @@ class LinkChildDataBuilder
       _name = _$v.name;
       _title = _$v.title;
       _subreddit = _$v.subreddit;
+      _subredditId = _$v.subredditId;
       _permalink = _$v.permalink;
       _author = _$v.author;
       _score = _$v.score;
@@ -969,6 +991,7 @@ class LinkChildDataBuilder
               name: name,
               title: title,
               subreddit: subreddit,
+              subredditId: subredditId,
               permalink: permalink,
               author: author,
               score: score,

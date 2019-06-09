@@ -5,8 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
 import 'package:reddigram/api/api.dart';
+import 'package:reddigram/api/response_models/response_models.dart';
 import 'package:reddigram/consts.dart';
-import 'package:reddigram/models/models.dart';
+import 'package:reddigram/models/models.dart' as models;
 
 class RedditRepository {
   Dio _client;
@@ -117,7 +118,7 @@ class RedditRepository {
   }
 
   /// If [feed] equals '_EMPTY' then it always returns empty list.
-  Future<List<Photo>> feed(String feed,
+  Future<List<models.Photo>> feed(String feed,
       {String after = '', int limit = 25}) async {
     if (feed == '_EMPTY') {
       return Future.value([]);
@@ -148,22 +149,30 @@ class RedditRepository {
     return _post('/api/vote', data: 'dir=0&id=$id');
   }
 
-  Future<SubredditInfo> subreddit(String name) async {
+  Future<models.Subreddit> subreddit(String name) async {
     return _client
         .get('/r/$name/about.json')
         .then((response) => serializers.deserializeWith(
             SubredditResponse.serializer, response.data))
-        .then(SubredditInfoMapper.mapSubredditResponse);
+        .then(SubredditInfoMapper.map);
   }
 
-  Future<List<SubredditInfo>> searchSubreddits(String query) async {
+  Future<List<models.Subreddit>> searchSubreddits(String query) async {
     return _client
         .get('/api/subreddit_autocomplete_v2.json?query=$query&limit=10'
             '&include_profiles=false&include_categories=false'
             '&include_over_18=on')
         .then((response) => serializers.deserializeWith(
             SubredditListResponse.serializer, response.data))
-        .then(SubredditInfoMapper.mapSubredditResponseList);
+        .then(SubredditInfoMapper.mapList);
+  }
+
+  Future<List<models.Subreddit>> subredditsBulk(List<String> ids) async {
+    return _client
+        .get('/api/info.json?id=${ids.join(',')}')
+        .then((response) => serializers.deserializeWith(
+            SubredditListResponse.serializer, response.data))
+        .then(SubredditInfoMapper.mapList);
   }
 }
 

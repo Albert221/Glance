@@ -18,7 +18,7 @@ class _$ReddigramState extends ReddigramState {
   @override
   final BuiltSet<String> subscriptions;
   @override
-  final BuiltMap<String, SubredditInfo> subreddits;
+  final BuiltMap<String, Subreddit> subreddits;
   @override
   final SubredditsSearchState subredditsSearch;
 
@@ -137,10 +137,10 @@ class ReddigramStateBuilder
   set subscriptions(SetBuilder<String> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
-  MapBuilder<String, SubredditInfo> _subreddits;
-  MapBuilder<String, SubredditInfo> get subreddits =>
-      _$this._subreddits ??= new MapBuilder<String, SubredditInfo>();
-  set subreddits(MapBuilder<String, SubredditInfo> subreddits) =>
+  MapBuilder<String, Subreddit> _subreddits;
+  MapBuilder<String, Subreddit> get subreddits =>
+      _$this._subreddits ??= new MapBuilder<String, Subreddit>();
+  set subreddits(MapBuilder<String, Subreddit> subreddits) =>
       _$this._subreddits = subreddits;
 
   SubredditsSearchStateBuilder _subredditsSearch;

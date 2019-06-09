@@ -14,6 +14,8 @@ class _$Photo extends Photo {
   @override
   final String subredditName;
   @override
+  final String subredditId;
+  @override
   final PhotoMedia source;
   @override
   final PhotoMedia fullImage;
@@ -35,6 +37,7 @@ class _$Photo extends Photo {
       {this.id,
       this.authorName,
       this.subredditName,
+      this.subredditId,
       this.source,
       this.fullImage,
       this.thumbnail,
@@ -51,6 +54,9 @@ class _$Photo extends Photo {
     }
     if (subredditName == null) {
       throw new BuiltValueNullFieldError('Photo', 'subredditName');
+    }
+    if (subredditId == null) {
+      throw new BuiltValueNullFieldError('Photo', 'subredditId');
     }
     if (source == null) {
       throw new BuiltValueNullFieldError('Photo', 'source');
@@ -89,6 +95,7 @@ class _$Photo extends Photo {
         id == other.id &&
         authorName == other.authorName &&
         subredditName == other.subredditName &&
+        subredditId == other.subredditId &&
         source == other.source &&
         fullImage == other.fullImage &&
         thumbnail == other.thumbnail &&
@@ -108,9 +115,11 @@ class _$Photo extends Photo {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc($jc(0, id.hashCode),
-                                        authorName.hashCode),
-                                    subredditName.hashCode),
+                                    $jc(
+                                        $jc($jc(0, id.hashCode),
+                                            authorName.hashCode),
+                                        subredditName.hashCode),
+                                    subredditId.hashCode),
                                 source.hashCode),
                             fullImage.hashCode),
                         thumbnail.hashCode),
@@ -126,6 +135,7 @@ class _$Photo extends Photo {
           ..add('id', id)
           ..add('authorName', authorName)
           ..add('subredditName', subredditName)
+          ..add('subredditId', subredditId)
           ..add('source', source)
           ..add('fullImage', fullImage)
           ..add('thumbnail', thumbnail)
@@ -152,6 +162,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   String get subredditName => _$this._subredditName;
   set subredditName(String subredditName) =>
       _$this._subredditName = subredditName;
+
+  String _subredditId;
+  String get subredditId => _$this._subredditId;
+  set subredditId(String subredditId) => _$this._subredditId = subredditId;
 
   PhotoMediaBuilder _source;
   PhotoMediaBuilder get source => _$this._source ??= new PhotoMediaBuilder();
@@ -190,6 +204,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _id = _$v.id;
       _authorName = _$v.authorName;
       _subredditName = _$v.subredditName;
+      _subredditId = _$v.subredditId;
       _source = _$v.source?.toBuilder();
       _fullImage = _$v.fullImage?.toBuilder();
       _thumbnail = _$v.thumbnail?.toBuilder();
@@ -224,6 +239,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               id: id,
               authorName: authorName,
               subredditName: subredditName,
+              subredditId: subredditId,
               source: source.build(),
               fullImage: fullImage.build(),
               thumbnail: thumbnail.build(),

@@ -3,12 +3,13 @@ import 'package:reddigram/models/models.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 
-Reducer<BuiltMap<String, SubredditInfo>> subredditsReducer = combineReducers([
-  TypedReducer<BuiltMap<String, SubredditInfo>, FetchedSubredditInfo>(
-      _fetchedSubredditInfo),
+Reducer<BuiltMap<String, Subreddit>> subredditsReducer = combineReducers([
+  TypedReducer<BuiltMap<String, Subreddit>, FetchedSubreddits>(
+      _fetchedSubreddits),
 ]);
 
-BuiltMap<String, SubredditInfo> _fetchedSubredditInfo(
-    BuiltMap<String, SubredditInfo> state, FetchedSubredditInfo action) {
-  return state.rebuild((b) => b[action.info.name] = action.info);
+BuiltMap<String, Subreddit> _fetchedSubreddits(
+    BuiltMap<String, Subreddit> state, FetchedSubreddits action) {
+  return state.rebuild(
+      (b) => action.subreddits.forEach((sub) => b[sub.name] = sub));
 }

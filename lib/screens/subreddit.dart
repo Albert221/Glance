@@ -72,11 +72,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
         Theme.of(context).buttonTheme.colorScheme.onBackground;
 
     return AppBar(
-      title: StoreConnector<ReddigramState, SubredditInfo>(
+      title: StoreConnector<ReddigramState, Subreddit>(
         // fixme: this definitely should have this subreddit info stuff
         converter: (store) =>
             store.state.subreddits['r/${widget.subredditName}'] ??
-            SubredditInfo((b) => b..name = widget.subredditName),
+            Subreddit((b) => b..name = widget.subredditName),
         builder: (context, subreddit) => Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -254,7 +254,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
 class _SubredditViewModel {
   final List<Photo> photos;
   final Feed feed;
-  final SubredditInfo subreddit;
+  final Subreddit subreddit;
   final void Function(Completer) fetchMore;
 
   _SubredditViewModel(

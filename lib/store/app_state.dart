@@ -18,7 +18,8 @@ abstract class ReddigramState
   // Names of subreddits
   BuiltSet<String> get subscriptions;
 
-  BuiltMap<String, SubredditInfo> get subreddits;
+  // Subreddit name is a key
+  BuiltMap<String, Subreddit> get subreddits;
 
   SubredditsSearchState get subredditsSearch;
 
@@ -35,7 +36,7 @@ abstract class ReddigramState
             BEST_SUBSCRIBED: Feed(),
           }),
           subscriptions: BuiltSet(),
-          subreddits: BuiltMap<String, SubredditInfo>(),
+          subreddits: BuiltMap<String, Subreddit>(),
           subredditsSearch: SubredditsSearchState(),
         )
         .rebuild(updates);

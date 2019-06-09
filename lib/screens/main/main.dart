@@ -143,6 +143,14 @@ class _MainScreenState extends State<MainScreen> {
           );
         },
       ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            print(StoreProvider.of<ReddigramState>(context).state.subreddits.entries.map((e) => e.key).join(" "));
+          },
+        ),
+      ],
     );
   }
 }

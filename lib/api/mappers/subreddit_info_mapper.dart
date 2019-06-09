@@ -1,18 +1,9 @@
-import 'package:reddigram/api/api.dart';
-import 'package:reddigram/models/models.dart';
+import 'package:reddigram/api/response_models/response_models.dart';
+import 'package:reddigram/models/models.dart' as models;
 
 class SubredditInfoMapper {
-  static SubredditInfo map(SubredditInfoResponse response) {
-    return SubredditInfo((b) => b
-      ..id = response.id
-      ..name = response.name
-      ..nsfw = response.nsfw
-      ..primaryColor = response.primaryColor
-      ..iconUrl = response.iconUrl);
-  }
-
-  static SubredditInfo mapSubredditResponse(SubredditResponse response) {
-    return SubredditInfo((b) => b
+  static models.Subreddit map(SubredditResponse response) {
+    return models.Subreddit((b) => b
       ..id = response.data.name
       ..name = response.data.displayName
       ..nsfw = response.data.nsfw ?? false
@@ -20,11 +11,11 @@ class SubredditInfoMapper {
       ..iconUrl = response.data.iconUrl ?? '');
   }
 
-  static List<SubredditInfo> mapSubredditResponseList(
+  static List<models.Subreddit> mapList(
       SubredditListResponse response) {
     return response.data.children
         .skipWhile((feed) => feed.data.subredditType == 'private')
-        .map(mapSubredditResponse)
+        .map(map)
         .toList();
   }
 }

@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-part 'subreddit_info.g.dart';
+part 'subreddit.g.dart';
 
-abstract class SubredditInfo
-    implements Built<SubredditInfo, SubredditInfoBuilder> {
+abstract class Subreddit
+    implements Built<Subreddit, SubredditBuilder> {
   String get id;
 
   String get name;
@@ -23,10 +23,10 @@ abstract class SubredditInfo
 
   String get iconUrl;
 
-  SubredditInfo._();
+  Subreddit._();
 
-  factory SubredditInfo([updates(SubredditInfoBuilder b)]) {
-    return _$SubredditInfo
+  factory Subreddit([updates(SubredditBuilder b)]) {
+    return _$Subreddit
         ._(
           id: '',
           name: '',
@@ -37,5 +37,5 @@ abstract class SubredditInfo
         .rebuild(updates);
   }
 
-  static Serializer<SubredditInfo> get serializer => _$subredditInfoSerializer;
+  static Serializer<Subreddit> get serializer => _$subredditSerializer;
 }
