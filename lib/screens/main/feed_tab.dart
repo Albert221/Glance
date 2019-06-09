@@ -72,6 +72,7 @@ class _FeedTabState extends State<FeedTab> {
           _PhotoViewModel.fromStore(store, widget.feedName, index),
       builder: (context, vm) => PhotoListItem(
             photo: vm.photo,
+            subreddit: vm.subreddit,
             upvotingEnabled: vm.authenticated,
             onUpvote: vm.onUpvote,
             onUpvoteCanceled: vm.onUpvoteCanceled,
@@ -117,12 +118,14 @@ class _BodyViewModel {
 class _PhotoViewModel {
   final bool authenticated;
   final Photo photo;
+  final Subreddit subreddit;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
 
   _PhotoViewModel(
       {@required this.authenticated,
       @required this.photo,
+      @required this.subreddit,
       @required this.onUpvote,
       @required this.onUpvoteCanceled})
       : assert(authenticated != null),
@@ -132,10 +135,12 @@ class _PhotoViewModel {
       Store<ReddigramState> store, String feedName, int index) {
     final photoId = store.state.feeds[feedName].photosIds[index];
     final photo = store.state.photos[photoId];
+    final subreddit = store.state.subreddits[photo.subredditName];
 
     return _PhotoViewModel(
       authenticated: store.state.authState.status == AuthStatus.authenticated,
       photo: photo,
+      subreddit: subreddit,
       onUpvote: () => store.dispatch(upvote(photo)),
       onUpvoteCanceled: () => store.dispatch(cancelUpvote(photo)),
     );

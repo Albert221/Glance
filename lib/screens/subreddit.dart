@@ -52,7 +52,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
             child: Scaffold(
               appBar: _buildAppBar(context),
               body: TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildGrid(context),
                   _buildList(context),
@@ -72,43 +71,39 @@ class _SubredditScreenState extends State<SubredditScreen> {
         Theme.of(context).buttonTheme.colorScheme.onBackground;
 
     return AppBar(
-      title: StoreConnector<ReddigramState, Subreddit>(
-        // fixme: this definitely should have this subreddit info stuff
-        converter: (store) =>
-            store.state.subreddits['r/${widget.subredditName}'] ??
-            Subreddit((b) => b..name = widget.subredditName),
-        builder: (context, subreddit) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (subreddit.nsfw) const NsfwBadge(),
-                Expanded(
-                  child: Text(
-                    'r/${widget.subredditName}',
-                    overflow: TextOverflow.fade,
-                  ),
-                ),
-              ],
-            ),
-      ),
-      bottom: const TabBar(
+      title: const TabBar(
         tabs: [
-          Tab(icon: Icon(Icons.apps)),
-          Tab(icon: Icon(Icons.view_list)),
+          // 5.0 padding so the tabs are 56.0 tall (same as the appbar height)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Tab(
+              icon: Icon(Icons.apps),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Tab(icon: Icon(Icons.view_list)),
+          ),
         ],
       ),
       actions: [
         Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.only(right: 16.0),
+          width: 150.0,
           child: StoreConnector<ReddigramState, _SubscribeViewModel>(
             converter: (store) =>
                 _SubscribeViewModel.fromStore(store, widget.subredditName),
             builder: (context, vm) => vm.subscribed
                 ? FlatButton(
                     onPressed: vm.unsubscribe,
-                    child: Text(
-                      'Unsubscribe'.toUpperCase(),
-                      style: TextStyle(color: onBackgroundColor),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        'Unsubscribe'.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: onBackgroundColor),
+                      ),
                     ),
                     color: backgroundColor,
                   )
@@ -117,6 +112,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     icon: Icon(Icons.add, color: onPrimaryColor),
                     label: Text(
                       'Subscribe'.toUpperCase(),
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: onPrimaryColor),
                     ),
                     color: primaryColor,
@@ -239,6 +235,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
           _PhotoViewModel.fromStore(store, widget.subredditName, photoIndex),
       builder: (context, vm) => PhotoListItem(
             photo: vm.photo,
+            subreddit: vm.subreddit,
             upvotingEnabled: vm.authenticated,
             onUpvote: vm.onUpvote,
             onUpvoteCanceled: vm.onUpvoteCanceled,
@@ -308,12 +305,14 @@ class _SubscribeViewModel {
 class _PhotoViewModel {
   final bool authenticated;
   final Photo photo;
+  final Subreddit subreddit;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
 
   _PhotoViewModel(
       {@required this.authenticated,
       @required this.photo,
+      @required this.subreddit,
       @required this.onUpvote,
       @required this.onUpvoteCanceled})
       : assert(authenticated != null),
@@ -323,10 +322,12 @@ class _PhotoViewModel {
       Store<ReddigramState> store, String subredditName, int index) {
     final photoId = store.state.feeds['r/$subredditName'].photosIds[index];
     final photo = store.state.photos[photoId];
+    final subreddit = store.state.subreddits[photo.subredditName];
 
     return _PhotoViewModel(
       authenticated: store.state.authState.status == AuthStatus.authenticated,
       photo: photo,
+      subreddit: subreddit,
       onUpvote: () => store.dispatch(upvote(photo)),
       onUpvoteCanceled: () => store.dispatch(cancelUpvote(photo)),
     );

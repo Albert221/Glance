@@ -8,6 +8,7 @@ import 'package:reddigram/widgets/widgets.dart';
 
 class PhotoListItem extends StatelessWidget {
   final Photo photo;
+  final Subreddit subreddit;
   final bool upvotingEnabled;
   final VoidCallback onUpvote;
   final VoidCallback onUpvoteCanceled;
@@ -21,6 +22,7 @@ class PhotoListItem extends StatelessWidget {
   const PhotoListItem(
       {Key key,
       @required this.photo,
+      this.subreddit,
       this.upvotingEnabled = true,
       this.onUpvote,
       this.onUpvoteCanceled,
@@ -53,6 +55,16 @@ class PhotoListItem extends StatelessWidget {
           color: Theme.of(context).textTheme.caption.color.withOpacity(0.67),
         );
 
+    final chipAvatar = subreddit?.primaryColor?.isNotEmpty == true ||
+            subreddit?.iconUrl?.isNotEmpty == true
+        ? CircleAvatar(
+            backgroundColor: subreddit.primaryColorMapped,
+            backgroundImage: subreddit.iconUrl != null
+                ? CachedNetworkImageProvider(subreddit.iconUrl)
+                : null,
+          )
+        : null;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -67,17 +79,30 @@ class PhotoListItem extends StatelessWidget {
             ),
           ),
         ),
-        InkWell(
-          onTap: onSubredditTap,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'r/${photo.subredditName}',
-              style: onSubredditTap != null
-                  ? Theme.of(context).textTheme.caption
-                  : mutedStyle,
-            ),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: onSubredditTap != null
+              ? ActionChip(
+                  pressElevation: 0,
+                  avatar: chipAvatar,
+                  label: Text(
+                    'r/${photo.subredditName}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: onSubredditTap,
+                )
+              : Chip(
+                  avatar: chipAvatar,
+                  label: Text(
+                    'r/${photo.subredditName}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: mutedStyle.color,
+                    ),
+                  ),
+                ),
         ),
       ],
     );
