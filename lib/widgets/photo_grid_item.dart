@@ -36,6 +36,8 @@ class PhotoGridItem extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
+                placeholder: (context, _) => _Placeholder(),
+                fadeInDuration: Duration.zero,
               ),
             ),
             if (photo.nsfw)
