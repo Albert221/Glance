@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/models/models.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
@@ -80,7 +81,7 @@ class SubbedTab extends StatelessWidget {
               ...vm.subreddits
                   .map((subredditName) =>
                       StoreConnector<ReddigramState, Subreddit>(
-                        key: ValueKey(subredditName),
+                        key: Key(subredditName),
                         converter: (store) =>
                             store.state.subreddits[subredditName] ??
                             Subreddit((b) => b..name = subredditName),
@@ -95,10 +96,60 @@ class SubbedTab extends StatelessWidget {
                                   () => vm.unsubscribe(subredditName)),
                             ),
                       ))
-                  .toList()
+                  .toList(),
+              ..._buildSuggestions(context, vm),
             ],
           ),
     );
+  }
+
+  static const _suggestedSubreddits = {
+    'pics': 't5_2sh6t',
+    'EarthPorn': 't5_2sbq3',
+    'CityPorn': 't5_2scjs',
+    'itookapicture': 't5_2r1tc',
+  };
+
+  List<Widget> _buildSuggestions(
+      BuildContext context, _SubredditsViewModel vm) {
+    StoreProvider.of<ReddigramState>(context)
+        .dispatch(fetchSubreddits(_suggestedSubreddits.values.toList()));
+
+    final suggested = _suggestedSubreddits.keys
+        .where((subreddit) => !vm.subreddits.contains(subreddit));
+
+    if (suggested.isEmpty) {
+      return [];
+    }
+
+    return [
+      const SizedBox(height: 32.0),
+      const ListTile(
+        leading: Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Icon(Icons.add_circle),
+        ),
+        title: Text(
+          'Here are some suggestions:',
+        ),
+      ),
+      ...suggested
+          .map((subName) => StoreConnector<ReddigramState, Subreddit>(
+                key: Key('suggestion_$subName'),
+                converter: (store) => store.state.subreddits[subName],
+                builder: (context, subreddit) => SubredditListTile(
+                      subreddit:
+                          subreddit ?? Subreddit((b) => b..name = subName),
+                      onTap: () => Navigator.push(
+                            context,
+                            SubredditScreen.route(subName),
+                          ),
+                      trailingIcon: const Icon(Icons.add),
+                      onTrailingTap: () => vm.subscribe(subName),
+                    ),
+              ))
+          .toList(),
+    ];
   }
 }
 
