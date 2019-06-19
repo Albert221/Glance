@@ -108,22 +108,21 @@ class PhotoListItem extends StatelessWidget {
     );
   }
 
+  static const double _maxPictureHeight = 600.0;
+
   static double calculateImageHeight(BuildContext context, Photo photo) {
     final pictureWidth = MediaQuery.of(context).size.width - 16;
     final pictureHeight = pictureWidth / photo.source.aspectRatio;
 
-    final maxPictureHeight = PreferencesProvider.of(context).cutLongPhotos
-        ? pictureWidth * 1.4
-        : pictureHeight;
-
-    return pictureHeight > maxPictureHeight ? maxPictureHeight : pictureHeight;
+    return min(pictureHeight, _maxPictureHeight);
   }
 
   Widget _buildImage(BuildContext context) {
-    final height = calculateImageHeight(context, photo);
+    final photoHeight = calculateImageHeight(context, photo);
 
     final image = CachedNetworkImage(
       fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
       imageUrl: photo.fullImage.url,
       fadeInDuration: Duration.zero,
       placeholder: (context, url) => _buildPlaceholder(context),
@@ -137,21 +136,23 @@ class PhotoListItem extends StatelessWidget {
           children: [
             ConstrainedBox(
               constraints: BoxConstraints.tightFor(
-                  height: height, width: double.infinity),
+                  height: photoHeight, width: double.infinity),
               child: GestureDetector(
                 onTap: onPhotoTap,
                 child: upvotingEnabled
                     ? Upvoteable(
-                        height: height,
+                        height: photoHeight,
                         onUpvote: photo.upvoted ? null : onUpvote,
                         child: image,
                       )
                     : image,
               ),
             ),
+            if (photoHeight >= _maxPictureHeight)
+              _buildTapToRevealOverlay(context),
             if (photo.nsfw)
               NsfwOverlay(
-                height: height,
+                height: photoHeight,
                 show: showNsfw,
                 onShow: onShowNsfw,
               ),
@@ -162,20 +163,50 @@ class PhotoListItem extends StatelessWidget {
   }
 
   Widget _buildPlaceholder(BuildContext context) {
-    return Stack(
-      children: [
-        CachedNetworkImage(
+    return CachedNetworkImage(
+      width: double.infinity,
+      height: double.infinity,
+      imageUrl: photo.thumbnail.url,
+      fit: BoxFit.cover,
+    );
+  }
+
+  Widget _buildTapToRevealOverlay(BuildContext context) {
+    final photoHeight = calculateImageHeight(context, photo);
+    final overlayColor = Colors.white;
+    final textColor = Colors.black;
+
+    return IgnorePointer(
+      ignoring: true,
+      child: Container(
+        height: photoHeight,
+        alignment: Alignment.bottomCenter,
+        child: Container(
           width: double.infinity,
-          height: double.infinity,
-          imageUrl: photo.thumbnail.url,
-          fit: BoxFit.cover,
-        ),
-        const Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(Colors.white),
+          height: 50.0,
+          padding: const EdgeInsets.only(top: 10.0),
+          alignment: Alignment.center,
+          child: Text(
+            'Post is longer. Tap to reveal.',
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                overlayColor.withOpacity(0),
+                overlayColor.withOpacity(0.8),
+                overlayColor
+              ],
+              stops: [0.0, 0.2, 1.0],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 
