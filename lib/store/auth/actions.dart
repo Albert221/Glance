@@ -32,7 +32,7 @@ void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
   futures.add(subscriptionsCompleter.future);
   futures.add(apiRepository.useApi(redditAccessToken).then(
         (_) =>
-            store.dispatch(fetchSubscribedSubreddits(subscriptionsCompleter)),
+            store.dispatch(fetchSubscriptions(subscriptionsCompleter)),
         onError: (_) => subscriptionsCompleter.complete(),
       ));
 
@@ -56,7 +56,7 @@ ThunkAction<ReddigramState> loadUser() {
       } else {
         apiRepository.useLocal();
         final subscriptionsCompleter = Completer();
-        store.dispatch(fetchSubscribedSubreddits(subscriptionsCompleter));
+        store.dispatch(fetchSubscriptions(subscriptionsCompleter));
         await subscriptionsCompleter.future;
         await _loadFeeds(store);
 
@@ -90,7 +90,7 @@ ThunkAction<ReddigramState> signUserOut() {
     apiRepository.useLocal();
 
     final subscriptionsCompleter = Completer();
-    store.dispatch(fetchSubscribedSubreddits(subscriptionsCompleter));
+    store.dispatch(fetchSubscriptions(subscriptionsCompleter));
     await subscriptionsCompleter.future;
 
     _loadFeeds(store)

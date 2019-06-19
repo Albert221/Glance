@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiLocalRepository {
   static const preferencesKey = "local_subscriptions";
 
-  Future<List<String>> fetchSubscribedSubreddits() {
+  Future<List<String>> fetchSubscriptions() {
     return SharedPreferences.getInstance()
         .then((prefs) => prefs.getStringList(preferencesKey) ?? []);
   }

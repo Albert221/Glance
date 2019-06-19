@@ -21,11 +21,11 @@ class ApiRepositoriesFacade extends ApiApiRepository {
   void useLocal() => _backendType = SubscriptionsBackendType.Local;
 
   @override
-  Future<List<String>> fetchSubscribedSubreddits(
+  Future<List<String>> fetchSubscriptions(
           {SubscriptionsBackendType forceBackend}) =>
       (forceBackend ?? _backendType) == SubscriptionsBackendType.Api
-          ? super.fetchSubscribedSubreddits()
-          : localRepository.fetchSubscribedSubreddits();
+          ? super.fetchSubscriptions()
+          : localRepository.fetchSubscriptions();
 
   @override
   Future<void> subscribeSubreddit(String name) =>

@@ -61,7 +61,7 @@ class ApiApiRepository {
     _token = null;
   }
 
-  Future<List<String>> fetchSubscribedSubreddits() async {
+  Future<List<String>> fetchSubscriptions() async {
     return _client
         .get('/subscriptions')
         .then((response) => List<String>.from(response.data));
