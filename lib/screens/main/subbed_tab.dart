@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/models/models.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
@@ -112,9 +111,6 @@ class SubbedTab extends StatelessWidget {
 
   List<Widget> _buildSuggestions(
       BuildContext context, _SubredditsViewModel vm) {
-    StoreProvider.of<ReddigramState>(context)
-        .dispatch(fetchSubreddits(_suggestedSubreddits.values.toList()));
-
     final suggested = _suggestedSubreddits.keys
         .where((subreddit) => !vm.subreddits.contains(subreddit));
 
@@ -123,6 +119,13 @@ class SubbedTab extends StatelessWidget {
     }
 
     return [
+      // FIXME: Call this onInit the other way, don't use this in the widget tree
+      StoreConnector<ReddigramState, void>(
+        onInit: (store) => store
+            .dispatch(fetchSubreddits(_suggestedSubreddits.values.toList())),
+        converter: (_) => null,
+        builder: (context, _) => SizedBox(),
+      ),
       const SizedBox(height: 32.0),
       const ListTile(
         leading: Padding(

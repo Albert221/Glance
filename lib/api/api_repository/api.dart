@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'package:reddigram/api/api.dart';
-import 'package:reddigram/models/models.dart';
 import 'package:reddigram/utils/jwt.dart';
 
 class ApiApiRepository {

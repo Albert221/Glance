@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/app.dart';
 import 'package:reddigram/consts.dart';
-import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:uni_links/uni_links.dart';
