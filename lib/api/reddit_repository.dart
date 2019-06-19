@@ -105,7 +105,7 @@ class RedditRepository {
     return _post(
       '/api/v1/access_token',
       data: 'grant_type=authorization_code&code=$code'
-          '&redirect_uri=https://reddigram.wolszon.me/redirect',
+          '&redirect_uri=${ReddigramConsts.oauthRedirectUrl}',
       headers: {'Authorization': basicAuth},
     ).then((response) {
       return _tokens = RedditTokens(

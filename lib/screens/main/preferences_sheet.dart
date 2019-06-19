@@ -31,10 +31,10 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
     launch('https://www.reddit.com/api/v1/authorize'
         '?client_id=${ReddigramConsts.oauthClientId}&response_type=code'
         '&state=x&scope=read+mysubreddits+vote+identity&duration=permanent'
-        '&redirect_uri=https://reddigram.wolszon.me/redirect');
+        '&redirect_uri=${ReddigramConsts.oauthRedirectUrl}');
 
     _linkStream = getUriLinksStream().listen((uri) {
-      if (uri.queryParameters.containsKey('code')) {
+      if (uri.host == 'redirect' && uri.queryParameters.containsKey('code')) {
         StoreProvider.of<ReddigramState>(context)
             .dispatch(authenticateUserFromCode(uri.queryParameters['code']));
 
