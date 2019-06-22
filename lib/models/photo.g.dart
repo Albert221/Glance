@@ -22,6 +22,8 @@ class _$Photo extends Photo {
   @override
   final PhotoMedia thumbnail;
   @override
+  final Video video;
+  @override
   final int upvotes;
   @override
   final bool upvoted;
@@ -41,6 +43,7 @@ class _$Photo extends Photo {
       this.source,
       this.fullImage,
       this.thumbnail,
+      this.video,
       this.upvotes,
       this.upvoted,
       this.nsfw,
@@ -99,6 +102,7 @@ class _$Photo extends Photo {
         source == other.source &&
         fullImage == other.fullImage &&
         thumbnail == other.thumbnail &&
+        video == other.video &&
         upvotes == other.upvotes &&
         upvoted == other.upvoted &&
         nsfw == other.nsfw &&
@@ -116,13 +120,15 @@ class _$Photo extends Photo {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc(0, id.hashCode),
-                                            authorName.hashCode),
-                                        subredditName.hashCode),
-                                    subredditId.hashCode),
-                                source.hashCode),
-                            fullImage.hashCode),
-                        thumbnail.hashCode),
+                                        $jc(
+                                            $jc($jc(0, id.hashCode),
+                                                authorName.hashCode),
+                                            subredditName.hashCode),
+                                        subredditId.hashCode),
+                                    source.hashCode),
+                                fullImage.hashCode),
+                            thumbnail.hashCode),
+                        video.hashCode),
                     upvotes.hashCode),
                 upvoted.hashCode),
             nsfw.hashCode),
@@ -139,6 +145,7 @@ class _$Photo extends Photo {
           ..add('source', source)
           ..add('fullImage', fullImage)
           ..add('thumbnail', thumbnail)
+          ..add('video', video)
           ..add('upvotes', upvotes)
           ..add('upvoted', upvoted)
           ..add('nsfw', nsfw)
@@ -181,6 +188,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _$this._thumbnail ??= new PhotoMediaBuilder();
   set thumbnail(PhotoMediaBuilder thumbnail) => _$this._thumbnail = thumbnail;
 
+  VideoBuilder _video;
+  VideoBuilder get video => _$this._video ??= new VideoBuilder();
+  set video(VideoBuilder video) => _$this._video = video;
+
   int _upvotes;
   int get upvotes => _$this._upvotes;
   set upvotes(int upvotes) => _$this._upvotes = upvotes;
@@ -208,6 +219,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _source = _$v.source?.toBuilder();
       _fullImage = _$v.fullImage?.toBuilder();
       _thumbnail = _$v.thumbnail?.toBuilder();
+      _video = _$v.video?.toBuilder();
       _upvotes = _$v.upvotes;
       _upvoted = _$v.upvoted;
       _nsfw = _$v.nsfw;
@@ -243,6 +255,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
               source: source.build(),
               fullImage: fullImage.build(),
               thumbnail: thumbnail.build(),
+              video: _video?.build(),
               upvotes: upvotes,
               upvoted: upvoted,
               nsfw: nsfw,
@@ -256,6 +269,8 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
         fullImage.build();
         _$failedField = 'thumbnail';
         thumbnail.build();
+        _$failedField = 'video';
+        _video?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Photo', _$failedField, e.toString());
@@ -365,6 +380,81 @@ class PhotoMediaBuilder implements Builder<PhotoMedia, PhotoMediaBuilder> {
   _$PhotoMedia build() {
     final _$result =
         _$v ?? new _$PhotoMedia._(url: url, width: width, height: height);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$Video extends Video {
+  @override
+  final String url;
+
+  factory _$Video([void Function(VideoBuilder) updates]) =>
+      (new VideoBuilder()..update(updates)).build();
+
+  _$Video._({this.url}) : super._() {
+    if (url == null) {
+      throw new BuiltValueNullFieldError('Video', 'url');
+    }
+  }
+
+  @override
+  Video rebuild(void Function(VideoBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  VideoBuilder toBuilder() => new VideoBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is Video && url == other.url;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, url.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('Video')..add('url', url)).toString();
+  }
+}
+
+class VideoBuilder implements Builder<Video, VideoBuilder> {
+  _$Video _$v;
+
+  String _url;
+  String get url => _$this._url;
+  set url(String url) => _$this._url = url;
+
+  VideoBuilder();
+
+  VideoBuilder get _$this {
+    if (_$v != null) {
+      _url = _$v.url;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(Video other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$Video;
+  }
+
+  @override
+  void update(void Function(VideoBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$Video build() {
+    final _$result = _$v ?? new _$Video._(url: url);
     replace(_$result);
     return _$result;
   }

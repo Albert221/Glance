@@ -11,6 +11,13 @@ class LinkListingPhotosMapper {
             return null;
           }
 
+          RedditVideo redditVideo;
+          if (child.data.isVideo) {
+            redditVideo = child.data.media?.redditVideo;
+          } else {
+            redditVideo = child.data.preview?.redditVideoPreview;
+          }
+
           try {
             return Photo((b) => b
               ..id = child.data.name
@@ -30,6 +37,9 @@ class LinkListingPhotosMapper {
                     ..width = child.data.thumbnailWidth ?? 1
                     ..height = child.data.thumbnailHeight ?? 1).toBuilder()
                   : _fullImage(child)
+              ..video = redditVideo != null
+                  ? Video((b) => b..url = redditVideo.fallbackUrl).toBuilder()
+                  : null
               ..upvotes = child.data.score
               ..upvoted = child.data.likes ?? false
               ..nsfw = child.data.over18

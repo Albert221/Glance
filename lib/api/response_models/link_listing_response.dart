@@ -17,7 +17,8 @@ abstract class LinkListingResponse
       _$linkListingResponseSerializer;
 }
 
-abstract class LinkListingData implements Built<LinkListingData, LinkListingDataBuilder> {
+abstract class LinkListingData
+    implements Built<LinkListingData, LinkListingDataBuilder> {
   @nullable
   String get after;
 
@@ -28,9 +29,11 @@ abstract class LinkListingData implements Built<LinkListingData, LinkListingData
 
   LinkListingData._();
 
-  factory LinkListingData([updates(LinkListingDataBuilder b)]) = _$LinkListingData;
+  factory LinkListingData([updates(LinkListingDataBuilder b)]) =
+      _$LinkListingData;
 
-  static Serializer<LinkListingData> get serializer => _$linkListingDataSerializer;
+  static Serializer<LinkListingData> get serializer =>
+      _$linkListingDataSerializer;
 }
 
 abstract class LinkChild implements Built<LinkChild, LinkChildBuilder> {
@@ -43,7 +46,8 @@ abstract class LinkChild implements Built<LinkChild, LinkChildBuilder> {
   static Serializer<LinkChild> get serializer => _$linkChildSerializer;
 }
 
-abstract class LinkChildData implements Built<LinkChildData, LinkChildDataBuilder> {
+abstract class LinkChildData
+    implements Built<LinkChildData, LinkChildDataBuilder> {
   String get name;
 
   String get title;
@@ -78,6 +82,12 @@ abstract class LinkChildData implements Built<LinkChildData, LinkChildDataBuilde
   @nullable
   Preview get preview;
 
+  @nullable
+  Media get media;
+
+  @BuiltValueField(wireName: 'is_video')
+  bool get isVideo;
+
   LinkChildData._();
 
   factory LinkChildData([updates(LinkChildDataBuilder b)]) = _$LinkChildData;
@@ -87,6 +97,10 @@ abstract class LinkChildData implements Built<LinkChildData, LinkChildDataBuilde
 
 abstract class Preview implements Built<Preview, PreviewBuilder> {
   BuiltList<PreviewImage> get images;
+
+  @BuiltValueField(wireName: 'reddit_video_preview')
+  @nullable
+  RedditVideo get redditVideoPreview;
 
   Preview._();
 
@@ -120,4 +134,27 @@ abstract class Image implements Built<Image, ImageBuilder> {
   factory Image([updates(ImageBuilder b)]) = _$Image;
 
   static Serializer<Image> get serializer => _$imageSerializer;
+}
+
+abstract class Media implements Built<Media, MediaBuilder> {
+  @BuiltValueField(wireName: 'reddit_video')
+  @nullable
+  RedditVideo get redditVideo;
+
+  Media._();
+
+  factory Media([updates(MediaBuilder b)]) = _$Media;
+
+  static Serializer<Media> get serializer => _$mediaSerializer;
+}
+
+abstract class RedditVideo implements Built<RedditVideo, RedditVideoBuilder> {
+  @BuiltValueField(wireName: 'fallback_url')
+  String get fallbackUrl;
+
+  RedditVideo._();
+
+  factory RedditVideo([updates(RedditVideoBuilder b)]) = _$RedditVideo;
+
+  static Serializer<RedditVideo> get serializer => _$redditVideoSerializer;
 }

@@ -17,6 +17,9 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
 
   PhotoMedia get thumbnail;
 
+  @nullable
+  Video get video;
+
   int get upvotes;
 
   bool get upvoted;
@@ -42,4 +45,12 @@ abstract class PhotoMedia implements Built<PhotoMedia, PhotoMediaBuilder> {
   PhotoMedia._();
 
   factory PhotoMedia([updates(PhotoMediaBuilder b)]) = _$PhotoMedia;
+}
+
+abstract class Video implements Built<Video, VideoBuilder> {
+  String get url;
+
+  Video._();
+
+  factory Video([updates(VideoBuilder b)]) = _$Video;
 }

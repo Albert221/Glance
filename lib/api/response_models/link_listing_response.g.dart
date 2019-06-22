@@ -17,6 +17,8 @@ Serializer<Preview> _$previewSerializer = new _$PreviewSerializer();
 Serializer<PreviewImage> _$previewImageSerializer =
     new _$PreviewImageSerializer();
 Serializer<Image> _$imageSerializer = new _$ImageSerializer();
+Serializer<Media> _$mediaSerializer = new _$MediaSerializer();
+Serializer<RedditVideo> _$redditVideoSerializer = new _$RedditVideoSerializer();
 
 class _$LinkListingResponseSerializer
     implements StructuredSerializer<LinkListingResponse> {
@@ -199,6 +201,9 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
           specifiedType: const FullType(String)),
       'over_18',
       serializers.serialize(object.over18, specifiedType: const FullType(bool)),
+      'is_video',
+      serializers.serialize(object.isVideo,
+          specifiedType: const FullType(bool)),
     ];
     if (object.likes != null) {
       result
@@ -223,6 +228,12 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
         ..add('preview')
         ..add(serializers.serialize(object.preview,
             specifiedType: const FullType(Preview)));
+    }
+    if (object.media != null) {
+      result
+        ..add('media')
+        ..add(serializers.serialize(object.media,
+            specifiedType: const FullType(Media)));
     }
     return result;
   }
@@ -290,6 +301,14 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
           result.preview.replace(serializers.deserialize(value,
               specifiedType: const FullType(Preview)) as Preview);
           break;
+        case 'media':
+          result.media.replace(serializers.deserialize(value,
+              specifiedType: const FullType(Media)) as Media);
+          break;
+        case 'is_video':
+          result.isVideo = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
       }
     }
 
@@ -312,7 +331,12 @@ class _$PreviewSerializer implements StructuredSerializer<Preview> {
           specifiedType:
               const FullType(BuiltList, const [const FullType(PreviewImage)])),
     ];
-
+    if (object.redditVideoPreview != null) {
+      result
+        ..add('reddit_video_preview')
+        ..add(serializers.serialize(object.redditVideoPreview,
+            specifiedType: const FullType(RedditVideo)));
+    }
     return result;
   }
 
@@ -332,6 +356,10 @@ class _$PreviewSerializer implements StructuredSerializer<Preview> {
                   specifiedType: const FullType(
                       BuiltList, const [const FullType(PreviewImage)]))
               as BuiltList);
+          break;
+        case 'reddit_video_preview':
+          result.redditVideoPreview.replace(serializers.deserialize(value,
+              specifiedType: const FullType(RedditVideo)) as RedditVideo);
           break;
       }
     }
@@ -433,6 +461,87 @@ class _$ImageSerializer implements StructuredSerializer<Image> {
         case 'height':
           result.height = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$MediaSerializer implements StructuredSerializer<Media> {
+  @override
+  final Iterable<Type> types = const [Media, _$Media];
+  @override
+  final String wireName = 'Media';
+
+  @override
+  Iterable serialize(Serializers serializers, Media object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[];
+    if (object.redditVideo != null) {
+      result
+        ..add('reddit_video')
+        ..add(serializers.serialize(object.redditVideo,
+            specifiedType: const FullType(RedditVideo)));
+    }
+    return result;
+  }
+
+  @override
+  Media deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new MediaBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'reddit_video':
+          result.redditVideo.replace(serializers.deserialize(value,
+              specifiedType: const FullType(RedditVideo)) as RedditVideo);
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$RedditVideoSerializer implements StructuredSerializer<RedditVideo> {
+  @override
+  final Iterable<Type> types = const [RedditVideo, _$RedditVideo];
+  @override
+  final String wireName = 'RedditVideo';
+
+  @override
+  Iterable serialize(Serializers serializers, RedditVideo object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'fallback_url',
+      serializers.serialize(object.fallbackUrl,
+          specifiedType: const FullType(String)),
+    ];
+
+    return result;
+  }
+
+  @override
+  RedditVideo deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new RedditVideoBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'fallback_url':
+          result.fallbackUrl = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
       }
     }
@@ -767,6 +876,10 @@ class _$LinkChildData extends LinkChildData {
   final bool over18;
   @override
   final Preview preview;
+  @override
+  final Media media;
+  @override
+  final bool isVideo;
 
   factory _$LinkChildData([void Function(LinkChildDataBuilder) updates]) =>
       (new LinkChildDataBuilder()..update(updates)).build();
@@ -784,7 +897,9 @@ class _$LinkChildData extends LinkChildData {
       this.thumbnailWidth,
       this.thumbnailHeight,
       this.over18,
-      this.preview})
+      this.preview,
+      this.media,
+      this.isVideo})
       : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('LinkChildData', 'name');
@@ -813,6 +928,9 @@ class _$LinkChildData extends LinkChildData {
     if (over18 == null) {
       throw new BuiltValueNullFieldError('LinkChildData', 'over18');
     }
+    if (isVideo == null) {
+      throw new BuiltValueNullFieldError('LinkChildData', 'isVideo');
+    }
   }
 
   @override
@@ -838,7 +956,9 @@ class _$LinkChildData extends LinkChildData {
         thumbnailWidth == other.thumbnailWidth &&
         thumbnailHeight == other.thumbnailHeight &&
         over18 == other.over18 &&
-        preview == other.preview;
+        preview == other.preview &&
+        media == other.media &&
+        isVideo == other.isVideo;
   }
 
   @override
@@ -854,19 +974,25 @@ class _$LinkChildData extends LinkChildData {
                                     $jc(
                                         $jc(
                                             $jc(
-                                                $jc($jc(0, name.hashCode),
-                                                    title.hashCode),
-                                                subreddit.hashCode),
-                                            subredditId.hashCode),
-                                        permalink.hashCode),
-                                    author.hashCode),
-                                score.hashCode),
-                            likes.hashCode),
-                        thumbnail.hashCode),
-                    thumbnailWidth.hashCode),
-                thumbnailHeight.hashCode),
-            over18.hashCode),
-        preview.hashCode));
+                                                $jc(
+                                                    $jc(
+                                                        $jc(
+                                                            $jc(0,
+                                                                name.hashCode),
+                                                            title.hashCode),
+                                                        subreddit.hashCode),
+                                                    subredditId.hashCode),
+                                                permalink.hashCode),
+                                            author.hashCode),
+                                        score.hashCode),
+                                    likes.hashCode),
+                                thumbnail.hashCode),
+                            thumbnailWidth.hashCode),
+                        thumbnailHeight.hashCode),
+                    over18.hashCode),
+                preview.hashCode),
+            media.hashCode),
+        isVideo.hashCode));
   }
 
   @override
@@ -884,7 +1010,9 @@ class _$LinkChildData extends LinkChildData {
           ..add('thumbnailWidth', thumbnailWidth)
           ..add('thumbnailHeight', thumbnailHeight)
           ..add('over18', over18)
-          ..add('preview', preview))
+          ..add('preview', preview)
+          ..add('media', media)
+          ..add('isVideo', isVideo))
         .toString();
   }
 }
@@ -947,6 +1075,14 @@ class LinkChildDataBuilder
   PreviewBuilder get preview => _$this._preview ??= new PreviewBuilder();
   set preview(PreviewBuilder preview) => _$this._preview = preview;
 
+  MediaBuilder _media;
+  MediaBuilder get media => _$this._media ??= new MediaBuilder();
+  set media(MediaBuilder media) => _$this._media = media;
+
+  bool _isVideo;
+  bool get isVideo => _$this._isVideo;
+  set isVideo(bool isVideo) => _$this._isVideo = isVideo;
+
   LinkChildDataBuilder();
 
   LinkChildDataBuilder get _$this {
@@ -964,6 +1100,8 @@ class LinkChildDataBuilder
       _thumbnailHeight = _$v.thumbnailHeight;
       _over18 = _$v.over18;
       _preview = _$v.preview?.toBuilder();
+      _media = _$v.media?.toBuilder();
+      _isVideo = _$v.isVideo;
       _$v = null;
     }
     return this;
@@ -1000,12 +1138,16 @@ class LinkChildDataBuilder
               thumbnailWidth: thumbnailWidth,
               thumbnailHeight: thumbnailHeight,
               over18: over18,
-              preview: _preview?.build());
+              preview: _preview?.build(),
+              media: _media?.build(),
+              isVideo: isVideo);
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'preview';
         _preview?.build();
+        _$failedField = 'media';
+        _media?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'LinkChildData', _$failedField, e.toString());
@@ -1020,11 +1162,13 @@ class LinkChildDataBuilder
 class _$Preview extends Preview {
   @override
   final BuiltList<PreviewImage> images;
+  @override
+  final RedditVideo redditVideoPreview;
 
   factory _$Preview([void Function(PreviewBuilder) updates]) =>
       (new PreviewBuilder()..update(updates)).build();
 
-  _$Preview._({this.images}) : super._() {
+  _$Preview._({this.images, this.redditVideoPreview}) : super._() {
     if (images == null) {
       throw new BuiltValueNullFieldError('Preview', 'images');
     }
@@ -1040,17 +1184,21 @@ class _$Preview extends Preview {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Preview && images == other.images;
+    return other is Preview &&
+        images == other.images &&
+        redditVideoPreview == other.redditVideoPreview;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, images.hashCode));
+    return $jf($jc($jc(0, images.hashCode), redditVideoPreview.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Preview')..add('images', images))
+    return (newBuiltValueToStringHelper('Preview')
+          ..add('images', images)
+          ..add('redditVideoPreview', redditVideoPreview))
         .toString();
   }
 }
@@ -1063,11 +1211,18 @@ class PreviewBuilder implements Builder<Preview, PreviewBuilder> {
       _$this._images ??= new ListBuilder<PreviewImage>();
   set images(ListBuilder<PreviewImage> images) => _$this._images = images;
 
+  RedditVideoBuilder _redditVideoPreview;
+  RedditVideoBuilder get redditVideoPreview =>
+      _$this._redditVideoPreview ??= new RedditVideoBuilder();
+  set redditVideoPreview(RedditVideoBuilder redditVideoPreview) =>
+      _$this._redditVideoPreview = redditVideoPreview;
+
   PreviewBuilder();
 
   PreviewBuilder get _$this {
     if (_$v != null) {
       _images = _$v.images?.toBuilder();
+      _redditVideoPreview = _$v.redditVideoPreview?.toBuilder();
       _$v = null;
     }
     return this;
@@ -1090,12 +1245,17 @@ class PreviewBuilder implements Builder<Preview, PreviewBuilder> {
   _$Preview build() {
     _$Preview _$result;
     try {
-      _$result = _$v ?? new _$Preview._(images: images.build());
+      _$result = _$v ??
+          new _$Preview._(
+              images: images.build(),
+              redditVideoPreview: _redditVideoPreview?.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'images';
         images.build();
+        _$failedField = 'redditVideoPreview';
+        _redditVideoPreview?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Preview', _$failedField, e.toString());
@@ -1315,6 +1475,171 @@ class ImageBuilder implements Builder<Image, ImageBuilder> {
   _$Image build() {
     final _$result =
         _$v ?? new _$Image._(url: url, width: width, height: height);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$Media extends Media {
+  @override
+  final RedditVideo redditVideo;
+
+  factory _$Media([void Function(MediaBuilder) updates]) =>
+      (new MediaBuilder()..update(updates)).build();
+
+  _$Media._({this.redditVideo}) : super._();
+
+  @override
+  Media rebuild(void Function(MediaBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  MediaBuilder toBuilder() => new MediaBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is Media && redditVideo == other.redditVideo;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, redditVideo.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('Media')
+          ..add('redditVideo', redditVideo))
+        .toString();
+  }
+}
+
+class MediaBuilder implements Builder<Media, MediaBuilder> {
+  _$Media _$v;
+
+  RedditVideoBuilder _redditVideo;
+  RedditVideoBuilder get redditVideo =>
+      _$this._redditVideo ??= new RedditVideoBuilder();
+  set redditVideo(RedditVideoBuilder redditVideo) =>
+      _$this._redditVideo = redditVideo;
+
+  MediaBuilder();
+
+  MediaBuilder get _$this {
+    if (_$v != null) {
+      _redditVideo = _$v.redditVideo?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(Media other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$Media;
+  }
+
+  @override
+  void update(void Function(MediaBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$Media build() {
+    _$Media _$result;
+    try {
+      _$result = _$v ?? new _$Media._(redditVideo: _redditVideo?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'redditVideo';
+        _redditVideo?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'Media', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$RedditVideo extends RedditVideo {
+  @override
+  final String fallbackUrl;
+
+  factory _$RedditVideo([void Function(RedditVideoBuilder) updates]) =>
+      (new RedditVideoBuilder()..update(updates)).build();
+
+  _$RedditVideo._({this.fallbackUrl}) : super._() {
+    if (fallbackUrl == null) {
+      throw new BuiltValueNullFieldError('RedditVideo', 'fallbackUrl');
+    }
+  }
+
+  @override
+  RedditVideo rebuild(void Function(RedditVideoBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  RedditVideoBuilder toBuilder() => new RedditVideoBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is RedditVideo && fallbackUrl == other.fallbackUrl;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, fallbackUrl.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('RedditVideo')
+          ..add('fallbackUrl', fallbackUrl))
+        .toString();
+  }
+}
+
+class RedditVideoBuilder implements Builder<RedditVideo, RedditVideoBuilder> {
+  _$RedditVideo _$v;
+
+  String _fallbackUrl;
+  String get fallbackUrl => _$this._fallbackUrl;
+  set fallbackUrl(String fallbackUrl) => _$this._fallbackUrl = fallbackUrl;
+
+  RedditVideoBuilder();
+
+  RedditVideoBuilder get _$this {
+    if (_$v != null) {
+      _fallbackUrl = _$v.fallbackUrl;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(RedditVideo other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$RedditVideo;
+  }
+
+  @override
+  void update(void Function(RedditVideoBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$RedditVideo build() {
+    final _$result = _$v ?? new _$RedditVideo._(fallbackUrl: fallbackUrl);
     replace(_$result);
     return _$result;
   }
