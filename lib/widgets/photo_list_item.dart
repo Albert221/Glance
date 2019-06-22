@@ -73,7 +73,7 @@ class PhotoListItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'u/${photo.authorName} ${photo.isVideo ? "gif" : "nogif"}',
+              'u/${photo.authorName}',
               softWrap: false,
               overflow: TextOverflow.fade,
               style: mutedStyle,
