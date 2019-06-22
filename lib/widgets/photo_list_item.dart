@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reddigram/models/models.dart';
 import 'package:reddigram/widgets/widgets.dart';
+import 'package:video_player/video_player.dart';
 
 class PhotoListItem extends StatelessWidget {
   final Photo photo;
@@ -72,8 +73,7 @@ class PhotoListItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'u/${photo.authorName} ' +
-                  (photo.video == null ? 'nogif' : 'gif'),
+              'u/${photo.authorName} ${photo.isVideo ? "gif" : "nogif"}',
               softWrap: false,
               overflow: TextOverflow.fade,
               style: mutedStyle,
@@ -121,13 +121,7 @@ class PhotoListItem extends StatelessWidget {
   Widget _buildImage(BuildContext context) {
     final photoHeight = calculateImageHeight(context, photo);
 
-    final image = CachedNetworkImage(
-      fit: BoxFit.cover,
-      alignment: Alignment.topCenter,
-      imageUrl: photo.fullImage.url,
-      fadeInDuration: Duration.zero,
-      placeholder: (context, url) => _buildPlaceholder(context),
-    );
+    final image = _PhotoContent(photo: photo);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -139,7 +133,7 @@ class PhotoListItem extends StatelessWidget {
               constraints: BoxConstraints.tightFor(
                   height: photoHeight, width: double.infinity),
               child: GestureDetector(
-                onTap: onPhotoTap,
+                onTap: photo.isVideo ? null : onPhotoTap,
                 child: upvotingEnabled
                     ? Upvoteable(
                         height: photoHeight,
@@ -160,15 +154,6 @@ class PhotoListItem extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPlaceholder(BuildContext context) {
-    return CachedNetworkImage(
-      width: double.infinity,
-      height: double.infinity,
-      imageUrl: photo.thumbnail.url,
-      fit: BoxFit.cover,
     );
   }
 
@@ -268,6 +253,95 @@ class PhotoListItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _PhotoContent extends StatefulWidget {
+  final Photo photo;
+
+  const _PhotoContent({Key key, this.photo}) : super(key: key);
+
+  @override
+  _PhotoContentState createState() => _PhotoContentState();
+}
+
+class _PhotoContentState extends State<_PhotoContent> {
+  VideoPlayerController _videoController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.photo.isVideo) {
+      _videoController = VideoPlayerController.network(widget.photo.video.url)
+        ..setLooping(true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
+  void play() {
+    debugPrint('play');
+    if (_videoController?.value?.initialized == false) {
+      _videoController.initialize().then((_) => setState(() {}));
+    }
+
+    _videoController?.play();
+    setState(() {});
+  }
+
+  void pause() {
+    debugPrint('pause');
+    _videoController?.pause();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      widget.photo.isVideo ? buildVideo(context) : buildImage(context);
+
+  Widget buildVideo(BuildContext context) {
+    IconData icon;
+    if (!_videoController.value.initialized) {
+      icon = Icons.play_arrow;
+    } else if (!_videoController.value.isPlaying) {
+      icon = Icons.pause;
+    }
+
+    return GestureDetector(
+      onTap: _videoController.value.isPlaying ? pause : play,
+      child: Stack(
+        children: [
+          _videoController.value.initialized
+              ? VideoPlayer(_videoController)
+              : _buildPlaceholder(context),
+          if (icon != null) Center(child: Icon(icon, size: 64.0)),
+        ],
+      ),
+    );
+  }
+
+  Widget buildImage(BuildContext context) {
+    return CachedNetworkImage(
+      fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+      imageUrl: widget.photo.fullImage.url,
+      fadeInDuration: Duration.zero,
+      placeholder: (context, url) => _buildPlaceholder(context),
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context) {
+    return CachedNetworkImage(
+      width: double.infinity,
+      height: double.infinity,
+      imageUrl: widget.photo.thumbnail.url,
+      fit: BoxFit.cover,
     );
   }
 }

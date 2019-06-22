@@ -20,6 +20,8 @@ abstract class Photo implements Built<Photo, PhotoBuilder> {
   @nullable
   Video get video;
 
+  bool get isVideo => video != null;
+
   int get upvotes;
 
   bool get upvoted;
