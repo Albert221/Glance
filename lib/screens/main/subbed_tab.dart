@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/models/models.dart';
@@ -6,8 +8,32 @@ import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
-class SubbedTab extends StatelessWidget {
+class SubbedTab extends StatefulWidget {
   const SubbedTab({Key key}) : super(key: key);
+
+  @override
+  _SubbedTabState createState() => _SubbedTabState();
+}
+
+class _SubbedTabState extends State<SubbedTab>
+    with AutomaticKeepAliveClientMixin {
+  static const _suggestedSubreddits = {
+    'pics': 't5_2sh6t',
+    'EarthPorn': 't5_2sbq3',
+    'CityPorn': 't5_2scjs',
+    'itookapicture': 't5_2r1tc',
+  };
+
+  final _contextCompleter = Completer<BuildContext>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _contextCompleter.future.then((context) =>
+        StoreProvider.of<ReddigramState>(context)
+            .dispatch(fetchSubreddits(_suggestedSubreddits.values.toList())));
+  }
 
   void _subscribe(BuildContext context, void Function(String) callback) async {
     StoreProvider.of<ReddigramState>(context).dispatch(ClearSearch());
@@ -49,65 +75,59 @@ class SubbedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!_contextCompleter.isCompleted) {
+      _contextCompleter.complete(context);
+    }
+
     return StoreConnector<ReddigramState, _SubredditsViewModel>(
       converter: (store) => _SubredditsViewModel.fromStore(store),
       builder: (context, vm) => ListView(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            children: [
-              ListTile(
-                leading: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Icon(
-                    Icons.search,
-                    color: Theme.of(context).textTheme.body1.color,
-                  ),
-                ),
-                title: const Text(
-                  'Explore subreddits',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                onTap: () => _subscribe(context, vm.subscribe),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        children: [
+          ListTile(
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(
+                Icons.search,
+                color: Theme.of(context).textTheme.body1.color,
               ),
-              if (vm.subreddits.isEmpty)
-                const ListTile(
-                  leading: SizedBox(),
-                  title: Text(
-                    'No subreddits. Subscribe to some!',
-                  ),
-                ),
-              ...vm.subreddits
-                  .map((subredditName) =>
-                      StoreConnector<ReddigramState, Subreddit>(
-                        key: Key(subredditName),
-                        converter: (store) =>
-                            store.state.subreddits[subredditName] ??
-                            Subreddit((b) => b..name = subredditName),
-                        builder: (context, subreddit) => SubredditListTile(
-                              subreddit: subreddit,
-                              onTap: () => Navigator.push(context,
-                                  SubredditScreen.route(subredditName)),
-                              trailingIcon: const Icon(Icons.remove),
-                              onTrailingTap: () => _unsubscribe(
-                                  context,
-                                  subredditName,
-                                  () => vm.unsubscribe(subredditName)),
-                            ),
-                      ))
-                  .toList(),
-              ..._buildSuggestions(context, vm),
-            ],
+            ),
+            title: const Text(
+              'Explore subreddits',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () => _subscribe(context, vm.subscribe),
           ),
+          if (vm.subreddits.isEmpty)
+            const ListTile(
+              leading: SizedBox(),
+              title: Text(
+                'No subreddits. Subscribe to some!',
+              ),
+            ),
+          ...vm.subreddits
+              .map((subredditName) => StoreConnector<ReddigramState, Subreddit>(
+                    key: Key(subredditName),
+                    converter: (store) =>
+                        store.state.subreddits[subredditName] ??
+                        Subreddit((b) => b..name = subredditName),
+                    builder: (context, subreddit) => SubredditListTile(
+                      subreddit: subreddit,
+                      onTap: () => Navigator.push(
+                          context, SubredditScreen.route(subredditName)),
+                      trailingIcon: const Icon(Icons.remove),
+                      onTrailingTap: () => _unsubscribe(context, subredditName,
+                          () => vm.unsubscribe(subredditName)),
+                    ),
+                  ))
+              .toList(),
+          ..._buildSuggestions(context, vm),
+        ],
+      ),
     );
   }
-
-  static const _suggestedSubreddits = {
-    'pics': 't5_2sh6t',
-    'EarthPorn': 't5_2sbq3',
-    'CityPorn': 't5_2scjs',
-    'itookapicture': 't5_2r1tc',
-  };
 
   List<Widget> _buildSuggestions(
       BuildContext context, _SubredditsViewModel vm) {
@@ -119,13 +139,6 @@ class SubbedTab extends StatelessWidget {
     }
 
     return [
-      // FIXME: Call this onInit the other way, don't use this in the widget tree
-      StoreConnector<ReddigramState, void>(
-        onInit: (store) => store
-            .dispatch(fetchSubreddits(_suggestedSubreddits.values.toList())),
-        converter: (_) => null,
-        builder: (context, _) => SizedBox(),
-      ),
       const SizedBox(height: 32.0),
       const ListTile(
         leading: Padding(
@@ -141,19 +154,21 @@ class SubbedTab extends StatelessWidget {
                 key: Key('suggestion_$subName'),
                 converter: (store) => store.state.subreddits[subName],
                 builder: (context, subreddit) => SubredditListTile(
-                      subreddit:
-                          subreddit ?? Subreddit((b) => b..name = subName),
-                      onTap: () => Navigator.push(
-                            context,
-                            SubredditScreen.route(subName),
-                          ),
-                      trailingIcon: const Icon(Icons.add),
-                      onTrailingTap: () => vm.subscribe(subName),
-                    ),
+                  subreddit: subreddit ?? Subreddit((b) => b..name = subName),
+                  onTap: () => Navigator.push(
+                    context,
+                    SubredditScreen.route(subName),
+                  ),
+                  trailingIcon: const Icon(Icons.add),
+                  onTrailingTap: () => vm.subscribe(subName),
+                ),
               ))
           .toList(),
     ];
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _SubredditsViewModel {
