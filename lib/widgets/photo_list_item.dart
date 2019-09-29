@@ -36,22 +36,77 @@ class PhotoListItem extends StatelessWidget {
 
   static Widget placeholder({Key key}) => _Placeholder(key: key);
 
+  static const double _maxPictureHeight = 600.0;
+
+  static double calculateImageHeight(BuildContext context, Photo photo) {
+    final pictureWidth = MediaQuery.of(context).size.width - 16;
+    final pictureHeight = pictureWidth / photo.source.aspectRatio;
+
+    return min(pictureHeight, PhotoListItem._maxPictureHeight);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final photoHeight = calculateImageHeight(context, photo);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopBar(context),
-          _buildImage(context),
-          _buildBottomBar(context),
+          _TopBar(
+            authorName: photo.authorName,
+            subredditName: photo.subredditName,
+            subreddit: subreddit,
+            onSubredditTap: onSubredditTap,
+          ),
+          _PhotoContainer(
+            photo: photo,
+            child: photo.isVideo ? _Video(photo: photo) : _Photo(photo: photo),
+            overlays: <Widget>[
+              if (!photo.isVideo)
+                SizedBox.expand(
+                  child: GestureDetector(
+                    onTap: onPhotoTap,
+                  ),
+                ),
+              if (upvotingEnabled)
+                Upvoteable(onUpvote: photo.upvoted ? null : onUpvote),
+              if (photoHeight >= _maxPictureHeight && !photo.isVideo)
+                _TapToRevealOverlay(),
+              if (photo.nsfw) NsfwOverlay(show: showNsfw, onShow: onShowNsfw),
+            ],
+          ),
+          _BottomBar(
+            upvotingEnabled: upvotingEnabled,
+            upvoted: photo.upvoted,
+            upvotes: photo.upvotes,
+            onUpvote: onUpvote,
+            onUpvoteCancelled: onUpvoteCanceled,
+            onOpenExternalTap: () async => await launch(photo.redditUrl),
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTopBar(BuildContext context) {
+class _TopBar extends StatelessWidget {
+  final String authorName;
+  final String subredditName;
+  final Subreddit subreddit;
+  final VoidCallback onSubredditTap;
+
+  const _TopBar(
+      {Key key,
+      @required this.authorName,
+      @required this.subredditName,
+      this.subreddit,
+      this.onSubredditTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final mutedStyle = Theme.of(context).textTheme.caption.copyWith(
           color: Theme.of(context).textTheme.caption.color.withOpacity(0.67),
         );
@@ -73,7 +128,7 @@ class PhotoListItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'u/${photo.authorName}',
+              'u/$authorName',
               softWrap: false,
               overflow: TextOverflow.fade,
               style: mutedStyle,
@@ -87,7 +142,7 @@ class PhotoListItem extends StatelessWidget {
                   pressElevation: 0,
                   avatar: chipAvatar,
                   label: Text(
-                    'r/${photo.subredditName}',
+                    'r/$subredditName',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -97,7 +152,7 @@ class PhotoListItem extends StatelessWidget {
               : Chip(
                   avatar: chipAvatar,
                   label: Text(
-                    'r/${photo.subredditName}',
+                    'r/$subredditName',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: mutedStyle.color,
@@ -108,64 +163,173 @@ class PhotoListItem extends StatelessWidget {
       ],
     );
   }
+}
 
-  static const double _maxPictureHeight = 600.0;
+class _PhotoContainer extends StatelessWidget {
+  final Photo photo;
+  final Widget child;
+  final List<Widget> overlays;
+
+  const _PhotoContainer(
+      {Key key, @required this.photo, this.overlays = const [], this.child})
+      : super(key: key);
 
   static double calculateImageHeight(BuildContext context, Photo photo) {
     final pictureWidth = MediaQuery.of(context).size.width - 16;
     final pictureHeight = pictureWidth / photo.source.aspectRatio;
 
-    return min(pictureHeight, _maxPictureHeight);
+    return min(pictureHeight, PhotoListItem._maxPictureHeight);
   }
 
-  Widget _buildImage(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final photoHeight = calculateImageHeight(context, photo);
-
-    final image = _PhotoContent(photo: photo);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
-        child: Stack(
-          children: [
-            ConstrainedBox(
-              constraints: BoxConstraints.tightFor(
-                  height: photoHeight, width: double.infinity),
-              child: GestureDetector(
-                onTap: photo.isVideo ? null : onPhotoTap,
-                child: upvotingEnabled
-                    ? Upvoteable(
-                        height: photoHeight,
-                        onUpvote: photo.upvoted ? null : onUpvote,
-                        child: image,
-                      )
-                    : image,
-              ),
-            ),
-            if (photoHeight >= _maxPictureHeight)
-              _buildTapToRevealOverlay(context),
-            if (photo.nsfw)
-              NsfwOverlay(
-                height: photoHeight,
-                show: showNsfw,
-                onShow: onShowNsfw,
-              ),
-          ],
+        child: ConstrainedBox(
+          constraints: BoxConstraints.tightFor(
+            height: photoHeight,
+            width: double.infinity,
+          ),
+          child: Stack(
+            children: [child, ...overlays],
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildTapToRevealOverlay(BuildContext context) {
-    final photoHeight = calculateImageHeight(context, photo);
+class _Photo extends StatelessWidget {
+  final Photo photo;
+
+  const _Photo({Key key, @required this.photo}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
+      alignment: Alignment.topCenter,
+      imageUrl: photo.fullImage.url,
+      fadeInDuration: Duration.zero,
+      placeholder: (context, url) => _buildPlaceholder(context),
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context) {
+    return CachedNetworkImage(
+      width: double.infinity,
+      height: double.infinity,
+      imageUrl: photo.thumbnail.url,
+      fit: BoxFit.cover,
+    );
+  }
+}
+
+class _Video extends StatefulWidget {
+  final Photo photo;
+
+  const _Video({Key key, @required this.photo}) : super(key: key);
+
+  @override
+  _VideoState createState() => _VideoState();
+}
+
+class _VideoState extends State<_Video> {
+  VideoPlayerController _videoController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _videoController = VideoPlayerController.network(widget.photo.video.url)
+      ..setLooping(true);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
+  void _play() {
+    debugPrint('play');
+    if (_videoController?.value?.initialized == false) {
+      _videoController.initialize().then((_) => setState(() {}));
+    }
+
+    _videoController?.play();
+    setState(() {});
+  }
+
+  void _pause() {
+    debugPrint('pause');
+    _videoController?.pause();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    IconData icon;
+    if (!_videoController.value.initialized) {
+      icon = Icons.play_arrow;
+    } else if (!_videoController.value.isPlaying) {
+      icon = Icons.pause;
+    }
+
+    return GestureDetector(
+      onTap: _videoController.value.isPlaying ? _pause : _play,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _videoController.value.initialized
+              ? FittedBox(
+                  child: SizedBox.fromSize(
+                    size: _videoController.value.size,
+                    child: VideoPlayer(_videoController),
+                  ),
+                )
+              : _buildPlaceholder(context),
+          if (icon != null)
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Icon(icon, color: Colors.white, size: 64.0),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context) {
+    return CachedNetworkImage(
+      width: double.infinity,
+      height: double.infinity,
+      imageUrl: widget.photo.thumbnail.url,
+      fit: BoxFit.cover,
+    );
+  }
+}
+
+class _TapToRevealOverlay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     final overlayColor = Colors.white;
     final textColor = Colors.black;
 
-    return IgnorePointer(
-      ignoring: true,
-      child: Container(
-        height: photoHeight,
+    return AbsorbPointer(
+      absorbing: true,
+      child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
           width: double.infinity,
@@ -195,8 +359,28 @@ class PhotoListItem extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildBottomBar(BuildContext context) {
+class _BottomBar extends StatelessWidget {
+  final bool upvotingEnabled;
+  final bool upvoted;
+  final int upvotes;
+  final VoidCallback onUpvote;
+  final VoidCallback onUpvoteCancelled;
+  final VoidCallback onOpenExternalTap;
+
+  const _BottomBar(
+      {Key key,
+      @required this.upvotingEnabled,
+      @required this.upvoted,
+      @required this.upvotes,
+      this.onUpvote,
+      this.onUpvoteCancelled,
+      this.onOpenExternalTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -207,13 +391,13 @@ class PhotoListItem extends StatelessWidget {
               children: [
                 upvotingEnabled
                     ? InkWell(
-                        onTap: photo.upvoted ? onUpvoteCanceled : onUpvote,
+                        onTap: upvoted ? onUpvoteCancelled : onUpvote,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20.0, vertical: 16.0),
                           child: Icon(
                             Icons.arrow_upward,
-                            color: photo.upvoted
+                            color: upvoted
                                 ? Colors.red
                                 : Theme.of(context).textTheme.body1.color,
                           ),
@@ -233,14 +417,14 @@ class PhotoListItem extends StatelessWidget {
                       ),
                 const SizedBox(width: 12.0),
                 Expanded(
-                  child: Text(photo.upvoted
-                      ? 'You and ${photo.upvotes - 1} others upvoted this.'
-                      : '${photo.upvotes} others upvoted this.'),
+                  child: Text(upvoted
+                      ? 'You and ${upvotes - 1} others upvoted this.'
+                      : '$upvotes others upvoted this.'),
                 ),
                 Tooltip(
                   message: 'Open in Reddit',
                   child: InkWell(
-                    onTap: () async => await launch(photo.redditUrl),
+                    onTap: onOpenExternalTap,
                     child: const Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 16.0),
@@ -253,105 +437,6 @@ class PhotoListItem extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PhotoContent extends StatefulWidget {
-  final Photo photo;
-
-  const _PhotoContent({Key key, this.photo}) : super(key: key);
-
-  @override
-  _PhotoContentState createState() => _PhotoContentState();
-}
-
-class _PhotoContentState extends State<_PhotoContent> {
-  VideoPlayerController _videoController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.photo.isVideo) {
-      _videoController = VideoPlayerController.network(widget.photo.video.url)
-        ..setLooping(true);
-    }
-  }
-
-  @override
-  void dispose() {
-    _videoController?.dispose();
-    super.dispose();
-  }
-
-  void play() {
-    debugPrint('play');
-    if (_videoController?.value?.initialized == false) {
-      _videoController.initialize().then((_) => setState(() {}));
-    }
-
-    _videoController?.play();
-    setState(() {});
-  }
-
-  void pause() {
-    debugPrint('pause');
-    _videoController?.pause();
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) =>
-      widget.photo.isVideo ? buildVideo(context) : buildImage(context);
-
-  Widget buildVideo(BuildContext context) {
-    IconData icon;
-    if (!_videoController.value.initialized) {
-      icon = Icons.play_arrow;
-    } else if (!_videoController.value.isPlaying) {
-      icon = Icons.pause;
-    }
-
-    return GestureDetector(
-      onTap: _videoController.value.isPlaying ? pause : play,
-      child: Stack(
-        children: [
-          _videoController.value.initialized
-              ? VideoPlayer(_videoController)
-              : _buildPlaceholder(context),
-          if (icon != null)
-            Center(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black38,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Icon(icon, color: Colors.white, size: 64.0),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildImage(BuildContext context) {
-    return CachedNetworkImage(
-      fit: BoxFit.cover,
-      alignment: Alignment.topCenter,
-      imageUrl: widget.photo.fullImage.url,
-      fadeInDuration: Duration.zero,
-      placeholder: (context, url) => _buildPlaceholder(context),
-    );
-  }
-
-  Widget _buildPlaceholder(BuildContext context) {
-    return CachedNetworkImage(
-      width: double.infinity,
-      height: double.infinity,
-      imageUrl: widget.photo.thumbnail.url,
-      fit: BoxFit.cover,
     );
   }
 }

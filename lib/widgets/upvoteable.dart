@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Upvoteable extends StatefulWidget {
-  final Widget child;
-  final double height;
   final VoidCallback onUpvote;
 
-  const Upvoteable(
-      {Key key, @required this.child, @required this.height, this.onUpvote})
-      : assert(child != null),
-        assert(height != null),
-        super(key: key);
+  const Upvoteable({Key key, this.onUpvote}) : super(key: key);
 
   @override
   _UpvoteableState createState() => _UpvoteableState();
@@ -75,27 +69,24 @@ class _UpvoteableState extends State<Upvoteable>
   Widget build(BuildContext context) {
     final opacity = _opacityFirst.value - _opacitySecond.value;
 
-    return GestureDetector(
-      onDoubleTap: onUpvote,
-      behavior: HitTestBehavior.translucent,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          widget.child,
-          if (opacity > 0)
-            Opacity(
-              opacity: opacity,
-              child: Container(
-                color: Colors.black45,
-                alignment: _alignmentFirst.value - _alignmentSecond.value,
-                child: const Icon(
-                  Icons.arrow_upward,
-                  color: Colors.white54,
-                  size: 128.0,
+    return SizedBox.expand(
+      child: GestureDetector(
+        onDoubleTap: onUpvote,
+        behavior: HitTestBehavior.translucent,
+        child: opacity > 0
+            ? Opacity(
+                opacity: opacity,
+                child: Container(
+                  color: Colors.black45,
+                  alignment: _alignmentFirst.value - _alignmentSecond.value,
+                  child: const Icon(
+                    Icons.arrow_upward,
+                    color: Colors.white54,
+                    size: 128.0,
+                  ),
                 ),
-              ),
-            ),
-        ],
+              )
+            : SizedBox(),
       ),
     );
   }

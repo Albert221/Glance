@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
 class NsfwOverlay extends StatelessWidget {
-  final double height;
   final bool show;
   final VoidCallback onShow;
 
-  const NsfwOverlay(
-      {Key key, @required this.height, this.show = false, this.onShow})
-      : assert(height != null),
-        super(key: key);
+  const NsfwOverlay({Key key, this.show = false, this.onShow})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +18,6 @@ class NsfwOverlay extends StatelessWidget {
           duration: const Duration(milliseconds: 500),
           curve: Curves.ease,
           child: Container(
-            width: double.infinity,
-            height: height,
             color: Colors.black,
             alignment: Alignment.center,
             child: Column(

@@ -40,12 +40,7 @@ class PhotoGridItem extends StatelessWidget {
                 fadeInDuration: Duration.zero,
               ),
             ),
-            if (photo.nsfw)
-              NsfwOverlay(
-                height: double.infinity,
-                show: showNsfw,
-                onShow: onShowNsfw,
-              ),
+            if (photo.nsfw) NsfwOverlay(show: showNsfw, onShow: onShowNsfw),
           ],
         ),
       ),
