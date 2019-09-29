@@ -29,7 +29,9 @@ class PhotoPreviewScreen extends StatelessWidget {
     final minScale = MediaQuery.of(context).size.width / photo.source.width;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.color.withOpacity(0.37),
         actions: [
           IconButton(
             icon: Icon(Icons.file_download),
@@ -40,6 +42,9 @@ class PhotoPreviewScreen extends StatelessWidget {
       ),
       body: PhotoView(
         transitionOnUserGestures: true,
+        backgroundDecoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+        ),
         imageProvider: CachedNetworkImageProvider(photo.source.url),
         minScale: minScale,
         maxScale: 2.0,
