@@ -320,7 +320,17 @@ class _PhotoContentState extends State<_PhotoContent> {
           _videoController.value.initialized
               ? VideoPlayer(_videoController)
               : _buildPlaceholder(context),
-          if (icon != null) Center(child: Icon(icon, size: 64.0)),
+          if (icon != null)
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Icon(icon, color: Colors.white, size: 64.0),
+              ),
+            ),
         ],
       ),
     );
