@@ -6,8 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import me.wolszon.reddigram.ReddigramApplication.Companion.DOWNLOAD_CHANNEL_ID
 import okhttp3.OkHttpClient
 import okhttp3.Request
