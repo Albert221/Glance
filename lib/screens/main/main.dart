@@ -14,8 +14,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   static const _TAB_POPULAR = 0;
-  static const _TAB_NEWEST = 1; // ignore: unused_field
-  static const _TAB_BEST = 2; // ignore: unused_field
+  static const _TAB_BEST = 1; // ignore: unused_field
+  static const _TAB_NEWEST = 2; // ignore: unused_field
   static const _TAB_SUBBED = 3;
 
   final feedKeys = List.generate(3, (i) => GlobalKey<InfiniteListState>());
@@ -64,27 +64,27 @@ class _MainScreenState extends State<MainScreen> {
         onInit: (store) => store.dispatch(fetchFreshFeed(POPULAR)),
         converter: (store) => store.state.subscriptions.isNotEmpty,
         builder: (context, anySubs) => PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: [
-                FeedTab(
-                  feedName: POPULAR,
-                  infiniteListKey: feedKeys[0],
-                  placeholder: itemsPlaceholder,
-                ),
-                FeedTab(
-                  feedName: NEW_SUBSCRIBED,
-                  infiniteListKey: feedKeys[1],
-                  placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
-                ),
-                FeedTab(
-                  feedName: BEST_SUBSCRIBED,
-                  infiniteListKey: feedKeys[2],
-                  placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
-                ),
-                const SubbedTab(),
-              ],
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _pageController,
+          children: [
+            FeedTab(
+              feedName: POPULAR,
+              infiniteListKey: feedKeys[0],
+              placeholder: itemsPlaceholder,
             ),
+            FeedTab(
+              feedName: BEST_SUBSCRIBED,
+              infiniteListKey: feedKeys[1],
+              placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
+            ),
+            FeedTab(
+              feedName: NEW_SUBSCRIBED,
+              infiniteListKey: feedKeys[2],
+              placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
+            ),
+            const SubbedTab(),
+          ],
+        ),
       ),
       bottomNavigationBar: IconNavigationBar(
         currentIndex: _currentTab,
@@ -94,12 +94,12 @@ class _MainScreenState extends State<MainScreen> {
             tooltip: 'Popular',
           ),
           const IconNavigationBarItem(
-            icon: Icon(Icons.star),
-            tooltip: 'Your newest',
-          ),
-          const IconNavigationBarItem(
             icon: Icon(Icons.whatshot),
             tooltip: 'Your best',
+          ),
+          const IconNavigationBarItem(
+            icon: Icon(Icons.star),
+            tooltip: 'Your newest',
           ),
           const IconNavigationBarItem(
             icon: Icon(Icons.short_text),
