@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reddigram/models/models.dart';
 import 'package:reddigram/widgets/widgets.dart';
@@ -20,17 +21,16 @@ class PhotoListItem extends StatelessWidget {
   final bool showNsfw;
   final VoidCallback onShowNsfw;
 
-  const PhotoListItem(
-      {Key key,
-      @required this.photo,
-      this.subreddit,
-      this.upvotingEnabled = true,
-      this.onUpvote,
-      this.onUpvoteCanceled,
-      this.onPhotoTap,
-      this.onSubredditTap,
-      this.showNsfw = false,
-      this.onShowNsfw})
+  const PhotoListItem({Key key,
+    @required this.photo,
+    this.subreddit,
+    this.upvotingEnabled = true,
+    this.onUpvote,
+    this.onUpvoteCanceled,
+    this.onPhotoTap,
+    this.onSubredditTap,
+    this.showNsfw = false,
+    this.onShowNsfw})
       : assert(photo != null),
         super(key: key);
 
@@ -39,7 +39,10 @@ class PhotoListItem extends StatelessWidget {
   static const double _maxPictureHeight = 600.0;
 
   static double calculateImageHeight(BuildContext context, Photo photo) {
-    final pictureWidth = MediaQuery.of(context).size.width - 16;
+    final pictureWidth = MediaQuery
+        .of(context)
+        .size
+        .width - 16;
     final pictureHeight = pictureWidth / photo.source.aspectRatio;
 
     return min(pictureHeight, PhotoListItem._maxPictureHeight);
@@ -97,28 +100,36 @@ class _TopBar extends StatelessWidget {
   final Subreddit subreddit;
   final VoidCallback onSubredditTap;
 
-  const _TopBar(
-      {Key key,
-      @required this.authorName,
-      @required this.subredditName,
-      this.subreddit,
-      this.onSubredditTap})
+  const _TopBar({Key key,
+    @required this.authorName,
+    @required this.subredditName,
+    this.subreddit,
+    this.onSubredditTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final mutedStyle = Theme.of(context).textTheme.caption.copyWith(
-          color: Theme.of(context).textTheme.caption.color.withOpacity(0.67),
-        );
+    final mutedStyle = Theme
+        .of(context)
+        .textTheme
+        .caption
+        .copyWith(
+      color: Theme
+          .of(context)
+          .textTheme
+          .caption
+          .color
+          .withOpacity(0.67),
+    );
 
     final chipAvatar = subreddit?.primaryColor?.isNotEmpty == true ||
-            subreddit?.iconUrl?.isNotEmpty == true
+        subreddit?.iconUrl?.isNotEmpty == true
         ? CircleAvatar(
-            backgroundColor: subreddit.primaryColorMapped,
-            backgroundImage: subreddit.iconUrl != null
-                ? CachedNetworkImageProvider(subreddit.iconUrl)
-                : null,
-          )
+      backgroundColor: subreddit.primaryColorMapped,
+      backgroundImage: subreddit.iconUrl != null
+          ? CachedNetworkImageProvider(subreddit.iconUrl)
+          : null,
+    )
         : null;
 
     return Row(
@@ -139,26 +150,26 @@ class _TopBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 16.0),
           child: onSubredditTap != null
               ? ActionChip(
-                  pressElevation: 0,
-                  avatar: chipAvatar,
-                  label: Text(
-                    'r/$subredditName',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: onSubredditTap,
-                )
+            pressElevation: 0,
+            avatar: chipAvatar,
+            label: Text(
+              'r/$subredditName',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: onSubredditTap,
+          )
               : Chip(
-                  avatar: chipAvatar,
-                  label: Text(
-                    'r/$subredditName',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: mutedStyle.color,
-                    ),
-                  ),
-                ),
+            avatar: chipAvatar,
+            label: Text(
+              'r/$subredditName',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: mutedStyle.color,
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -175,7 +186,10 @@ class _PhotoContainer extends StatelessWidget {
       : super(key: key);
 
   static double calculateImageHeight(BuildContext context, Photo photo) {
-    final pictureWidth = MediaQuery.of(context).size.width - 16;
+    final pictureWidth = MediaQuery
+        .of(context)
+        .size
+        .width - 16;
     final pictureHeight = pictureWidth / photo.source.aspectRatio;
 
     return min(pictureHeight, PhotoListItem._maxPictureHeight);
@@ -263,15 +277,15 @@ class _VideoState extends State<_Video> {
       _videoController.initialize().then((_) => setState(() {}));
     }
 
-    _videoController?.play();
-    setState(() {});
+    _videoController?.play()?.then((_) => setState(() {}));
   }
 
   void _pause() {
     debugPrint('pause');
-    _videoController?.pause();
-    setState(() {});
+    _videoController?.pause()?.then((_) => setState(() {}));
   }
+
+  static const _pauseVisibilityFraction = 0.5;
 
   @override
   Widget build(BuildContext context) {
@@ -288,12 +302,22 @@ class _VideoState extends State<_Video> {
         fit: StackFit.expand,
         children: [
           _videoController.value.initialized
-              ? FittedBox(
-                  child: SizedBox.fromSize(
-                    size: _videoController.value.size,
-                    child: VideoPlayer(_videoController),
-                  ),
-                )
+              ? VisibilityDetector(
+            key: Key(widget.photo.id),
+            onVisibilityChanged: (visibility) {
+              if (visibility.visibleFraction < _pauseVisibilityFraction &&
+                  _videoController.value.isPlaying) {
+                // When it's playing and not on the screen
+                _pause();
+              }
+            },
+            child: FittedBox(
+              child: SizedBox.fromSize(
+                size: _videoController.value.size,
+                child: VideoPlayer(_videoController),
+              ),
+            ),
+          )
               : _buildPlaceholder(context),
           if (icon != null)
             Center(
@@ -369,14 +393,13 @@ class _BottomBar extends StatelessWidget {
   final VoidCallback onUpvoteCancelled;
   final VoidCallback onOpenExternalTap;
 
-  const _BottomBar(
-      {Key key,
-      @required this.upvotingEnabled,
-      @required this.upvoted,
-      @required this.upvotes,
-      this.onUpvote,
-      this.onUpvoteCancelled,
-      this.onOpenExternalTap})
+  const _BottomBar({Key key,
+    @required this.upvotingEnabled,
+    @required this.upvoted,
+    @required this.upvotes,
+    this.onUpvote,
+    this.onUpvoteCancelled,
+    this.onOpenExternalTap})
       : super(key: key);
 
   @override
@@ -391,30 +414,35 @@ class _BottomBar extends StatelessWidget {
               children: [
                 upvotingEnabled
                     ? InkWell(
-                        onTap: upvoted ? onUpvoteCancelled : onUpvote,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 16.0),
-                          child: Icon(
-                            Icons.arrow_upward,
-                            color: upvoted
-                                ? Colors.red
-                                : Theme.of(context).textTheme.body1.color,
-                          ),
-                        ),
-                      )
+                  onTap: upvoted ? onUpvoteCancelled : onUpvote,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 16.0),
+                    child: Icon(
+                      Icons.arrow_upward,
+                      color: upvoted
+                          ? Colors.red
+                          : Theme
+                          .of(context)
+                          .textTheme
+                          .body1
+                          .color,
+                    ),
+                  ),
+                )
                     : Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 16.0),
-                        child: Icon(
-                          Icons.arrow_upward,
-                          color: Theme.of(context)
-                              .textTheme
-                              .body1
-                              .color
-                              .withOpacity(0.67),
-                        ),
-                      ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 16.0),
+                  child: Icon(
+                    Icons.arrow_upward,
+                    color: Theme
+                        .of(context)
+                        .textTheme
+                        .body1
+                        .color
+                        .withOpacity(0.67),
+                  ),
+                ),
                 const SizedBox(width: 12.0),
                 Expanded(
                   child: Text(upvoted
@@ -483,7 +511,8 @@ class _PlaceholderState extends State<_Placeholder>
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context)
+    final color = Theme
+        .of(context)
         .textTheme
         .caption
         .color

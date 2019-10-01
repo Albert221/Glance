@@ -75,6 +75,8 @@ class _SubbedTabState extends State<SubbedTab>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     if (!_contextCompleter.isCompleted) {
       _contextCompleter.complete(context);
     }
