@@ -351,8 +351,8 @@ class _TapToRevealOverlay extends StatelessWidget {
     final overlayColor = Colors.white;
     final textColor = Colors.black;
 
-    return AbsorbPointer(
-      absorbing: true,
+    return IgnorePointer(
+      ignoring: true,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
