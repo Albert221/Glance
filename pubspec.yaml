@@ -12,7 +12,7 @@ dependencies:
 
   built_collection: ^4.2.0
   built_value: ^6.4.0
-  cached_network_image: ^0.7.0
+  cached_network_image: ^1.1.1
   dio: ^2.1.2
   firebase_analytics: ^2.1.1+3
   firebase_core: ^0.3.4
@@ -41,9 +41,9 @@ flutter:
   uses-material-design: true
 
   fonts:
-  - family: Pacifico
-    fonts:
-    - asset: fonts/Pacifico/Pacifico-Regular.ttf
+    - family: Pacifico
+      fonts:
+        - asset: fonts/Pacifico/Pacifico-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
