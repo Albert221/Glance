@@ -25,7 +25,8 @@ class _$SubredditListResponseSerializer
   final String wireName = 'SubredditListResponse';
 
   @override
-  Iterable serialize(Serializers serializers, SubredditListResponse object,
+  Iterable<Object> serialize(
+      Serializers serializers, SubredditListResponse object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'data',
@@ -38,7 +39,7 @@ class _$SubredditListResponseSerializer
 
   @override
   SubredditListResponse deserialize(
-      Serializers serializers, Iterable serialized,
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SubredditListResponseBuilder();
 
@@ -68,7 +69,7 @@ class _$SubredditListDataSerializer
   final String wireName = 'SubredditListData';
 
   @override
-  Iterable serialize(Serializers serializers, SubredditListData object,
+  Iterable<Object> serialize(Serializers serializers, SubredditListData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'children',
@@ -81,7 +82,8 @@ class _$SubredditListDataSerializer
   }
 
   @override
-  SubredditListData deserialize(Serializers serializers, Iterable serialized,
+  SubredditListData deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SubredditListDataBuilder();
 
@@ -95,7 +97,7 @@ class _$SubredditListDataSerializer
           result.children.replace(serializers.deserialize(value,
                   specifiedType: const FullType(
                       BuiltList, const [const FullType(SubredditResponse)]))
-              as BuiltList);
+              as BuiltList<dynamic>);
           break;
       }
     }
@@ -112,7 +114,7 @@ class _$SubredditResponseSerializer
   final String wireName = 'SubredditResponse';
 
   @override
-  Iterable serialize(Serializers serializers, SubredditResponse object,
+  Iterable<Object> serialize(Serializers serializers, SubredditResponse object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'data',
@@ -124,7 +126,8 @@ class _$SubredditResponseSerializer
   }
 
   @override
-  SubredditResponse deserialize(Serializers serializers, Iterable serialized,
+  SubredditResponse deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SubredditResponseBuilder();
 
@@ -152,7 +155,7 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
   final String wireName = 'Subreddit';
 
   @override
-  Iterable serialize(Serializers serializers, Subreddit object,
+  Iterable<Object> serialize(Serializers serializers, Subreddit object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'name',
@@ -186,7 +189,7 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
   }
 
   @override
-  Subreddit deserialize(Serializers serializers, Iterable serialized,
+  Subreddit deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SubredditBuilder();
 

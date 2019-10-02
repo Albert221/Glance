@@ -21,6 +21,7 @@ class LinkListingPhotosMapper {
           try {
             return Photo((b) => b
               ..id = child.data.name
+              ..title = child.data.title
               ..authorName = child.data.author
               ..subredditName = child.data.subreddit
               ..subredditId = child.data.subredditId

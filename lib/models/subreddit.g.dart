@@ -15,7 +15,7 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
   final String wireName = 'Subreddit';
 
   @override
-  Iterable serialize(Serializers serializers, Subreddit object,
+  Iterable<Object> serialize(Serializers serializers, Subreddit object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'id',
@@ -36,7 +36,7 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
   }
 
   @override
-  Subreddit deserialize(Serializers serializers, Iterable serialized,
+  Subreddit deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SubredditBuilder();
 

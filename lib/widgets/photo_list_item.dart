@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reddigram/models/models.dart';
@@ -67,15 +68,12 @@ class PhotoListItem extends StatelessWidget {
             child: photo.isVideo ? _Video(photo: photo) : _Photo(photo: photo),
             overlays: <Widget>[
               if (!photo.isVideo)
-                SizedBox.expand(
-                  child: GestureDetector(
-                    onTap: onPhotoTap,
-                  ),
-                ),
+                SizedBox.expand(child: GestureDetector(onTap: onPhotoTap)),
               if (upvotingEnabled)
                 Upvoteable(onUpvote: photo.upvoted ? null : onUpvote),
               if (photoHeight >= _maxPictureHeight && !photo.isVideo)
                 _TapToRevealOverlay(),
+              _TitleOverlay(title: photo.title),
               if (photo.nsfw) NsfwOverlay(show: showNsfw, onShow: onShowNsfw),
             ],
           ),
@@ -361,6 +359,48 @@ class _LoadingCircle extends StatelessWidget {
         child: Transform.scale(
           scale: 0.5,
           child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+}
+
+class _TitleOverlay extends StatefulWidget {
+  final String title;
+
+  const _TitleOverlay({Key key, this.title}) : super(key: key);
+
+  @override
+  _TitleOverlayState createState() => _TitleOverlayState();
+}
+
+class _TitleOverlayState extends State<_TitleOverlay> {
+  bool _shown = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onLongPressStart: (_) => setState(() => _shown = true),
+        onLongPressEnd: (_) => setState(() => _shown = false),
+        child: IgnorePointer(
+          ignoring: true,
+          child: AnimatedOpacity(
+            opacity: _shown ? 1 : 0,
+            duration: Duration(milliseconds: 200),
+            curve: Curves.ease,
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(16),
+              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.87),
+              child: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.title,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
       ),
     );

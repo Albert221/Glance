@@ -31,7 +31,8 @@ class _$LinkListingResponseSerializer
   final String wireName = 'LinkListingResponse';
 
   @override
-  Iterable serialize(Serializers serializers, LinkListingResponse object,
+  Iterable<Object> serialize(
+      Serializers serializers, LinkListingResponse object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'data',
@@ -43,7 +44,8 @@ class _$LinkListingResponseSerializer
   }
 
   @override
-  LinkListingResponse deserialize(Serializers serializers, Iterable serialized,
+  LinkListingResponse deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new LinkListingResponseBuilder();
 
@@ -73,7 +75,7 @@ class _$LinkListingDataSerializer
   final String wireName = 'LinkListingData';
 
   @override
-  Iterable serialize(Serializers serializers, LinkListingData object,
+  Iterable<Object> serialize(Serializers serializers, LinkListingData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'children',
@@ -97,7 +99,8 @@ class _$LinkListingDataSerializer
   }
 
   @override
-  LinkListingData deserialize(Serializers serializers, Iterable serialized,
+  LinkListingData deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new LinkListingDataBuilder();
 
@@ -117,8 +120,9 @@ class _$LinkListingDataSerializer
           break;
         case 'children':
           result.children.replace(serializers.deserialize(value,
-              specifiedType: const FullType(
-                  BuiltList, const [const FullType(LinkChild)])) as BuiltList);
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(LinkChild)]))
+              as BuiltList<dynamic>);
           break;
       }
     }
@@ -134,7 +138,7 @@ class _$LinkChildSerializer implements StructuredSerializer<LinkChild> {
   final String wireName = 'LinkChild';
 
   @override
-  Iterable serialize(Serializers serializers, LinkChild object,
+  Iterable<Object> serialize(Serializers serializers, LinkChild object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'data',
@@ -146,7 +150,7 @@ class _$LinkChildSerializer implements StructuredSerializer<LinkChild> {
   }
 
   @override
-  LinkChild deserialize(Serializers serializers, Iterable serialized,
+  LinkChild deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new LinkChildBuilder();
 
@@ -174,7 +178,7 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
   final String wireName = 'LinkChildData';
 
   @override
-  Iterable serialize(Serializers serializers, LinkChildData object,
+  Iterable<Object> serialize(Serializers serializers, LinkChildData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'name',
@@ -239,7 +243,8 @@ class _$LinkChildDataSerializer implements StructuredSerializer<LinkChildData> {
   }
 
   @override
-  LinkChildData deserialize(Serializers serializers, Iterable serialized,
+  LinkChildData deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new LinkChildDataBuilder();
 
@@ -323,7 +328,7 @@ class _$PreviewSerializer implements StructuredSerializer<Preview> {
   final String wireName = 'Preview';
 
   @override
-  Iterable serialize(Serializers serializers, Preview object,
+  Iterable<Object> serialize(Serializers serializers, Preview object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'images',
@@ -341,7 +346,7 @@ class _$PreviewSerializer implements StructuredSerializer<Preview> {
   }
 
   @override
-  Preview deserialize(Serializers serializers, Iterable serialized,
+  Preview deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new PreviewBuilder();
 
@@ -355,7 +360,7 @@ class _$PreviewSerializer implements StructuredSerializer<Preview> {
           result.images.replace(serializers.deserialize(value,
                   specifiedType: const FullType(
                       BuiltList, const [const FullType(PreviewImage)]))
-              as BuiltList);
+              as BuiltList<dynamic>);
           break;
         case 'reddit_video_preview':
           result.redditVideoPreview.replace(serializers.deserialize(value,
@@ -375,7 +380,7 @@ class _$PreviewImageSerializer implements StructuredSerializer<PreviewImage> {
   final String wireName = 'PreviewImage';
 
   @override
-  Iterable serialize(Serializers serializers, PreviewImage object,
+  Iterable<Object> serialize(Serializers serializers, PreviewImage object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'source',
@@ -391,7 +396,7 @@ class _$PreviewImageSerializer implements StructuredSerializer<PreviewImage> {
   }
 
   @override
-  PreviewImage deserialize(Serializers serializers, Iterable serialized,
+  PreviewImage deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new PreviewImageBuilder();
 
@@ -409,7 +414,7 @@ class _$PreviewImageSerializer implements StructuredSerializer<PreviewImage> {
           result.resolutions.replace(serializers.deserialize(value,
                   specifiedType:
                       const FullType(BuiltList, const [const FullType(Image)]))
-              as BuiltList);
+              as BuiltList<dynamic>);
           break;
       }
     }
@@ -425,7 +430,7 @@ class _$ImageSerializer implements StructuredSerializer<Image> {
   final String wireName = 'Image';
 
   @override
-  Iterable serialize(Serializers serializers, Image object,
+  Iterable<Object> serialize(Serializers serializers, Image object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'url',
@@ -440,7 +445,7 @@ class _$ImageSerializer implements StructuredSerializer<Image> {
   }
 
   @override
-  Image deserialize(Serializers serializers, Iterable serialized,
+  Image deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ImageBuilder();
 
@@ -476,7 +481,7 @@ class _$MediaSerializer implements StructuredSerializer<Media> {
   final String wireName = 'Media';
 
   @override
-  Iterable serialize(Serializers serializers, Media object,
+  Iterable<Object> serialize(Serializers serializers, Media object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[];
     if (object.redditVideo != null) {
@@ -489,7 +494,7 @@ class _$MediaSerializer implements StructuredSerializer<Media> {
   }
 
   @override
-  Media deserialize(Serializers serializers, Iterable serialized,
+  Media deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new MediaBuilder();
 
@@ -517,7 +522,7 @@ class _$RedditVideoSerializer implements StructuredSerializer<RedditVideo> {
   final String wireName = 'RedditVideo';
 
   @override
-  Iterable serialize(Serializers serializers, RedditVideo object,
+  Iterable<Object> serialize(Serializers serializers, RedditVideo object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'fallback_url',
@@ -529,7 +534,7 @@ class _$RedditVideoSerializer implements StructuredSerializer<RedditVideo> {
   }
 
   @override
-  RedditVideo deserialize(Serializers serializers, Iterable serialized,
+  RedditVideo deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new RedditVideoBuilder();
 

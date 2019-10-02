@@ -10,6 +10,8 @@ class _$Photo extends Photo {
   @override
   final String id;
   @override
+  final String title;
+  @override
   final String authorName;
   @override
   final String subredditName;
@@ -37,6 +39,7 @@ class _$Photo extends Photo {
 
   _$Photo._(
       {this.id,
+      this.title,
       this.authorName,
       this.subredditName,
       this.subredditId,
@@ -51,6 +54,9 @@ class _$Photo extends Photo {
       : super._() {
     if (id == null) {
       throw new BuiltValueNullFieldError('Photo', 'id');
+    }
+    if (title == null) {
+      throw new BuiltValueNullFieldError('Photo', 'title');
     }
     if (authorName == null) {
       throw new BuiltValueNullFieldError('Photo', 'authorName');
@@ -96,6 +102,7 @@ class _$Photo extends Photo {
     if (identical(other, this)) return true;
     return other is Photo &&
         id == other.id &&
+        title == other.title &&
         authorName == other.authorName &&
         subredditName == other.subredditName &&
         subredditId == other.subredditId &&
@@ -121,7 +128,9 @@ class _$Photo extends Photo {
                                 $jc(
                                     $jc(
                                         $jc(
-                                            $jc($jc(0, id.hashCode),
+                                            $jc(
+                                                $jc($jc(0, id.hashCode),
+                                                    title.hashCode),
                                                 authorName.hashCode),
                                             subredditName.hashCode),
                                         subredditId.hashCode),
@@ -139,6 +148,7 @@ class _$Photo extends Photo {
   String toString() {
     return (newBuiltValueToStringHelper('Photo')
           ..add('id', id)
+          ..add('title', title)
           ..add('authorName', authorName)
           ..add('subredditName', subredditName)
           ..add('subredditId', subredditId)
@@ -160,6 +170,10 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   String _id;
   String get id => _$this._id;
   set id(String id) => _$this._id = id;
+
+  String _title;
+  String get title => _$this._title;
+  set title(String title) => _$this._title = title;
 
   String _authorName;
   String get authorName => _$this._authorName;
@@ -213,6 +227,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
   PhotoBuilder get _$this {
     if (_$v != null) {
       _id = _$v.id;
+      _title = _$v.title;
       _authorName = _$v.authorName;
       _subredditName = _$v.subredditName;
       _subredditId = _$v.subredditId;
@@ -249,6 +264,7 @@ class PhotoBuilder implements Builder<Photo, PhotoBuilder> {
       _$result = _$v ??
           new _$Photo._(
               id: id,
+              title: title,
               authorName: authorName,
               subredditName: subredditName,
               subredditId: subredditId,
