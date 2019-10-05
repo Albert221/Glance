@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -41,6 +42,13 @@ class ApiApiRepository {
         return options;
       }),
     ]);
+  }
+
+  Future<List<String>> suggestedSubreddits(
+      List<String> subscribedSubreddits) async {
+    return _client
+        .post('/suggested-subreddits', data: subscribedSubreddits)
+        .then((response) => List<String>.from(response.data));
   }
 
   Future<void> authenticate(String redditAccessToken) async {
