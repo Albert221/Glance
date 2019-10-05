@@ -40,10 +40,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/chrome_desktop_site.png
+
   fonts:
     - family: Pacifico
       fonts:
-        - asset: fonts/Pacifico/Pacifico-Regular.ttf
+        - asset: assets/fonts/Pacifico/Pacifico-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

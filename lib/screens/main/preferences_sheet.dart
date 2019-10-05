@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -27,6 +28,8 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
   void _connectToReddit(BuildContext context) async {
     ReddigramApp.analytics.logEvent(name: 'login_attempt');
 
+    if (await _showRedditBugWarningAlert(context) != true) return;
+
     launch('https://www.reddit.com/api/v1/authorize'
         '?client_id=${ReddigramConsts.oauthClientId}&response_type=code'
         '&state=x&scope=read+mysubreddits+vote+identity&duration=permanent'
@@ -41,6 +44,51 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
         ReddigramApp.analytics.logLogin(loginMethod: 'Reddit');
       }
     });
+  }
+
+  Future<bool> _showRedditBugWarningAlert(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Warning'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.body1,
+                children: [
+                  const TextSpan(text: 'Due to Reddit\'s bug, if you are unable to sign in please turn on '),
+                  const TextSpan(
+                    text: 'Desktop site',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(
+                      text: ' option and try again. '),
+                  TextSpan(
+                    text: 'Read more',
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => launch(
+                          'https://www.reddit.com/r/bugs/comments/dc8cea/cant_sign_in_on_mobile_on_logindest/'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Image.asset('assets/chrome_desktop_site.png'),
+          ],
+        ),
+        actions: [
+          FlatButton(
+            child: const Text('OK'),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+        ],
+      ),
+    );
   }
 
   void _signOut(BuildContext context) {
