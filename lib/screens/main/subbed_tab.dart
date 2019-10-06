@@ -17,13 +17,6 @@ class SubbedTab extends StatefulWidget {
 
 class _SubbedTabState extends State<SubbedTab>
     with AutomaticKeepAliveClientMixin {
-  static const _suggestedSubreddits = {
-    'pics': 't5_2sh6t',
-    'EarthPorn': 't5_2sbq3',
-    'CityPorn': 't5_2scjs',
-    'itookapicture': 't5_2r1tc',
-  };
-
   final _contextCompleter = Completer<BuildContext>();
 
   @override
@@ -32,7 +25,7 @@ class _SubbedTabState extends State<SubbedTab>
 
     _contextCompleter.future.then((context) =>
         StoreProvider.of<ReddigramState>(context)
-            .dispatch(fetchSubreddits(_suggestedSubreddits.values.toList())));
+            .dispatch(fetchSuggestedSubscriptions()));
   }
 
   void _subscribe(BuildContext context, void Function(String) callback) async {
@@ -125,48 +118,49 @@ class _SubbedTabState extends State<SubbedTab>
                     ),
                   ))
               .toList(),
-          ..._buildSuggestions(context, vm),
+          _buildSuggestions(context),
         ],
       ),
     );
   }
 
-  List<Widget> _buildSuggestions(
-      BuildContext context, _SubredditsViewModel vm) {
-    final suggested = _suggestedSubreddits.keys
-        .where((subreddit) => !vm.subreddits.contains(subreddit));
-
-    if (suggested.isEmpty) {
-      return [];
-    }
-
-    return [
-      const SizedBox(height: 32.0),
-      const ListTile(
-        leading: Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: Icon(Icons.add_circle),
-        ),
-        title: Text(
-          'Here are some suggestions:',
-        ),
-      ),
-      ...suggested
-          .map((subName) => StoreConnector<ReddigramState, Subreddit>(
-                key: Key('suggestion_$subName'),
-                converter: (store) => store.state.subreddits[subName],
-                builder: (context, subreddit) => SubredditListTile(
-                  subreddit: subreddit ?? Subreddit((b) => b..name = subName),
-                  onTap: () => Navigator.push(
-                    context,
-                    SubredditScreen.route(subName),
-                  ),
-                  trailingIcon: const Icon(Icons.add),
-                  onTrailingTap: () => vm.subscribe(subName),
-                ),
-              ))
-          .toList(),
-    ];
+  Widget _buildSuggestions(BuildContext context) {
+    return StoreConnector<ReddigramState, _SubredditsViewModel>(
+      converter: (store) => _SubredditsViewModel.fromStoreSuggested(store),
+      builder: (context, vm) {
+        return Column(
+          children: [
+            const SizedBox(height: 32.0),
+            const ListTile(
+              leading: Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Icon(Icons.add_circle),
+              ),
+              title: Text('Here are some suggestions:'),
+            ),
+            ...vm.subreddits
+                .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
+                      key: Key('suggestion_$subredditId'),
+                      converter: (store) => store.state.subreddits.values
+                          .firstWhere((sub) => sub.id == subredditId,
+                              orElse: () => null),
+                      builder: (context, subreddit) => subreddit != null
+                          ? SubredditListTile(
+                              subreddit: subreddit,
+                              onTap: () => Navigator.push(
+                                context,
+                                SubredditScreen.route(subreddit.name),
+                              ),
+                              trailingIcon: Icon(Icons.add),
+                              onTrailingTap: () => vm.subscribe(subreddit.name),
+                            )
+                          : SizedBox(),
+                    ))
+                .toList(),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -189,6 +183,15 @@ class _SubredditsViewModel {
   factory _SubredditsViewModel.fromStore(Store<ReddigramState> store) {
     return _SubredditsViewModel(
       subreddits: store.state.subscriptions.toList(),
+      subscribe: (subreddit) => store.dispatch(subscribeSubreddit(subreddit)),
+      unsubscribe: (subreddit) =>
+          store.dispatch(unsubscribeSubreddit(subreddit)),
+    );
+  }
+
+  factory _SubredditsViewModel.fromStoreSuggested(Store<ReddigramState> store) {
+    return _SubredditsViewModel(
+      subreddits: store.state.suggestedSubscriptions.toList(),
       subscribe: (subreddit) => store.dispatch(subscribeSubreddit(subreddit)),
       unsubscribe: (subreddit) =>
           store.dispatch(unsubscribeSubreddit(subreddit)),

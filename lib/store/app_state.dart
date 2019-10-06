@@ -11,28 +11,33 @@ abstract class ReddigramState
 
   PreferencesState get preferences;
 
-  /// Map of all photos in application; index is an id of a photo.
+  /// Map of all photos in application; key is an id of a photo.
   BuiltMap<String, Photo> get photos;
 
   /// Map with all feeds in application. There are three reserved values:
   /// [POPULAR], [NEW_SUBSCRIBED], and [BEST_SUBSCRIBED], the rest of values
-  /// are subreddits' names with correct capitaliation, without "r/" prefix
+  /// are subreddits' names with correct capitalization, without "r/" prefix.
   BuiltMap<String, Feed> get feeds;
 
-  /// Names of subscribed subreddits
-  BuiltSet<String> get subscriptions;
-
   /// Map of all subreddits in application (not only those which feed was
-  /// loaded, but also all shown in badges). Index is a subreddit name without
+  /// loaded, but also all shown in badges). Key is a subreddit name without
   /// the "r/" prefix.
   BuiltMap<String, Subreddit> get subreddits;
+
+  // TODO: Refactor state so the subscriptions is a set of ids, not names.
+  /// Names of subscribed subreddits.
+  BuiltSet<String> get subscriptions;
+
+  /// Ids of suggested to subscribe subreddits.
+  BuiltSet<String> get suggestedSubscriptions;
 
   SubredditsSearchState get subredditsSearch;
 
   ReddigramState._();
 
   factory ReddigramState([updates(ReddigramStateBuilder b)]) {
-    return _$ReddigramState._(
+    return _$ReddigramState
+        ._(
           authState: AuthState(),
           preferences: PreferencesState(),
           photos: BuiltMap<String, Photo>(),
@@ -41,8 +46,9 @@ abstract class ReddigramState
             NEW_SUBSCRIBED: Feed(),
             BEST_SUBSCRIBED: Feed(),
           }),
-          subscriptions: BuiltSet(),
           subreddits: BuiltMap<String, Subreddit>(),
+          subscriptions: BuiltSet(),
+          suggestedSubscriptions: BuiltSet(),
           subredditsSearch: SubredditsSearchState(),
         )
         .rebuild(updates);

@@ -16,9 +16,11 @@ class _$ReddigramState extends ReddigramState {
   @override
   final BuiltMap<String, Feed> feeds;
   @override
+  final BuiltMap<String, Subreddit> subreddits;
+  @override
   final BuiltSet<String> subscriptions;
   @override
-  final BuiltMap<String, Subreddit> subreddits;
+  final BuiltSet<String> suggestedSubscriptions;
   @override
   final SubredditsSearchState subredditsSearch;
 
@@ -30,8 +32,9 @@ class _$ReddigramState extends ReddigramState {
       this.preferences,
       this.photos,
       this.feeds,
-      this.subscriptions,
       this.subreddits,
+      this.subscriptions,
+      this.suggestedSubscriptions,
       this.subredditsSearch})
       : super._() {
     if (authState == null) {
@@ -46,11 +49,15 @@ class _$ReddigramState extends ReddigramState {
     if (feeds == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'feeds');
     }
+    if (subreddits == null) {
+      throw new BuiltValueNullFieldError('ReddigramState', 'subreddits');
+    }
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'subscriptions');
     }
-    if (subreddits == null) {
-      throw new BuiltValueNullFieldError('ReddigramState', 'subreddits');
+    if (suggestedSubscriptions == null) {
+      throw new BuiltValueNullFieldError(
+          'ReddigramState', 'suggestedSubscriptions');
     }
     if (subredditsSearch == null) {
       throw new BuiltValueNullFieldError('ReddigramState', 'subredditsSearch');
@@ -73,8 +80,9 @@ class _$ReddigramState extends ReddigramState {
         preferences == other.preferences &&
         photos == other.photos &&
         feeds == other.feeds &&
-        subscriptions == other.subscriptions &&
         subreddits == other.subreddits &&
+        subscriptions == other.subscriptions &&
+        suggestedSubscriptions == other.suggestedSubscriptions &&
         subredditsSearch == other.subredditsSearch;
   }
 
@@ -84,11 +92,15 @@ class _$ReddigramState extends ReddigramState {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, authState.hashCode), preferences.hashCode),
-                        photos.hashCode),
-                    feeds.hashCode),
+                    $jc(
+                        $jc(
+                            $jc($jc(0, authState.hashCode),
+                                preferences.hashCode),
+                            photos.hashCode),
+                        feeds.hashCode),
+                    subreddits.hashCode),
                 subscriptions.hashCode),
-            subreddits.hashCode),
+            suggestedSubscriptions.hashCode),
         subredditsSearch.hashCode));
   }
 
@@ -99,8 +111,9 @@ class _$ReddigramState extends ReddigramState {
           ..add('preferences', preferences)
           ..add('photos', photos)
           ..add('feeds', feeds)
-          ..add('subscriptions', subscriptions)
           ..add('subreddits', subreddits)
+          ..add('subscriptions', subscriptions)
+          ..add('suggestedSubscriptions', suggestedSubscriptions)
           ..add('subredditsSearch', subredditsSearch))
         .toString();
   }
@@ -131,17 +144,23 @@ class ReddigramStateBuilder
       _$this._feeds ??= new MapBuilder<String, Feed>();
   set feeds(MapBuilder<String, Feed> feeds) => _$this._feeds = feeds;
 
+  MapBuilder<String, Subreddit> _subreddits;
+  MapBuilder<String, Subreddit> get subreddits =>
+      _$this._subreddits ??= new MapBuilder<String, Subreddit>();
+  set subreddits(MapBuilder<String, Subreddit> subreddits) =>
+      _$this._subreddits = subreddits;
+
   SetBuilder<String> _subscriptions;
   SetBuilder<String> get subscriptions =>
       _$this._subscriptions ??= new SetBuilder<String>();
   set subscriptions(SetBuilder<String> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
-  MapBuilder<String, Subreddit> _subreddits;
-  MapBuilder<String, Subreddit> get subreddits =>
-      _$this._subreddits ??= new MapBuilder<String, Subreddit>();
-  set subreddits(MapBuilder<String, Subreddit> subreddits) =>
-      _$this._subreddits = subreddits;
+  SetBuilder<String> _suggestedSubscriptions;
+  SetBuilder<String> get suggestedSubscriptions =>
+      _$this._suggestedSubscriptions ??= new SetBuilder<String>();
+  set suggestedSubscriptions(SetBuilder<String> suggestedSubscriptions) =>
+      _$this._suggestedSubscriptions = suggestedSubscriptions;
 
   SubredditsSearchStateBuilder _subredditsSearch;
   SubredditsSearchStateBuilder get subredditsSearch =>
@@ -157,8 +176,9 @@ class ReddigramStateBuilder
       _preferences = _$v.preferences?.toBuilder();
       _photos = _$v.photos?.toBuilder();
       _feeds = _$v.feeds?.toBuilder();
-      _subscriptions = _$v.subscriptions?.toBuilder();
       _subreddits = _$v.subreddits?.toBuilder();
+      _subscriptions = _$v.subscriptions?.toBuilder();
+      _suggestedSubscriptions = _$v.suggestedSubscriptions?.toBuilder();
       _subredditsSearch = _$v.subredditsSearch?.toBuilder();
       _$v = null;
     }
@@ -188,8 +208,9 @@ class ReddigramStateBuilder
               preferences: preferences.build(),
               photos: photos.build(),
               feeds: feeds.build(),
-              subscriptions: subscriptions.build(),
               subreddits: subreddits.build(),
+              subscriptions: subscriptions.build(),
+              suggestedSubscriptions: suggestedSubscriptions.build(),
               subredditsSearch: subredditsSearch.build());
     } catch (_) {
       String _$failedField;
@@ -202,10 +223,12 @@ class ReddigramStateBuilder
         photos.build();
         _$failedField = 'feeds';
         feeds.build();
-        _$failedField = 'subscriptions';
-        subscriptions.build();
         _$failedField = 'subreddits';
         subreddits.build();
+        _$failedField = 'subscriptions';
+        subscriptions.build();
+        _$failedField = 'suggestedSubscriptions';
+        suggestedSubscriptions.build();
         _$failedField = 'subredditsSearch';
         subredditsSearch.build();
       } catch (e) {
