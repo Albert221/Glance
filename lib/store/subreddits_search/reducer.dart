@@ -11,7 +11,7 @@ SubredditsSearchState _setSubredditsSearchResult(
     SubredditsSearchState state, FetchedSearchSubreddits action) {
   return state.rebuild((b) => b
     ..lastQuery = action.query
-    ..resultFeedsNames.replace(action.resultsFeedsNames));
+    ..resultFeedsIds.replace(action.resultSubredditsIds));
 }
 
 SubredditsSearchState _clearSearch(

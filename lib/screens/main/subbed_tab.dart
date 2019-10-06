@@ -95,27 +95,27 @@ class _SubbedTabState extends State<SubbedTab>
             ),
             onTap: () => _subscribe(context, vm.subscribe),
           ),
-          if (vm.subreddits.isEmpty)
+          if (vm.subscribedSubreddits.isEmpty)
             const ListTile(
               leading: SizedBox(),
               title: Text(
                 'No subreddits. Subscribe to some!',
               ),
             ),
-          ...vm.subreddits
-              .map((subredditName) => StoreConnector<ReddigramState, Subreddit>(
-                    key: Key(subredditName),
-                    converter: (store) =>
-                        store.state.subreddits[subredditName] ??
-                        Subreddit((b) => b..name = subredditName),
-                    builder: (context, subreddit) => SubredditListTile(
-                      subreddit: subreddit,
-                      onTap: () => Navigator.push(
-                          context, SubredditScreen.route(subredditName)),
-                      trailingIcon: const Icon(Icons.remove),
-                      onTrailingTap: () => _unsubscribe(context, subredditName,
-                          () => vm.unsubscribe(subredditName)),
-                    ),
+          ...vm.subscribedSubreddits
+              .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
+                    key: Key(subredditId),
+                    converter: (store) => store.state.subreddits[subredditId],
+                    builder: (context, subreddit) => subreddit != null
+                        ? SubredditListTile(
+                            subreddit: subreddit,
+                            onTap: () => Navigator.push(
+                                context, SubredditScreen.route(subreddit.id)),
+                            trailingIcon: const Icon(Icons.remove),
+                            onTrailingTap: () => _unsubscribe(context,
+                                subreddit.name, () => vm.unsubscribe(subredditId)),
+                          )
+                        : SizedBox(),
                   ))
               .toList(),
           _buildSuggestions(context),
@@ -138,21 +138,19 @@ class _SubbedTabState extends State<SubbedTab>
               ),
               title: Text('Here are some suggestions:'),
             ),
-            ...vm.subreddits
+            ...vm.subscribedSubreddits
                 .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
                       key: Key('suggestion_$subredditId'),
-                      converter: (store) => store.state.subreddits.values
-                          .firstWhere((sub) => sub.id == subredditId,
-                              orElse: () => null),
+                      converter: (store) => store.state.subreddits[subredditId],
                       builder: (context, subreddit) => subreddit != null
                           ? SubredditListTile(
                               subreddit: subreddit,
                               onTap: () => Navigator.push(
                                 context,
-                                SubredditScreen.route(subreddit.name),
+                                SubredditScreen.route(subreddit.id),
                               ),
                               trailingIcon: Icon(Icons.add),
-                              onTrailingTap: () => vm.subscribe(subreddit.name),
+                              onTrailingTap: () => vm.subscribe(subreddit.id),
                             )
                           : SizedBox(),
                     ))
@@ -168,33 +166,33 @@ class _SubbedTabState extends State<SubbedTab>
 }
 
 class _SubredditsViewModel {
-  final List<String> subreddits;
+  final List<String> subscribedSubreddits;
   final void Function(String) subscribe;
   final void Function(String) unsubscribe;
 
   _SubredditsViewModel(
-      {@required this.subreddits,
+      {@required this.subscribedSubreddits,
       @required this.subscribe,
       @required this.unsubscribe})
-      : assert(subreddits != null),
+      : assert(subscribedSubreddits != null),
         assert(subscribe != null),
         assert(unsubscribe != null);
 
   factory _SubredditsViewModel.fromStore(Store<ReddigramState> store) {
     return _SubredditsViewModel(
-      subreddits: store.state.subscriptions.toList(),
-      subscribe: (subreddit) => store.dispatch(subscribeSubreddit(subreddit)),
-      unsubscribe: (subreddit) =>
-          store.dispatch(unsubscribeSubreddit(subreddit)),
+      subscribedSubreddits: store.state.subscriptions.toList(),
+      subscribe: (subredditId) => store.dispatch(subscribeSubreddit(subredditId)),
+      unsubscribe: (subredditId) =>
+          store.dispatch(unsubscribeSubreddit(subredditId)),
     );
   }
 
   factory _SubredditsViewModel.fromStoreSuggested(Store<ReddigramState> store) {
     return _SubredditsViewModel(
-      subreddits: store.state.suggestedSubscriptions.toList(),
-      subscribe: (subreddit) => store.dispatch(subscribeSubreddit(subreddit)),
-      unsubscribe: (subreddit) =>
-          store.dispatch(unsubscribeSubreddit(subreddit)),
+      subscribedSubreddits: store.state.suggestedSubscriptions.toList(),
+      subscribe: (subredditId) => store.dispatch(subscribeSubreddit(subredditId)),
+      unsubscribe: (subredditId) =>
+          store.dispatch(unsubscribeSubreddit(subredditId)),
     );
   }
 }

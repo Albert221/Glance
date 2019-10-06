@@ -14,17 +14,21 @@ const BEST_SUBSCRIBED = 'BEST_SUBSCRIBED';
 bool isSubreddit(String feed) => feed.contains(RegExp(r'^r\/'));
 
 String _getProperFeedName(Store<ReddigramState> store, String feed) {
+  final subscriptions = store.state.subscriptions;
+  final subscribedSubsNames =
+      subscriptions.map((id) => store.state.subreddits[id].name);
+
   switch (feed) {
     case POPULAR:
       return '/r/popular';
     case NEW_SUBSCRIBED:
-      return store.state.subscriptions.isEmpty
+      return subscriptions.isEmpty
           ? '_EMPTY'
-          : 'r/' + store.state.subscriptions.join('+') + '/new';
+          : 'r/' + subscribedSubsNames.join('+') + '/new';
     case BEST_SUBSCRIBED:
-      return store.state.subscriptions.isEmpty
+      return subscriptions.isEmpty
           ? '_EMPTY'
-          : 'r/' + store.state.subscriptions.join('+');
+          : 'r/' + subscribedSubsNames.join('+');
     default:
       return feed;
   }
@@ -52,9 +56,11 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
 
         feedName = 'r/' +
             store.state.subreddits.entries
-                .singleWhere((entry) =>
-                    entry.key.toLowerCase() == subreditName.toLowerCase())
-                .key;
+                .firstWhere((entry) =>
+                    entry.value.name.toLowerCase() ==
+                    subreditName.toLowerCase())
+                .value
+                .name;
       }
 
       final feed = Feed((b) => b

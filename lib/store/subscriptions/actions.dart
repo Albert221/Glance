@@ -7,29 +7,30 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<ReddigramState> fetchSubscriptions([Completer completer]) {
   return (Store<ReddigramState> store) {
-    apiRepository.fetchSubscriptions().then((subreddits) {
-      // FIXME (Albert221): This line doesn't work dude D:
-      store.dispatch(fetchSubreddits(subreddits));
+    apiRepository.fetchSubscriptions().then((subreddits) async {
+      final completer = Completer();
+      store.dispatch(fetchSubreddits(subreddits, completer: completer));
+      await completer.future;
 
       store.dispatch(FetchedSubscriptions(subreddits));
     }).whenComplete(() => completer.complete());
   };
 }
 
-ThunkAction<ReddigramState> subscribeSubreddit(String name) {
+ThunkAction<ReddigramState> subscribeSubreddit(String id) {
   return (Store<ReddigramState> store) {
-    apiRepository.subscribeSubreddit(name).then((_) {
-      store.dispatch(SubscribedSubreddit(name));
+    apiRepository.subscribeSubreddit(id).then((_) {
+      store.dispatch(SubscribedSubreddit(id));
       store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED));
       store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
     });
   };
 }
 
-ThunkAction<ReddigramState> unsubscribeSubreddit(String name) {
+ThunkAction<ReddigramState> unsubscribeSubreddit(String id) {
   return (Store<ReddigramState> store) {
-    apiRepository.unsubscribeSubreddit(name).then((_) {
-      store.dispatch(UnsubscribedSubreddit(name));
+    apiRepository.unsubscribeSubreddit(id).then((_) {
+      store.dispatch(UnsubscribedSubreddit(id));
       store.dispatch(fetchFreshFeed(NEW_SUBSCRIBED));
       store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED));
     });

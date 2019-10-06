@@ -13,15 +13,13 @@ ThunkAction<ReddigramState> fetchSubreddits(List<String> ids,
   return (Store<ReddigramState> store) {
     // Firstly check the state for already fetched subreddits so we don't
     // have to call the API for the data we have.
-    final storedSubsIds =
-        store.state.subreddits.entries.map((entry) => entry.value.id);
-    ids.removeWhere((id) => storedSubsIds.contains(id));
+    ids.removeWhere((id) => store.state.subreddits.containsKey(id));
     // Remove duplicates.
     ids = ids.toSet().toList();
 
     redditRepository
         .subredditsBulk(ids)
-        .then((subredits) => store.dispatch(FetchedSubreddits(subredits)))
+        .then((subreddits) => store.dispatch(FetchedSubreddits(subreddits)))
         .whenComplete(() => completer?.complete());
   };
 }

@@ -20,12 +20,10 @@ abstract class ReddigramState
   BuiltMap<String, Feed> get feeds;
 
   /// Map of all subreddits in application (not only those which feed was
-  /// loaded, but also all shown in badges). Key is a subreddit name without
-  /// the "r/" prefix.
+  /// loaded, but also all shown in badges). Key is a subreddit id.
   BuiltMap<String, Subreddit> get subreddits;
 
-  // TODO: Refactor state so the subscriptions is a set of ids, not names.
-  /// Names of subscribed subreddits.
+  /// Ids of subscribed subreddits.
   BuiltSet<String> get subscriptions;
 
   /// Ids of suggested to subscribe subreddits.

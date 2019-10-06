@@ -7,14 +7,14 @@ abstract class SubredditsSearchState
     implements Built<SubredditsSearchState, SubredditsSearchStateBuilder> {
   String get lastQuery;
 
-  BuiltList<String> get resultFeedsNames;
+  BuiltList<String> get resultFeedsIds;
 
   SubredditsSearchState._();
 
   factory SubredditsSearchState([updates(SubredditsSearchStateBuilder b)]) {
     return _$SubredditsSearchState._(
       lastQuery: '',
-      resultFeedsNames: BuiltList<String>([]),
+      resultFeedsIds: BuiltList<String>([]),
     ).rebuild(updates);
   }
 }

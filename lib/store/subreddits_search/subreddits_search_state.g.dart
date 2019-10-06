@@ -10,20 +10,19 @@ class _$SubredditsSearchState extends SubredditsSearchState {
   @override
   final String lastQuery;
   @override
-  final BuiltList<String> resultFeedsNames;
+  final BuiltList<String> resultFeedsIds;
 
   factory _$SubredditsSearchState(
           [void Function(SubredditsSearchStateBuilder) updates]) =>
       (new SubredditsSearchStateBuilder()..update(updates)).build();
 
-  _$SubredditsSearchState._({this.lastQuery, this.resultFeedsNames})
-      : super._() {
+  _$SubredditsSearchState._({this.lastQuery, this.resultFeedsIds}) : super._() {
     if (lastQuery == null) {
       throw new BuiltValueNullFieldError('SubredditsSearchState', 'lastQuery');
     }
-    if (resultFeedsNames == null) {
+    if (resultFeedsIds == null) {
       throw new BuiltValueNullFieldError(
-          'SubredditsSearchState', 'resultFeedsNames');
+          'SubredditsSearchState', 'resultFeedsIds');
     }
   }
 
@@ -41,19 +40,19 @@ class _$SubredditsSearchState extends SubredditsSearchState {
     if (identical(other, this)) return true;
     return other is SubredditsSearchState &&
         lastQuery == other.lastQuery &&
-        resultFeedsNames == other.resultFeedsNames;
+        resultFeedsIds == other.resultFeedsIds;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, lastQuery.hashCode), resultFeedsNames.hashCode));
+    return $jf($jc($jc(0, lastQuery.hashCode), resultFeedsIds.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SubredditsSearchState')
           ..add('lastQuery', lastQuery)
-          ..add('resultFeedsNames', resultFeedsNames))
+          ..add('resultFeedsIds', resultFeedsIds))
         .toString();
   }
 }
@@ -66,18 +65,18 @@ class SubredditsSearchStateBuilder
   String get lastQuery => _$this._lastQuery;
   set lastQuery(String lastQuery) => _$this._lastQuery = lastQuery;
 
-  ListBuilder<String> _resultFeedsNames;
-  ListBuilder<String> get resultFeedsNames =>
-      _$this._resultFeedsNames ??= new ListBuilder<String>();
-  set resultFeedsNames(ListBuilder<String> resultFeedsNames) =>
-      _$this._resultFeedsNames = resultFeedsNames;
+  ListBuilder<String> _resultFeedsIds;
+  ListBuilder<String> get resultFeedsIds =>
+      _$this._resultFeedsIds ??= new ListBuilder<String>();
+  set resultFeedsIds(ListBuilder<String> resultFeedsIds) =>
+      _$this._resultFeedsIds = resultFeedsIds;
 
   SubredditsSearchStateBuilder();
 
   SubredditsSearchStateBuilder get _$this {
     if (_$v != null) {
       _lastQuery = _$v.lastQuery;
-      _resultFeedsNames = _$v.resultFeedsNames?.toBuilder();
+      _resultFeedsIds = _$v.resultFeedsIds?.toBuilder();
       _$v = null;
     }
     return this;
@@ -102,12 +101,12 @@ class SubredditsSearchStateBuilder
     try {
       _$result = _$v ??
           new _$SubredditsSearchState._(
-              lastQuery: lastQuery, resultFeedsNames: resultFeedsNames.build());
+              lastQuery: lastQuery, resultFeedsIds: resultFeedsIds.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'resultFeedsNames';
-        resultFeedsNames.build();
+        _$failedField = 'resultFeedsIds';
+        resultFeedsIds.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'SubredditsSearchState', _$failedField, e.toString());

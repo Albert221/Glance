@@ -43,42 +43,23 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
           return ListView();
         }
 
-        final containsExact = vm.subreddits.any((feed) =>
-            feed.name.toLowerCase() == vm.state.lastQuery.toLowerCase());
-
         return ListView.builder(
-          itemCount:
-              containsExact ? vm.subreddits.length : vm.subreddits.length + 1,
+          itemCount: vm.subreddits.length,
           itemBuilder: (context, i) {
-            if (!containsExact && i == 0) {
-              return ListTile(
-                leading: const Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Icon(Icons.forward),
-                ),
-                title: Text('r/${vm.state.lastQuery}'),
-                onTap: () => Navigator.push(
-                      context,
-                      SubredditScreen.route(vm.state.lastQuery),
-                    ),
-              );
-            }
-
-            final result =
-                containsExact ? vm.subreddits[i] : vm.subreddits[i - 1];
+            final result = vm.subreddits[i];
 
             return StoreConnector<ReddigramState, bool>(
               converter: (store) => store.state.subscriptions
-                  .any((sub) => sub.toLowerCase() == result.name.toLowerCase()),
+                  .any((subscription) => subscription == result.id),
               builder: (context, subscribed) => SubredditListTile(
-                    subreddit: result,
-                    onTap: () => Navigator.push(
-                          context,
-                          SubredditScreen.route(result.name),
-                        ),
-                    trailingIcon: subscribed ? null : Icon(Icons.add),
-                    onTrailingTap: () => close(context, result.name),
-                  ),
+                subreddit: result,
+                onTap: () => Navigator.push(
+                  context,
+                  SubredditScreen.route(result.id),
+                ),
+                trailingIcon: subscribed ? null : Icon(Icons.add),
+                onTrailingTap: () => close(context, result.id),
+              ),
             );
           },
         );
@@ -119,8 +100,8 @@ class _SearchViewModel {
   factory _SearchViewModel.fromStore(Store<ReddigramState> store) {
     return _SearchViewModel(
       state: store.state.subredditsSearch,
-      subreddits: store.state.subredditsSearch.resultFeedsNames
-          .map((feedName) => store.state.subreddits[feedName])
+      subreddits: store.state.subredditsSearch.resultFeedsIds
+          .map((subredditId) => store.state.subreddits[subredditId])
           .toList(),
     );
   }

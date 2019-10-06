@@ -75,11 +75,11 @@ class ApiApiRepository {
         .then((response) => List<String>.from(response.data));
   }
 
-  Future<void> subscribeSubreddit(String name) async {
-    return _client.put('/subscriptions/$name');
+  Future<void> subscribeSubreddit(String id) async {
+    return _client.put('/subscriptions/$id');
   }
 
-  Future<void> unsubscribeSubreddit(String name) async {
-    return _client.delete('/subscriptions/$name');
+  Future<void> unsubscribeSubreddit(String id) async {
+    return _client.delete('/subscriptions/$id');
   }
 }

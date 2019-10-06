@@ -10,6 +10,6 @@ Reducer<BuiltMap<String, Subreddit>> subredditsReducer = combineReducers([
 
 BuiltMap<String, Subreddit> _fetchedSubreddits(
     BuiltMap<String, Subreddit> state, FetchedSubreddits action) {
-  return state.rebuild(
-      (b) => action.subreddits.forEach((sub) => b[sub.name] = sub));
+  return state
+      .rebuild((b) => action.subreddits.forEach((sub) => b[sub.id] = sub));
 }

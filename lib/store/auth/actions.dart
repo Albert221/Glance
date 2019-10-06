@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _refreshTokenKey = 'reddit_refresh_token';
 
 Future<void> _loadFeeds(Store<ReddigramState> store) {
-  // Fetch all feeds after we have info if user is authed or not.
+  // Fetch all feeds after we have info if user is authenticated or not.
   final bestCompleter = Completer();
   store.dispatch(fetchFreshFeed(BEST_SUBSCRIBED, completer: bestCompleter));
   final newCompleter = Completer();
@@ -21,6 +21,8 @@ Future<void> _loadFeeds(Store<ReddigramState> store) {
   ]);
 }
 
+// FIXME: Something is not right with that, after signin in/out (not on app
+// FIXME: startup) it fails to fetch subscriptions correctly.
 void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
   final futures = <Future>[];
 
@@ -31,16 +33,14 @@ void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
   final subscriptionsCompleter = Completer();
   futures.add(subscriptionsCompleter.future);
   futures.add(apiRepository.useApi(redditAccessToken).then(
-        (_) =>
-            store.dispatch(fetchSubscriptions(subscriptionsCompleter)),
+        (_) => store.dispatch(fetchSubscriptions(subscriptionsCompleter)),
         onError: (_) => subscriptionsCompleter.complete(),
       ));
 
-  Future.wait(futures)
-    ..then((_) async => await _loadFeeds(store)).then(
-      (_) => store.dispatch(SetAuthStatus(AuthStatus.authenticated)),
-      onError: (_) => store.dispatch(SetAuthStatus(AuthStatus.guest)),
-    );
+  Future.wait(futures).then((_) async => await _loadFeeds(store)).then(
+        (_) => store.dispatch(SetAuthStatus(AuthStatus.authenticated)),
+        onError: (_) => store.dispatch(SetAuthStatus(AuthStatus.guest)),
+      );
 }
 
 ThunkAction<ReddigramState> loadUser() {
