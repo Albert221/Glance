@@ -11,14 +11,20 @@ abstract class ReddigramState
 
   PreferencesState get preferences;
 
+  /// Map of all photos in application; index is an id of a photo.
   BuiltMap<String, Photo> get photos;
 
+  /// Map with all feeds in application. There are three reserved values:
+  /// [POPULAR], [NEW_SUBSCRIBED], and [BEST_SUBSCRIBED], the rest of values
+  /// are subreddits' names with correct capitaliation, without "r/" prefix
   BuiltMap<String, Feed> get feeds;
 
-  // Names of subreddits
+  /// Names of subscribed subreddits
   BuiltSet<String> get subscriptions;
 
-  // Subreddit name is a key
+  /// Map of all subreddits in application (not only those which feed was
+  /// loaded, but also all shown in badges). Index is a subreddit name without
+  /// the "r/" prefix.
   BuiltMap<String, Subreddit> get subreddits;
 
   SubredditsSearchState get subredditsSearch;

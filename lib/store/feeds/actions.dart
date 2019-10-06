@@ -45,6 +45,8 @@ ThunkAction<ReddigramState> fetchFreshFeed(String feedName,
 
       await subredditCompleter.future;
 
+      // If this feed is a subreddit, set feed's name to the subreddit's name
+      // (thanks to this, feed has the same capitalization as the subreddit)
       if (isSubreddit(feedName)) {
         final subreditName = feedName.substring(2);
 

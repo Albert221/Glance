@@ -8,11 +8,6 @@ import 'package:redux_thunk/redux_thunk.dart';
 ThunkAction<ReddigramState> fetchSubscriptions([Completer completer]) {
   return (Store<ReddigramState> store) {
     apiRepository.fetchSubscriptions().then((subreddits) {
-      // Fetch subreddits' data from cache for feeds not existing in state.
-      // That's because we want to have all metadata of subscribed subreddits,
-      // but it's impossible to fetch this data from Reddit API in a single
-      // request. We just cache that metadata on every fetch and retrieve it
-      // here.
       store.dispatch(fetchSubreddits(subreddits));
       store.dispatch(FetchedSubscriptions(subreddits));
     }).whenComplete(() => completer.complete());
