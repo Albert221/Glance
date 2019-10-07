@@ -23,6 +23,7 @@ class _SubbedTabState extends State<SubbedTab>
   void initState() {
     super.initState();
 
+    // Fetch suggestions here
     _contextCompleter.future.then((context) =>
         StoreProvider.of<ReddigramState>(context)
             .dispatch(fetchSuggestedSubscriptions()));
@@ -95,14 +96,14 @@ class _SubbedTabState extends State<SubbedTab>
             ),
             onTap: () => _subscribe(context, vm.subscribe),
           ),
-          if (vm.subscribedSubreddits.isEmpty)
+          if (vm.subreddits.isEmpty)
             const ListTile(
               leading: SizedBox(),
               title: Text(
                 'No subreddits. Subscribe to some!',
               ),
             ),
-          ...vm.subscribedSubreddits
+          ...vm.subreddits
               .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
                     key: Key(subredditId),
                     converter: (store) => store.state.subreddits[subredditId],
@@ -137,11 +138,17 @@ class _SubbedTabState extends State<SubbedTab>
             const ListTile(
               leading: Padding(
                 padding: EdgeInsets.only(left: 8.0),
-                child: Icon(Icons.add_circle),
+                child: Icon(Icons.favorite_border),
               ),
-              title: Text('Here are some suggestions:'),
+              title: Text('You may also like'),
             ),
-            ...vm.subscribedSubreddits
+            if (vm.subreddits.isEmpty)
+              ListTile(
+                dense: true,
+                leading: SizedBox(),
+                title: Text('No suggestions available'),
+              ),
+            ...vm.subreddits
                 .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
                       key: Key('suggestion_$subredditId'),
                       converter: (store) => store.state.subreddits[subredditId],
@@ -152,10 +159,10 @@ class _SubbedTabState extends State<SubbedTab>
                                 context,
                                 SubredditScreen.route(subreddit.id),
                               ),
-                              trailingIcon: Icon(Icons.add),
+                              trailingIcon: const Icon(Icons.add),
                               onTrailingTap: () => vm.subscribe(subreddit.id),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                     ))
                 .toList(),
           ],
@@ -165,25 +172,25 @@ class _SubbedTabState extends State<SubbedTab>
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }
 
 class _SubredditsViewModel {
-  final List<String> subscribedSubreddits;
+  final List<String> subreddits;
   final void Function(String) subscribe;
   final void Function(String) unsubscribe;
 
   _SubredditsViewModel(
-      {@required this.subscribedSubreddits,
+      {@required this.subreddits,
       @required this.subscribe,
       @required this.unsubscribe})
-      : assert(subscribedSubreddits != null),
+      : assert(subreddits != null),
         assert(subscribe != null),
         assert(unsubscribe != null);
 
   factory _SubredditsViewModel.fromStore(Store<ReddigramState> store) {
     return _SubredditsViewModel(
-      subscribedSubreddits: store.state.subscriptions.toList(),
+      subreddits: store.state.subscriptions.toList(),
       subscribe: (subredditId) =>
           store.dispatch(subscribeSubreddit(subredditId)),
       unsubscribe: (subredditId) =>
@@ -193,7 +200,10 @@ class _SubredditsViewModel {
 
   factory _SubredditsViewModel.fromStoreSuggested(Store<ReddigramState> store) {
     return _SubredditsViewModel(
-      subscribedSubreddits: store.state.suggestedSubscriptions.toList(),
+      subreddits: store.state.suggestedSubscriptions
+          .where(
+              (suggestion) => !store.state.subscriptions.contains(suggestion))
+          .toList(),
       subscribe: (subredditId) =>
           store.dispatch(subscribeSubreddit(subredditId)),
       unsubscribe: (subredditId) =>
