@@ -53,12 +53,13 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
                   .any((subscription) => subscription == result.id),
               builder: (context, subscribed) => SubredditListTile(
                 subreddit: result,
+                subscribed: subscribed,
                 onTap: () => Navigator.push(
                   context,
                   SubredditScreen.route(result.id),
                 ),
-                trailingIcon: subscribed ? null : Icon(Icons.add),
-                onTrailingTap: () => close(context, result.id),
+                onSubscribe: () => vm.subscribe(result.id),
+                onUnsubscribe: () => vm.unsubscribe(result.id),
               ),
             );
           },
@@ -92,10 +93,18 @@ class SearchSubredditsDelegate extends SearchDelegate<String> {
 class _SearchViewModel {
   final SubredditsSearchState state;
   final List<Subreddit> subreddits;
+  final Function(String) subscribe;
+  final Function(String) unsubscribe;
 
-  _SearchViewModel({@required this.state, @required this.subreddits})
+  _SearchViewModel(
+      {@required this.state,
+      @required this.subreddits,
+      @required this.subscribe,
+      @required this.unsubscribe})
       : assert(state != null),
-        assert(subreddits != null);
+        assert(subreddits != null),
+        assert(subscribe != null),
+        assert(unsubscribe != null);
 
   factory _SearchViewModel.fromStore(Store<ReddigramState> store) {
     return _SearchViewModel(
@@ -103,6 +112,8 @@ class _SearchViewModel {
       subreddits: store.state.subredditsSearch.resultFeedsIds
           .map((subredditId) => store.state.subreddits[subredditId])
           .toList(),
+      subscribe: (id) => store.dispatch(subscribeSubreddit(id)),
+      unsubscribe: (id) => store.dispatch(unsubscribeSubreddit(id)),
     );
   }
 }

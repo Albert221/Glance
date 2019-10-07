@@ -110,14 +110,10 @@ class _SubbedTabState extends State<SubbedTab>
                     builder: (context, subreddit) => subreddit != null
                         ? SubredditListTile(
                             subreddit: subreddit,
+                            subscribed: true,
                             onTap: () => Navigator.push(
                                 context, SubredditScreen.route(subreddit.id)),
-                            trailingIcon: const Icon(Icons.remove),
-                            onTrailingTap: () => _unsubscribe(
-                              context,
-                              subreddit.name,
-                              () => vm.unsubscribe(subredditId),
-                            ),
+                            onUnsubscribe: () => vm.unsubscribe(subredditId),
                           )
                         : SizedBox(),
                   ))
@@ -155,12 +151,12 @@ class _SubbedTabState extends State<SubbedTab>
                       builder: (context, subreddit) => subreddit != null
                           ? SubredditListTile(
                               subreddit: subreddit,
+                              subscribed: false,
                               onTap: () => Navigator.push(
                                 context,
                                 SubredditScreen.route(subreddit.id),
                               ),
-                              trailingIcon: const Icon(Icons.add),
-                              onTrailingTap: () => vm.subscribe(subreddit.id),
+                              onSubscribe: () => vm.subscribe(subredditId),
                             )
                           : const SizedBox(),
                     ))
