@@ -13,6 +13,8 @@ ThunkAction<ReddigramState> fetchSubscriptions([Completer completer]) {
       await subredditsCompleter.future;
 
       store.dispatch(FetchedSubscriptions(subreddits));
+
+      store.dispatch(fetchSuggestedSubscriptions());
     }).whenComplete(() => completer.complete());
   };
 }
