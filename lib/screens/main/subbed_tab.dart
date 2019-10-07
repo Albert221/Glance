@@ -17,30 +17,20 @@ class SubbedTab extends StatefulWidget {
 
 class _SubbedTabState extends State<SubbedTab>
     with AutomaticKeepAliveClientMixin {
-  final _contextCompleter = Completer<BuildContext>();
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        _SubscriptionsView(),
+      ],
+    );
+  }
 
   @override
-  void initState() {
-    super.initState();
+  bool get wantKeepAlive => true;
+}
 
-    // Fetch suggestions here
-    _contextCompleter.future.then((context) =>
-        StoreProvider.of<ReddigramState>(context)
-            .dispatch(fetchSuggestedSubscriptions()));
-  }
-
-  void _subscribe(BuildContext context, void Function(String) callback) async {
-    StoreProvider.of<ReddigramState>(context).dispatch(ClearSearch());
-    final subreddit = await showSearch<String>(
-      context: context,
-      delegate: SearchSubredditsDelegate(),
-    );
-
-    if (subreddit != null && subreddit.isNotEmpty) {
-      callback(subreddit);
-    }
-  }
-
+class _SubscriptionsView extends StatelessWidget {
   void _unsubscribe(
       BuildContext context, String subreddit, VoidCallback callback) async {
     showDialog(
@@ -69,32 +59,31 @@ class _SubbedTabState extends State<SubbedTab>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
-    if (!_contextCompleter.isCompleted) {
-      _contextCompleter.complete(context);
-    }
+    final divider = const SizedBox(height: 32.0);
 
     return StoreConnector<ReddigramState, _SubredditsViewModel>(
       converter: (store) => _SubredditsViewModel.fromStore(store),
-      builder: (context, vm) => ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+      builder: (context, vm) => Column(
         children: [
           ListTile(
             leading: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 8),
               child: Icon(
                 Icons.search,
                 color: Theme.of(context).textTheme.body1.color,
               ),
             ),
-            title: const Text(
-              'Explore subreddits',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+            title: Text(
+              'Search subreddits',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            onTap: () => _subscribe(context, vm.subscribe),
+          ),
+          divider,
+          ListTile(
+            title: const Text(
+              'Subscriptions',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           if (vm.subreddits.isEmpty)
             const ListTile(
@@ -113,11 +102,16 @@ class _SubbedTabState extends State<SubbedTab>
                             subscribed: true,
                             onTap: () => Navigator.push(
                                 context, SubredditScreen.route(subreddit.id)),
-                            onUnsubscribe: () => vm.unsubscribe(subredditId),
+                            onUnsubscribe: () => _unsubscribe(
+                              context,
+                              subreddit.name,
+                              () => vm.unsubscribe(subreddit.id),
+                            ),
                           )
                         : SizedBox(),
                   ))
               .toList(),
+          divider,
           _buildSuggestions(context),
         ],
       ),
@@ -130,18 +124,18 @@ class _SubbedTabState extends State<SubbedTab>
       builder: (context, vm) {
         return Column(
           children: [
-            const SizedBox(height: 32.0),
             const ListTile(
-              leading: Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Icon(Icons.favorite_border),
+              title: Text(
+                'You may also like',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              title: Text('You may also like'),
             ),
             if (vm.subreddits.isEmpty)
-              ListTile(
-                dense: true,
-                leading: SizedBox(),
+              const ListTile(
+                leading: Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Icon(Icons.sentiment_dissatisfied),
+                ),
                 title: Text('No suggestions available'),
               ),
             ...vm.subreddits
@@ -166,9 +160,6 @@ class _SubbedTabState extends State<SubbedTab>
       },
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class _SubredditsViewModel {
