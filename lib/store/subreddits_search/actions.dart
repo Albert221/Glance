@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-ThunkAction<ReddigramState> searchSubreddits(String query) {
+ThunkAction<ReddigramState> searchSubreddits(String query,
+    {Completer completer}) {
   return (Store<ReddigramState> store) {
     redditRepository.searchSubreddits(query).then((subreddits) {
       // If there was no subreddit with this particular name...
@@ -17,7 +20,7 @@ ThunkAction<ReddigramState> searchSubreddits(String query) {
             query,
             [subreddit.id, ...subreddits.map((subreddit) => subreddit.id)],
           ));
-        });
+        }).whenComplete(() => completer?.complete());
       }
 
       store.dispatch(FetchedSubreddits(subreddits));

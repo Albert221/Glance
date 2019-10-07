@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:reddigram/models/models.dart';
@@ -17,11 +18,21 @@ class SubbedTab extends StatefulWidget {
 
 class _SubbedTabState extends State<SubbedTab>
     with AutomaticKeepAliveClientMixin {
+  bool _searchFocused = false;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return ListView(
       children: [
-        _SubscriptionsView(),
+        _searchFocused
+            ? _SearchView(
+                onSearchDismiss: () => setState(() => _searchFocused = false),
+              )
+            : _SubscriptionsView(
+                onSearchTap: () => setState(() => _searchFocused = true),
+              ),
       ],
     );
   }
@@ -31,6 +42,10 @@ class _SubbedTabState extends State<SubbedTab>
 }
 
 class _SubscriptionsView extends StatelessWidget {
+  final VoidCallback onSearchTap;
+
+  const _SubscriptionsView({Key key, this.onSearchTap}) : super(key: key);
+
   void _unsubscribe(
       BuildContext context, String subreddit, VoidCallback callback) async {
     showDialog(
@@ -66,6 +81,7 @@ class _SubscriptionsView extends StatelessWidget {
       builder: (context, vm) => Column(
         children: [
           ListTile(
+            onTap: onSearchTap,
             leading: Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Icon(
@@ -195,6 +211,146 @@ class _SubredditsViewModel {
           store.dispatch(subscribeSubreddit(subredditId)),
       unsubscribe: (subredditId) =>
           store.dispatch(unsubscribeSubreddit(subredditId)),
+    );
+  }
+}
+
+class _SearchView extends StatefulWidget {
+  final VoidCallback onSearchDismiss;
+
+  const _SearchView({Key key, this.onSearchDismiss}) : super(key: key);
+
+  @override
+  _SearchViewState createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<_SearchView> {
+  final _searchFocusNode = FocusNode();
+  final _searchController = TextEditingController();
+
+  static const _debounceDuration = const Duration(milliseconds: 500);
+
+  Timer _debounce;
+  bool _loading = false;
+  String _lastQuery = '';
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _searchQueryChanged(String query, Store<ReddigramState> store) {
+    if (_debounce?.isActive ?? false) {
+      _debounce.cancel();
+    }
+
+    _debounce = Timer(_debounceDuration, () {
+      if (_lastQuery != query) {
+        setState(() => _loading = true);
+
+        final completer = Completer()
+          ..future.then((_) => setState(() => _loading = false));
+        store.dispatch(searchSubreddits(query, completer: completer));
+        _lastQuery = query;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          autofocus: true,
+          focusNode: _searchFocusNode,
+          controller: _searchController,
+          textInputAction: TextInputAction.done,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Search subreddits',
+            hintStyle: TextStyle(fontWeight: FontWeight.bold),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 1),
+              child: Icon(
+                Icons.search,
+                color: Theme.of(context).textTheme.body1.color,
+              ),
+            ),
+            suffixIcon: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: widget.onSearchDismiss,
+                child: Icon(Icons.close),
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 18),
+          ),
+        ),
+        if (_loading)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: CircularProgressIndicator(),
+          ),
+        StoreConnector<ReddigramState, _SearchViewModel>(
+          onInit: (store) {
+            store.dispatch(ClearSearch());
+
+            _searchController.addListener(
+                () => _searchQueryChanged(_searchController.text, store));
+          },
+          converter: (store) => _SearchViewModel.fromStore(store),
+          builder: (context, vm) => _loading
+              ? SizedBox()
+              : Column(
+                  children: vm.subreddits
+                      .map((subreddit) => StoreConnector<ReddigramState, bool>(
+                            converter: (store) => store.state.subscriptions.any(
+                                (subscription) => subscription == subreddit.id),
+                            builder: (context, subscribed) => SubredditListTile(
+                              subreddit: subreddit,
+                              subscribed: subscribed,
+                              onTap: () => Navigator.push(
+                                context,
+                                SubredditScreen.route(subreddit.id),
+                              ),
+                              onSubscribe: () => vm.subscribe(subreddit.id),
+                              onUnsubscribe: () => vm.unsubscribe(subreddit.id),
+                            ),
+                          ))
+                      .toList(),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SearchViewModel {
+  final SubredditsSearchState state;
+  final List<Subreddit> subreddits;
+  final Function(String) subscribe;
+  final Function(String) unsubscribe;
+
+  _SearchViewModel(
+      {@required this.state,
+      @required this.subreddits,
+      @required this.subscribe,
+      @required this.unsubscribe})
+      : assert(state != null),
+        assert(subreddits != null),
+        assert(subscribe != null),
+        assert(unsubscribe != null);
+
+  factory _SearchViewModel.fromStore(Store<ReddigramState> store) {
+    return _SearchViewModel(
+      state: store.state.subredditsSearch,
+      subreddits: store.state.subredditsSearch.resultFeedsIds
+          .map((subredditId) => store.state.subreddits[subredditId])
+          .toList(),
+      subscribe: (id) => store.dispatch(subscribeSubreddit(id)),
+      unsubscribe: (id) => store.dispatch(unsubscribeSubreddit(id)),
     );
   }
 }
