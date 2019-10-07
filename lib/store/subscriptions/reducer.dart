@@ -10,7 +10,7 @@ Reducer<BuiltSet<String>> subscriptionsReducer = combineReducers([
 
 BuiltSet<String> _fetchedSubscriptions(
     BuiltSet<String> state, FetchedSubscriptions action) {
-  return BuiltSet(action.subreddits);
+  return state.rebuild((b) => b.replace(action.subreddits));
 }
 
 BuiltSet<String> _subscribedSubreddit(

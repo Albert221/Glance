@@ -21,8 +21,6 @@ Future<void> _loadFeeds(Store<ReddigramState> store) {
   ]);
 }
 
-// FIXME: Something is not right with that, after signin in/out (not on app
-// FIXME: startup) it fails to fetch subscriptions correctly.
 void _loadUserData(Store<ReddigramState> store, String redditAccessToken) {
   final futures = <Future>[];
 

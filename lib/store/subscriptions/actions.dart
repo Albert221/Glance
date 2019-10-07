@@ -8,9 +8,9 @@ import 'package:redux_thunk/redux_thunk.dart';
 ThunkAction<ReddigramState> fetchSubscriptions([Completer completer]) {
   return (Store<ReddigramState> store) {
     apiRepository.fetchSubscriptions().then((subreddits) async {
-      final completer = Completer();
-      store.dispatch(fetchSubreddits(subreddits, completer: completer));
-      await completer.future;
+      final subredditsCompleter = Completer();
+      store.dispatch(fetchSubreddits(subreddits, completer: subredditsCompleter));
+      await subredditsCompleter.future;
 
       store.dispatch(FetchedSubscriptions(subreddits));
     }).whenComplete(() => completer.complete());

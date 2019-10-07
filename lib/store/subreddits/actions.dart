@@ -11,14 +11,16 @@ ThunkAction<ReddigramState> fetchSubreddits(List<String> ids,
   assert(ids.length <= 100, 'there\'s more than 100 ids. what.');
 
   return (Store<ReddigramState> store) {
+    // Make a copy so we don't operate on a reference passed to the function
+    var idsList = List.of(ids);
     // Firstly check the state for already fetched subreddits so we don't
     // have to call the API for the data we have.
-    ids.removeWhere((id) => store.state.subreddits.containsKey(id));
+    idsList.removeWhere((id) => store.state.subreddits.containsKey(id));
     // Remove duplicates.
-    ids = ids.toSet().toList();
+    idsList = idsList.toSet().toList();
 
     redditRepository
-        .subredditsBulk(ids)
+        .subredditsBulk(idsList)
         .then((subreddits) => store.dispatch(FetchedSubreddits(subreddits)))
         .whenComplete(() => completer?.complete());
   };

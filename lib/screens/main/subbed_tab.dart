@@ -112,8 +112,11 @@ class _SubbedTabState extends State<SubbedTab>
                             onTap: () => Navigator.push(
                                 context, SubredditScreen.route(subreddit.id)),
                             trailingIcon: const Icon(Icons.remove),
-                            onTrailingTap: () => _unsubscribe(context,
-                                subreddit.name, () => vm.unsubscribe(subredditId)),
+                            onTrailingTap: () => _unsubscribe(
+                              context,
+                              subreddit.name,
+                              () => vm.unsubscribe(subredditId),
+                            ),
                           )
                         : SizedBox(),
                   ))
@@ -162,7 +165,7 @@ class _SubbedTabState extends State<SubbedTab>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }
 
 class _SubredditsViewModel {
@@ -181,7 +184,8 @@ class _SubredditsViewModel {
   factory _SubredditsViewModel.fromStore(Store<ReddigramState> store) {
     return _SubredditsViewModel(
       subscribedSubreddits: store.state.subscriptions.toList(),
-      subscribe: (subredditId) => store.dispatch(subscribeSubreddit(subredditId)),
+      subscribe: (subredditId) =>
+          store.dispatch(subscribeSubreddit(subredditId)),
       unsubscribe: (subredditId) =>
           store.dispatch(unsubscribeSubreddit(subredditId)),
     );
@@ -190,7 +194,8 @@ class _SubredditsViewModel {
   factory _SubredditsViewModel.fromStoreSuggested(Store<ReddigramState> store) {
     return _SubredditsViewModel(
       subscribedSubreddits: store.state.suggestedSubscriptions.toList(),
-      subscribe: (subredditId) => store.dispatch(subscribeSubreddit(subredditId)),
+      subscribe: (subredditId) =>
+          store.dispatch(subscribeSubreddit(subredditId)),
       unsubscribe: (subredditId) =>
           store.dispatch(unsubscribeSubreddit(subredditId)),
     );
