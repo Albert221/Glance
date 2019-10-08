@@ -103,10 +103,11 @@ class _SubscriptionsView extends StatelessWidget {
           ),
           if (vm.subreddits.isEmpty)
             const ListTile(
-              leading: SizedBox(),
-              title: Text(
-                'No subreddits. Subscribe to some!',
+              leading: Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Icon(Icons.sentiment_very_dissatisfied),
               ),
+              title: Text('No suggestions available'),
             ),
           ...vm.subreddits
               .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
