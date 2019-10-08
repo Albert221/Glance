@@ -20,13 +20,13 @@ ThunkAction<ReddigramState> searchSubreddits(String query,
             query,
             [subreddit.id, ...subreddits.map((subreddit) => subreddit.id)],
           ));
-        }).whenComplete(() => completer?.complete());
+        });
       }
 
       store.dispatch(FetchedSubreddits(subreddits));
       store.dispatch(FetchedSearchSubreddits(
           query, subreddits.map((subreddit) => subreddit.id).toList()));
-    });
+    }).whenComplete(() => completer?.complete());
   };
 }
 
