@@ -278,10 +278,11 @@ class _SearchViewState extends State<_SearchView> {
                 color: Theme.of(context).textTheme.body1.color,
               ),
             ),
-            suffixIcon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GestureDetector(
-                onTap: widget.onSearchDismiss,
+            suffixIcon: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onSearchDismiss,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Icon(Icons.close),
               ),
             ),
