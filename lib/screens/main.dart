@@ -135,7 +135,22 @@ class _MainScreenState extends State<MainScreen> {
       title: const ReddigramLogo(),
       centerTitle: true,
       leading: IconButton(
-        icon: const Icon(Icons.account_circle),
+        icon: StoreConnector<ReddigramState, bool>(
+          converter: (store) =>
+              store.state.authState.status == AuthStatus.authenticated,
+          builder: (context, signedIn) => Container(
+            decoration: signedIn
+                ? BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).buttonTheme.colorScheme.primary,
+                      width: 3,
+                    ),
+                  )
+                : null,
+            child: const Icon(Icons.account_circle),
+          ),
+        ),
         onPressed: () {
           showModalBottomSheet(
             context: context,
