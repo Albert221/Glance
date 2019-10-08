@@ -38,11 +38,25 @@ class _SubscriptionsTabState extends State<SubscriptionsTab>
 
   Future<bool> _shouldPopRoute() async {
     if (_searchFocused) {
-      setState(() => _searchFocused = false);
+      _unfocusSearch();
       return false;
     }
 
     return true;
+  }
+
+  void _focusSearch() {
+    setState(() {
+      _searchFocused = true;
+      updateKeepAlive();
+    });
+  }
+
+  void _unfocusSearch() {
+    setState(() {
+      _searchFocused = false;
+      updateKeepAlive();
+    });
   }
 
   @override
@@ -50,16 +64,12 @@ class _SubscriptionsTabState extends State<SubscriptionsTab>
     super.build(context);
 
     return _searchFocused
-        ? _SearchView(
-            onSearchDismiss: () => setState(() => _searchFocused = false),
-          )
-        : _SubscriptionsView(
-            onSearchTap: () => setState(() => _searchFocused = true),
-          );
+        ? _SearchView(onSearchDismiss: _unfocusSearch)
+        : _SubscriptionsView(onSearchTap: _focusSearch);
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => !_searchFocused;
 }
 
 class _SubscriptionsView extends StatelessWidget {
