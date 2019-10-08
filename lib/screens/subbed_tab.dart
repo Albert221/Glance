@@ -18,7 +18,32 @@ class SubbedTab extends StatefulWidget {
 
 class _SubbedTabState extends State<SubbedTab>
     with AutomaticKeepAliveClientMixin {
+  ModalRoute<dynamic> _route;
   bool _searchFocused = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _route?.removeScopedWillPopCallback(_shouldPopRoute);
+    _route = ModalRoute.of(context);
+    _route?.addScopedWillPopCallback(_shouldPopRoute);
+  }
+
+  @override
+  void dispose() {
+    _route?.removeScopedWillPopCallback(_shouldPopRoute);
+    _route = null;
+    super.dispose();
+  }
+
+  Future<bool> _shouldPopRoute() async {
+    if (_searchFocused) {
+      setState(() => _searchFocused = false);
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +132,7 @@ class _SubscriptionsView extends StatelessWidget {
                 padding: EdgeInsets.only(left: 8),
                 child: Icon(Icons.sentiment_very_dissatisfied),
               ),
-              title: Text('No suggestions available'),
+              title: Text('No subreddits. Subscribe to some!'),
             ),
           ...vm.subreddits
               .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
