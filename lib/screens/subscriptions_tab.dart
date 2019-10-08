@@ -9,14 +9,14 @@ import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
-class SubbedTab extends StatefulWidget {
-  const SubbedTab({Key key}) : super(key: key);
+class SubscriptionsTab extends StatefulWidget {
+  const SubscriptionsTab({Key key}) : super(key: key);
 
   @override
-  _SubbedTabState createState() => _SubbedTabState();
+  _SubscriptionsTabState createState() => _SubscriptionsTabState();
 }
 
-class _SubbedTabState extends State<SubbedTab>
+class _SubscriptionsTabState extends State<SubscriptionsTab>
     with AutomaticKeepAliveClientMixin {
   ModalRoute<dynamic> _route;
   bool _searchFocused = false;

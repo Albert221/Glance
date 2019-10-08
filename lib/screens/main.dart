@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   static const _TAB_POPULAR = 0;
   static const _TAB_BEST = 1; // ignore: unused_field
   static const _TAB_NEWEST = 2; // ignore: unused_field
-  static const _TAB_SUBBED = 3;
+  static const _TAB_SUBSCRIPTIONS = 3;
 
   final feedKeys = List.generate(3, (i) => GlobalKey<InfiniteListState>());
 
@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
     final subheadTheme = Theme.of(context).textTheme.subhead;
 
     final subscribeCTA = GestureDetector(
-      onTap: () => _changeTab(_TAB_SUBBED),
+      onTap: () => _changeTab(_TAB_SUBSCRIPTIONS),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -82,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
               infiniteListKey: feedKeys[2],
               placeholder: anySubs ? itemsPlaceholder : subscribeCTA,
             ),
-            const SubbedTab(),
+            const SubscriptionsTab(),
           ],
         ),
       ),
