@@ -171,7 +171,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3),
-              itemBuilder: (context, i) => PhotoGridItem.placeholder(),
+              itemBuilder: (context, i) => Padding(
+                padding: const EdgeInsets.all(2),
+                child: PhotoGridItem.placeholder(),
+              ),
             ),
     );
   }

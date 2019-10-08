@@ -89,13 +89,10 @@ class _PlaceholderState extends State<_Placeholder>
         .color
         .withOpacity(0.2 * _animation.value);
 
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          color: color,
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: color,
       ),
     );
   }
