@@ -114,14 +114,14 @@ class _SubscriptionsView extends StatelessWidget {
                 color: Theme.of(context).textTheme.body1.color,
               ),
             ),
-            title: Text(
+            title: const Text(
               'Search subreddits',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           divider,
-          ListTile(
-            title: const Text(
+          const ListTile(
+            title: Text(
               'Subscriptions',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -150,7 +150,7 @@ class _SubscriptionsView extends StatelessWidget {
                               () => vm.unsubscribe(subreddit.id),
                             ),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                   ))
               .toList(),
           divider,
@@ -296,7 +296,7 @@ class _SearchViewState extends State<_SearchView> {
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: 'Search subreddits',
-            hintStyle: TextStyle(fontWeight: FontWeight.bold),
+            hintStyle: const TextStyle(fontWeight: FontWeight.bold),
             prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 24, right: 24, top: 1),
               child: Icon(
@@ -307,8 +307,8 @@ class _SearchViewState extends State<_SearchView> {
             suffixIcon: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: widget.onSearchDismiss,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Icon(Icons.close),
               ),
             ),
@@ -319,11 +319,11 @@ class _SearchViewState extends State<_SearchView> {
             ? Transform(
                 // Scale Y
                 transform: Matrix4.diagonal3Values(1, .5, 1),
-                child: LinearProgressIndicator(
+                child: const LinearProgressIndicator(
                   backgroundColor: Colors.transparent,
                 ),
               )
-            : SizedBox(height: 6),
+            : const SizedBox(height: 6),
         StoreConnector<ReddigramState, _SearchViewModel>(
           onInit: (store) {
             store.dispatch(ClearSearch());
