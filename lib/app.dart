@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +10,9 @@ import 'package:reddigram/theme.dart';
 import 'package:reddigram/screens/screens.dart';
 import 'package:reddigram/widgets/widgets.dart';
 import 'package:redux/redux.dart';
+import 'package:uni_links/uni_links.dart';
 
-class ReddigramApp extends StatelessWidget {
+class ReddigramApp extends StatefulWidget {
   static final analytics = FirebaseAnalytics();
   static final _navObserver = FirebaseAnalyticsObserver(analytics: analytics);
 
@@ -20,6 +23,33 @@ class ReddigramApp extends StatelessWidget {
         super(key: key);
 
   @override
+  _ReddigramAppState createState() => _ReddigramAppState();
+}
+
+class _ReddigramAppState extends State<ReddigramApp> {
+  StreamSubscription<Uri> _linkStream;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _linkStream = getUriLinksStream().listen((uri) {
+      if (uri.host == 'redirect' && uri.queryParameters.containsKey('code')) {
+        widget.store
+            .dispatch(authenticateUserFromCode(uri.queryParameters['code']));
+
+        ReddigramApp.analytics.logLogin(loginMethod: 'Reddit');
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _linkStream?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -27,7 +57,7 @@ class ReddigramApp extends StatelessWidget {
     ]);
 
     return StoreProvider<ReddigramState>(
-      store: store,
+      store: widget.store,
       child: StoreConnector<ReddigramState, PreferencesState>(
         onInit: (store) => store.dispatch(loadPreferences()),
         converter: (store) => store.state.preferences,
@@ -46,7 +76,7 @@ class ReddigramApp extends StatelessWidget {
                   routes: {
                     '/': (context) => MainScreen(),
                   },
-                  navigatorObservers: [_navObserver],
+                  navigatorObservers: [ReddigramApp._navObserver],
                 );
               },
             ),

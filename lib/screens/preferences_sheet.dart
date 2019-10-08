@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -8,23 +5,9 @@ import 'package:reddigram/app.dart';
 import 'package:reddigram/consts.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:reddigram/widgets/widgets.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PreferencesSheet extends StatefulWidget {
-  @override
-  _PreferencesSheetState createState() => _PreferencesSheetState();
-}
-
-class _PreferencesSheetState extends State<PreferencesSheet> {
-  StreamSubscription<Uri> _linkStream;
-
-  @override
-  void dispose() {
-    _linkStream?.cancel();
-    super.dispose();
-  }
-
+class PreferencesSheet extends StatelessWidget {
   void _connectToReddit(BuildContext context) async {
     ReddigramApp.analytics.logEvent(name: 'login_attempt');
 
@@ -34,16 +17,6 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
         '?client_id=${ReddigramConsts.oauthClientId}&response_type=code'
         '&state=x&scope=read+mysubreddits+vote+identity&duration=permanent'
         '&redirect_uri=${ReddigramConsts.oauthRedirectUrl}');
-
-    _linkStream = getUriLinksStream().listen((uri) {
-      if (uri.host == 'redirect' && uri.queryParameters.containsKey('code')) {
-        StoreProvider.of<ReddigramState>(context)
-            .dispatch(authenticateUserFromCode(uri.queryParameters['code']));
-
-        _linkStream.cancel();
-        ReddigramApp.analytics.logLogin(loginMethod: 'Reddit');
-      }
-    });
   }
 
   Future<bool> _showRedditBugWarningAlert(BuildContext context) async {
@@ -58,21 +31,23 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
               text: TextSpan(
                 style: Theme.of(context).textTheme.body1,
                 children: [
-                  const TextSpan(text: 'Due to Reddit\'s bug, if you are unable to sign in please turn on '),
+                  const TextSpan(
+                      text: 'Due to Reddit\'s bug, '
+                          'if you are unable to sign in please turn on '),
                   const TextSpan(
                     text: 'Desktop site',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(
-                      text: ' option and try again. '),
+                  const TextSpan(text: ' option and try again. '),
                   TextSpan(
                     text: 'Read more',
                     style: TextStyle(
                       color: Colors.blue,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => launch(
-                          'https://www.reddit.com/r/bugs/comments/dc8cea/cant_sign_in_on_mobile_on_logindest/'),
+                      ..onTap = () =>
+                          launch('https://www.reddit.com/r/bugs/comments/dc8cea'
+                              '/cant_sign_in_on_mobile_on_logindest/'),
                   ),
                 ],
               ),
@@ -118,12 +93,6 @@ class _PreferencesSheetState extends State<PreferencesSheet> {
         ),
         const DarkThemePreferenceTile(),
         const ShowNsfwPreferenceTile(),
-//        ListTile(
-//          leading: const SizedBox(),
-//          title: const Text('More preferences'),
-//          trailing: const Icon(Icons.chevron_right),
-//          onTap: () => Navigator.push(context, PreferencesScreen.route()),
-//        ),
         _buildFooter(context),
       ],
     );
