@@ -49,17 +49,13 @@ class _SubscriptionsTabState extends State<SubscriptionsTab>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return ListView(
-      children: [
-        _searchFocused
-            ? _SearchView(
-                onSearchDismiss: () => setState(() => _searchFocused = false),
-              )
-            : _SubscriptionsView(
-                onSearchTap: () => setState(() => _searchFocused = true),
-              ),
-      ],
-    );
+    return _searchFocused
+        ? _SearchView(
+            onSearchDismiss: () => setState(() => _searchFocused = false),
+          )
+        : _SubscriptionsView(
+            onSearchTap: () => setState(() => _searchFocused = true),
+          );
   }
 
   @override
@@ -103,7 +99,7 @@ class _SubscriptionsView extends StatelessWidget {
 
     return StoreConnector<ReddigramState, _SubredditsViewModel>(
       converter: (store) => _SubredditsViewModel.fromStore(store),
-      builder: (context, vm) => Column(
+      builder: (context, vm) => ListView(
         children: [
           ListTile(
             onTap: onSearchTap,
@@ -324,31 +320,36 @@ class _SearchViewState extends State<_SearchView> {
                 ),
               )
             : const SizedBox(height: 6),
-        StoreConnector<ReddigramState, _SearchViewModel>(
-          onInit: (store) {
-            store.dispatch(ClearSearch());
+        Expanded(
+          child: StoreConnector<ReddigramState, _SearchViewModel>(
+            onInit: (store) {
+              store.dispatch(ClearSearch());
 
-            _searchController.addListener(
-                () => _searchQueryChanged(_searchController.text, store));
-          },
-          converter: (store) => _SearchViewModel.fromStore(store),
-          builder: (context, vm) => Column(
-            children: vm.subreddits
-                .map((subreddit) => StoreConnector<ReddigramState, bool>(
-                      converter: (store) => store.state.subscriptions
-                          .any((subscription) => subscription == subreddit.id),
-                      builder: (context, subscribed) => SubredditListTile(
-                        subreddit: subreddit,
-                        subscribed: subscribed,
-                        onTap: () => Navigator.push(
-                          context,
-                          SubredditScreen.route(subreddit.id),
-                        ),
-                        onSubscribe: () => vm.subscribe(subreddit.id),
-                        onUnsubscribe: () => vm.unsubscribe(subreddit.id),
-                      ),
-                    ))
-                .toList(),
+              _searchController.addListener(
+                  () => _searchQueryChanged(_searchController.text, store));
+            },
+            converter: (store) => _SearchViewModel.fromStore(store),
+            builder: (context, vm) => ListView.builder(
+              itemCount: vm.subreddits.length,
+              itemBuilder: (context, i) {
+                final subreddit = vm.subreddits[i];
+
+                return StoreConnector<ReddigramState, bool>(
+                  converter: (store) => store.state.subscriptions
+                      .any((subscription) => subscription == subreddit.id),
+                  builder: (context, subscribed) => SubredditListTile(
+                    subreddit: subreddit,
+                    subscribed: subscribed,
+                    onTap: () => Navigator.push(
+                      context,
+                      SubredditScreen.route(subreddit.id),
+                    ),
+                    onSubscribe: () => vm.subscribe(subreddit.id),
+                    onUnsubscribe: () => vm.unsubscribe(subreddit.id),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],
