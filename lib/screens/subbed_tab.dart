@@ -273,7 +273,7 @@ class _SearchViewState extends State<_SearchView> {
     }
 
     _debounce = Timer(_debounceDuration, () {
-      if (_lastQuery != query) {
+      if (_lastQuery != query && query.isNotEmpty) {
         setState(() => _loading = true);
 
         final completer = Completer()
@@ -315,11 +315,15 @@ class _SearchViewState extends State<_SearchView> {
             contentPadding: const EdgeInsets.symmetric(vertical: 18),
           ),
         ),
-        if (_loading)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 32),
-            child: CircularProgressIndicator(),
-          ),
+        _loading
+            ? Transform(
+                // Scale Y
+                transform: Matrix4.diagonal3Values(1, .5, 1),
+                child: LinearProgressIndicator(
+                  backgroundColor: Colors.transparent,
+                ),
+              )
+            : SizedBox(height: 6),
         StoreConnector<ReddigramState, _SearchViewModel>(
           onInit: (store) {
             store.dispatch(ClearSearch());
@@ -328,26 +332,24 @@ class _SearchViewState extends State<_SearchView> {
                 () => _searchQueryChanged(_searchController.text, store));
           },
           converter: (store) => _SearchViewModel.fromStore(store),
-          builder: (context, vm) => _loading
-              ? SizedBox()
-              : Column(
-                  children: vm.subreddits
-                      .map((subreddit) => StoreConnector<ReddigramState, bool>(
-                            converter: (store) => store.state.subscriptions.any(
-                                (subscription) => subscription == subreddit.id),
-                            builder: (context, subscribed) => SubredditListTile(
-                              subreddit: subreddit,
-                              subscribed: subscribed,
-                              onTap: () => Navigator.push(
-                                context,
-                                SubredditScreen.route(subreddit.id),
-                              ),
-                              onSubscribe: () => vm.subscribe(subreddit.id),
-                              onUnsubscribe: () => vm.unsubscribe(subreddit.id),
-                            ),
-                          ))
-                      .toList(),
-                ),
+          builder: (context, vm) => Column(
+            children: vm.subreddits
+                .map((subreddit) => StoreConnector<ReddigramState, bool>(
+                      converter: (store) => store.state.subscriptions
+                          .any((subscription) => subscription == subreddit.id),
+                      builder: (context, subscribed) => SubredditListTile(
+                        subreddit: subreddit,
+                        subscribed: subscribed,
+                        onTap: () => Navigator.push(
+                          context,
+                          SubredditScreen.route(subreddit.id),
+                        ),
+                        onSubscribe: () => vm.subscribe(subreddit.id),
+                        onUnsubscribe: () => vm.unsubscribe(subreddit.id),
+                      ),
+                    ))
+                .toList(),
+          ),
         ),
       ],
     );
