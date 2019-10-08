@@ -4,4 +4,3 @@ export 'feed_tab.dart';
 export 'subscriptions_tab.dart';
 export 'photo_preview.dart';
 export 'subreddit.dart';
-export 'preferences.dart';
