@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               Text('No', style: subheadTheme),
               const Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: Icon(
                   Icons.short_text,
                   size: 28.0,
@@ -138,16 +138,18 @@ class _MainScreenState extends State<MainScreen> {
         icon: StoreConnector<ReddigramState, bool>(
           converter: (store) =>
               store.state.authState.status == AuthStatus.authenticated,
-          builder: (context, signedIn) => Container(
-            decoration: signedIn
-                ? BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).buttonTheme.colorScheme.primary,
-                      width: 3,
-                    ),
-                  )
-                : null,
+          builder: (context, signedIn) => AnimatedContainer(
+            curve: Curves.ease,
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: signedIn
+                    ? Theme.of(context).buttonTheme.colorScheme.primary
+                    : Colors.transparent,
+                width: 3,
+              ),
+            ),
             child: const Icon(Icons.account_circle),
           ),
         ),
