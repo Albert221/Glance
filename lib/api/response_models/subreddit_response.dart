@@ -64,6 +64,10 @@ abstract class Subreddit implements Built<Subreddit, SubredditBuilder> {
   @BuiltValueField(wireName: 'subreddit_type')
   String get subredditType;
 
+  @BuiltValueField(wireName: 'submission_type')
+  @nullable
+  String get submissionType;
+
   Subreddit._();
 
   factory Subreddit([updates(SubredditBuilder b)]) = _$Subreddit;

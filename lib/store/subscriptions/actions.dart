@@ -9,13 +9,14 @@ ThunkAction<ReddigramState> fetchSubscriptions([Completer completer]) {
   return (Store<ReddigramState> store) {
     apiRepository.fetchSubscriptions().then((subreddits) async {
       final subredditsCompleter = Completer();
-      store.dispatch(fetchSubreddits(subreddits, completer: subredditsCompleter));
+      store.dispatch(
+          fetchSubreddits(subreddits, completer: subredditsCompleter));
       await subredditsCompleter.future;
 
       store.dispatch(FetchedSubscriptions(subreddits));
 
       store.dispatch(fetchSuggestedSubscriptions());
-    }).whenComplete(() => completer.complete());
+    }).whenComplete(() => completer?.complete());
   };
 }
 

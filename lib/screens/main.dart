@@ -134,32 +134,36 @@ class _MainScreenState extends State<MainScreen> {
     return AppBar(
       title: const ReddigramLogo(),
       centerTitle: true,
-      leading: IconButton(
-        icon: StoreConnector<ReddigramState, bool>(
-          converter: (store) =>
-              store.state.authState.status == AuthStatus.authenticated,
-          builder: (context, signedIn) => AnimatedContainer(
-            curve: Curves.ease,
-            duration: const Duration(milliseconds: 300),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: signedIn
-                    ? Theme.of(context).buttonTheme.colorScheme.primary
-                    : Colors.transparent,
-                width: 3,
-              ),
+      leading: _buildAccountLeadingIcon(context),
+    );
+  }
+
+  Widget _buildAccountLeadingIcon(BuildContext context) {
+    return IconButton(
+      icon: StoreConnector<ReddigramState, bool>(
+        converter: (store) =>
+            store.state.authState.status == AuthStatus.authenticated,
+        builder: (context, signedIn) => AnimatedContainer(
+          curve: Curves.ease,
+          duration: const Duration(milliseconds: 300),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: signedIn
+                  ? Theme.of(context).buttonTheme.colorScheme.primary
+                  : Colors.transparent,
+              width: 3,
             ),
-            child: const Icon(Icons.account_circle),
           ),
+          child: const Icon(Icons.account_circle),
         ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => PreferencesSheet(),
-          );
-        },
       ),
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => PreferencesSheet(),
+        );
+      },
     );
   }
 }

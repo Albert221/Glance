@@ -125,45 +125,73 @@ class _SubscriptionsView extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          divider,
-          const ListTile(
-            title: Text(
-              'Subscriptions',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+          StoreConnector<ReddigramState, bool>(
+            converter: (store) =>
+                store.state.authState.status == AuthStatus.authenticated,
+            builder: (context, signedIn) => signedIn
+                ? ListTile(
+                    leading: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.cloud_download,
+                        color: Theme.of(context).textTheme.body1.color,
+                      ),
+                    ),
+                    title: const Text(
+                      'Import subscriptions from Reddit',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () => Navigator.push(
+                        context, ImportSubscriptionsScreen.route()),
+                  )
+                : const SizedBox(),
           ),
-          if (vm.subreddits.isEmpty)
-            const ListTile(
-              leading: Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Icon(Icons.sentiment_very_dissatisfied),
-              ),
-              title: Text('No subreddits. Subscribe to some!'),
-            ),
-          ...vm.subreddits
-              .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
-                    key: Key(subredditId),
-                    converter: (store) => store.state.subreddits[subredditId],
-                    builder: (context, subreddit) => subreddit != null
-                        ? SubredditListTile(
-                            subreddit: subreddit,
-                            subscribed: true,
-                            onTap: () => Navigator.push(
-                                context, SubredditScreen.route(subreddit.id)),
-                            onUnsubscribe: () => _unsubscribe(
-                              context,
-                              subreddit.name,
-                              () => vm.unsubscribe(subreddit.id),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ))
-              .toList(),
+          divider,
+          ..._buildSubscriptions(context, vm),
           divider,
           _buildSuggestions(context),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildSubscriptions(
+      BuildContext context, _SubredditsViewModel vm) {
+    return [
+      const ListTile(
+        title: Text(
+          'Subscriptions',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      ...vm.subreddits
+          .map((subredditId) => StoreConnector<ReddigramState, Subreddit>(
+                key: Key(subredditId),
+                converter: (store) => store.state.subreddits[subredditId],
+                builder: (context, subreddit) => subreddit != null
+                    ? SubredditListTile(
+                        subreddit: subreddit,
+                        subscribed: true,
+                        onTap: () => Navigator.push(
+                            context, SubredditScreen.route(subreddit.id)),
+                        onUnsubscribe: () => _unsubscribe(
+                          context,
+                          subreddit.name,
+                          () => vm.unsubscribe(subreddit.id),
+                        ),
+                      )
+                    : const SizedBox(),
+              ))
+          .toList(),
+      if (vm.subreddits.isEmpty)
+        const ListTile(
+          leading: Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: Icon(Icons.sentiment_very_dissatisfied),
+          ),
+          title: Text('No subreddits. Subscribe to some!'),
+        ),
+    ];
   }
 
   Widget _buildSuggestions(BuildContext context) {

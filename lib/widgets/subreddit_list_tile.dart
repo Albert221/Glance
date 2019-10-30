@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:reddigram/models/models.dart';
+import 'package:reddigram/widgets/subreddit_circle_avatar.dart';
 
 class SubredditListTile extends StatelessWidget {
   final Subreddit subreddit;
@@ -22,12 +23,7 @@ class SubredditListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: subreddit.primaryColorMapped ?? Colors.transparent,
-        backgroundImage: subreddit.iconUrl.isNotEmpty
-            ? CachedNetworkImageProvider(subreddit.iconUrl)
-            : null,
-      ),
+      leading: SubredditCircleAvatar(subreddit: subreddit),
       title: Text('r/${subreddit.name}'),
       contentPadding: const EdgeInsets.only(left: 16),
       onTap: onTap,

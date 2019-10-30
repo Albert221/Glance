@@ -30,6 +30,9 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
       'iconUrl',
       serializers.serialize(object.iconUrl,
           specifiedType: const FullType(String)),
+      'submissionType',
+      serializers.serialize(object.submissionType,
+          specifiedType: const FullType(String)),
     ];
 
     return result;
@@ -66,6 +69,10 @@ class _$SubredditSerializer implements StructuredSerializer<Subreddit> {
           result.iconUrl = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'submissionType':
+          result.submissionType = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
       }
     }
 
@@ -84,12 +91,19 @@ class _$Subreddit extends Subreddit {
   final String primaryColor;
   @override
   final String iconUrl;
+  @override
+  final String submissionType;
 
   factory _$Subreddit([void Function(SubredditBuilder) updates]) =>
       (new SubredditBuilder()..update(updates)).build();
 
   _$Subreddit._(
-      {this.id, this.name, this.nsfw, this.primaryColor, this.iconUrl})
+      {this.id,
+      this.name,
+      this.nsfw,
+      this.primaryColor,
+      this.iconUrl,
+      this.submissionType})
       : super._() {
     if (id == null) {
       throw new BuiltValueNullFieldError('Subreddit', 'id');
@@ -105,6 +119,9 @@ class _$Subreddit extends Subreddit {
     }
     if (iconUrl == null) {
       throw new BuiltValueNullFieldError('Subreddit', 'iconUrl');
+    }
+    if (submissionType == null) {
+      throw new BuiltValueNullFieldError('Subreddit', 'submissionType');
     }
   }
 
@@ -123,15 +140,18 @@ class _$Subreddit extends Subreddit {
         name == other.name &&
         nsfw == other.nsfw &&
         primaryColor == other.primaryColor &&
-        iconUrl == other.iconUrl;
+        iconUrl == other.iconUrl &&
+        submissionType == other.submissionType;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc($jc(0, id.hashCode), name.hashCode), nsfw.hashCode),
-            primaryColor.hashCode),
-        iconUrl.hashCode));
+        $jc(
+            $jc($jc($jc($jc(0, id.hashCode), name.hashCode), nsfw.hashCode),
+                primaryColor.hashCode),
+            iconUrl.hashCode),
+        submissionType.hashCode));
   }
 
   @override
@@ -141,7 +161,8 @@ class _$Subreddit extends Subreddit {
           ..add('name', name)
           ..add('nsfw', nsfw)
           ..add('primaryColor', primaryColor)
-          ..add('iconUrl', iconUrl))
+          ..add('iconUrl', iconUrl)
+          ..add('submissionType', submissionType))
         .toString();
   }
 }
@@ -169,6 +190,11 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
   String get iconUrl => _$this._iconUrl;
   set iconUrl(String iconUrl) => _$this._iconUrl = iconUrl;
 
+  String _submissionType;
+  String get submissionType => _$this._submissionType;
+  set submissionType(String submissionType) =>
+      _$this._submissionType = submissionType;
+
   SubredditBuilder();
 
   SubredditBuilder get _$this {
@@ -178,6 +204,7 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
       _nsfw = _$v.nsfw;
       _primaryColor = _$v.primaryColor;
       _iconUrl = _$v.iconUrl;
+      _submissionType = _$v.submissionType;
       _$v = null;
     }
     return this;
@@ -204,7 +231,8 @@ class SubredditBuilder implements Builder<Subreddit, SubredditBuilder> {
             name: name,
             nsfw: nsfw,
             primaryColor: primaryColor,
-            iconUrl: iconUrl);
+            iconUrl: iconUrl,
+            submissionType: submissionType);
     replace(_$result);
     return _$result;
   }

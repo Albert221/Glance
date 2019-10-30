@@ -5,8 +5,7 @@ import 'package:built_value/serializer.dart';
 
 part 'subreddit.g.dart';
 
-abstract class Subreddit
-    implements Built<Subreddit, SubredditBuilder> {
+abstract class Subreddit implements Built<Subreddit, SubredditBuilder> {
   String get id;
 
   String get name;
@@ -23,6 +22,8 @@ abstract class Subreddit
 
   String get iconUrl;
 
+  String get submissionType;
+
   Subreddit._();
 
   factory Subreddit([updates(SubredditBuilder b)]) {
@@ -33,6 +34,7 @@ abstract class Subreddit
           nsfw: false,
           primaryColor: '',
           iconUrl: '',
+          submissionType: '',
         )
         .rebuild(updates);
   }

@@ -174,6 +174,16 @@ class RedditRepository {
             SubredditListResponse.serializer, response.data))
         .then(SubredditInfoMapper.mapList);
   }
+
+  Future<List<models.Subreddit>> subscribedSubreddits() async {
+    _assertAuthorized();
+
+    return _client
+        .get('/subreddits/mine/subscriber?limit=100')
+        .then((response) => serializers.deserializeWith(
+            SubredditListResponse.serializer, response.data))
+        .then(SubredditInfoMapper.mapList);
+  }
 }
 
 class RedditTokens {

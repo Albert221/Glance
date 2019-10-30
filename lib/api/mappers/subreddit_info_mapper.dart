@@ -8,11 +8,11 @@ class SubredditInfoMapper {
       ..name = response.data.displayName
       ..nsfw = response.data.nsfw ?? false
       ..primaryColor = response.data.primaryColor ?? ''
-      ..iconUrl = response.data.iconUrl ?? '');
+      ..iconUrl = response.data.iconUrl ?? ''
+      ..submissionType = response.data.submissionType ?? '');
   }
 
-  static List<models.Subreddit> mapList(
-      SubredditListResponse response) {
+  static List<models.Subreddit> mapList(SubredditListResponse response) {
     return response.data.children
         .skipWhile((feed) => feed.data.subredditType == 'private')
         .map(map)
