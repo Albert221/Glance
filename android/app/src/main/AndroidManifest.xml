@@ -9,7 +9,7 @@
     <application
         android:name=".ReddigramApplication"
         android:icon="@mipmap/ic_launcher"
-        android:label="Reddigram">
+        android:label="Glance">
 
         <activity
             android:name=".MainActivity"

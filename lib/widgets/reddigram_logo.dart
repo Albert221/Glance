@@ -6,13 +6,11 @@ class ReddigramLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Reddigram',
+      'Glance',
       style: TextStyle(
         fontFamily: 'Pacifico',
         fontSize: 22.0,
-        fontWeight: Theme.of(context).brightness == Brightness.light
-            ? FontWeight.bold
-            : FontWeight.normal,
+        fontWeight: FontWeight.normal,
       ),
     );
   }
