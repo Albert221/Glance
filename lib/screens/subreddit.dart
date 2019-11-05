@@ -27,7 +27,6 @@ class SubredditScreen extends StatefulWidget {
 class _SubredditScreenState extends State<SubredditScreen> {
   final _shownNsfwIds = Set<String>();
   final _columnListKey = GlobalKey<InfiniteListState>();
-  final _contextCompleter = Completer<BuildContext>();
 
   Subreddit _subreddit(Store<ReddigramState> store) =>
       store.state.subreddits[widget.subredditId];
@@ -43,32 +42,61 @@ class _SubredditScreenState extends State<SubredditScreen> {
       PreferencesProvider.of(context).showNsfw;
 
   @override
-  void initState() {
-    super.initState();
-
-    _contextCompleter.future.then((context) {
-      final store = StoreProvider.of<ReddigramState>(context);
-      store.dispatch(fetchFreshFeed('r/${_subreddit(store).name}', limit: 99));
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (!_contextCompleter.isCompleted) {
-      _contextCompleter.complete(context);
-    }
+    return StoreConnector<ReddigramState, bool>(
+      onInit: (store) async {
+        final subreddit = _subreddit(store);
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: _buildAppBar(context),
-        body: TabBarView(
-          children: [
-            _buildGrid(context),
-            _buildList(context),
-          ],
-        ),
-      ),
+        // That's an edge case, when subreddit isn't already fetched and we
+        // open SubredditScreen with a completely fresh sub.
+        if (subreddit == null) {
+          final completer = Completer();
+          store.dispatch(
+            fetchSubreddits([widget.subredditId], completer: completer),
+          );
+          await completer.future;
+        }
+
+        store.dispatch(
+          fetchFreshFeed('r/${_subreddit(store).name}', limit: 99),
+        );
+      },
+      converter: (store) =>
+          store.state.subreddits[widget.subredditId]?.submissionType == 'self',
+      builder: (context, isTextOnly) {
+        if (isTextOnly) {
+          return Scaffold(
+            appBar: AppBar(),
+            extendBodyBehindAppBar: true,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '( ͡° ʖ̯ ͡°)',
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('This subreddit is text only.'),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: _buildAppBar(context),
+            body: TabBarView(
+              children: [
+                _buildGrid(context),
+                _buildList(context),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
