@@ -35,7 +35,9 @@ class _ImportSubscriptionsScreenState extends State<ImportSubscriptionsScreen> {
       store.dispatch(FetchedSubreddits(subreddits));
       setState(() {
         subreddits
+            // Discard text subreddits
             .where((subreddit) => subreddit.submissionType != 'self')
+            // Discard already subscribed subreddits
             .where((subreddit) =>
                 !store.state.subscriptions.contains(subreddit.id))
             .forEach((subreddit) {
@@ -79,60 +81,58 @@ class _ImportSubscriptionsScreenState extends State<ImportSubscriptionsScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.select_all),
-            onPressed: () {
-              setState(() {
-                // If everything is selected, deselect everything...
-                if (_subscriptions.entries.every((entry) => entry.value)) {
-                  _subscriptions.updateAll((_, __) => false);
-                } else {
-                  // ...select all otherwise.
-                  _subscriptions.updateAll((_, __) => true);
-                }
-              });
-            },
-          ),
+          if (_subscriptions.isNotEmpty)
+            IconButton(
+              icon: Icon(Icons.select_all),
+              onPressed: () {
+                setState(() {
+                  // If everything is selected, deselect everything...
+                  if (_subscriptions.entries.every((entry) => entry.value)) {
+                    _subscriptions.updateAll((_, __) => false);
+                  } else {
+                    // ...select all otherwise.
+                    _subscriptions.updateAll((_, __) => true);
+                  }
+                });
+              },
+            ),
         ],
       ),
       body: Column(
         children: [
           Expanded(
             child: !_loading
-                ? (_subscriptions.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: _subscriptions.length,
-                        itemBuilder: (context, i) {
-                          final subredditId = _subscriptions.keys.toList()[i];
-
-                          return StoreConnector<ReddigramState, Subreddit>(
-                            converter: (store) =>
-                                store.state.subreddits[subredditId],
-                            builder: (context, subreddit) => subreddit != null
-                                ? CheckboxListTile(
-                                    value:
-                                        _subscriptions[subreddit.id] ?? false,
-                                    onChanged: (selected) {
-                                      setState(() =>
-                                          _subscriptions[subreddit.id] =
-                                              selected);
-                                    },
-                                    secondary: SubredditCircleAvatar(
-                                        subreddit: subreddit),
-                                    title: Text('r/${subreddit.name}'),
-                                  )
-                                : const SizedBox(),
-                          );
-                        },
-                      )
-                    : ListTile(
-                        title: Text('No items to show'),
-                      ))
+                ? _subscriptions.isNotEmpty
+                    ? _buildList(context)
+                    : const ListTile(title: Text('No items to show'))
                 : const Center(child: CircularProgressIndicator()),
           ),
           _buildFooter(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildList(BuildContext context) {
+    return ListView.builder(
+      itemCount: _subscriptions.length,
+      itemBuilder: (context, i) {
+        final subredditId = _subscriptions.keys.toList()[i];
+
+        return StoreConnector<ReddigramState, Subreddit>(
+          converter: (store) => store.state.subreddits[subredditId],
+          builder: (context, subreddit) => subreddit != null
+              ? CheckboxListTile(
+                  value: _subscriptions[subreddit.id] ?? false,
+                  onChanged: (selected) {
+                    setState(() => _subscriptions[subreddit.id] = selected);
+                  },
+                  secondary: SubredditCircleAvatar(subreddit: subreddit),
+                  title: Text('r/${subreddit.name}'),
+                )
+              : const SizedBox(),
+        );
+      },
     );
   }
 
