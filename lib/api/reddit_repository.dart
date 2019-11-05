@@ -17,6 +17,7 @@ class RedditRepository {
   RedditRepository() {
     _client = Dio(BaseOptions(
       baseUrl: 'https://www.reddit.com',
+      receiveTimeout: 5000,
     ));
 
     _client.interceptors.addAll([
