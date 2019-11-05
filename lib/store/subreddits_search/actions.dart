@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:reddigram/api/api.dart';
 import 'package:reddigram/store/store.dart';
 import 'package:redux/redux.dart';
@@ -28,6 +29,15 @@ ThunkAction<ReddigramState> searchSubreddits(String query,
       store.dispatch(FetchedSubreddits(subreddits));
       store.dispatch(FetchedSearchSubreddits(
           query, subreddits.map((subreddit) => subreddit.id).toList()));
+    }, onError: (error) {
+      // Sometimes (well, not that rarely) Reddit's search service
+      // isn't working, fetch the exact subreddit only then.
+      if (error is DioError && error.response.statusCode == 503) {
+        redditRepository.subreddit(query).then((subreddit) {
+          store.dispatch(FetchedSubreddits([subreddit]));
+          store.dispatch(FetchedSearchSubreddits(query, [subreddit.id]));
+        }).whenComplete(() => completer?.complete());
+      }
     });
   };
 }
