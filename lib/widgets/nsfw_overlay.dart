@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class NsfwOverlay extends StatelessWidget {
@@ -17,26 +19,29 @@ class NsfwOverlay extends StatelessWidget {
           opacity: show ? 0 : 1,
           duration: const Duration(milliseconds: 500),
           curve: Curves.ease,
-          child: Container(
-            color: Colors.black,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'NSFW',
-                  style: Theme.of(context)
-                      .textTheme
-                      .title
-                      .copyWith(color: Colors.white),
-                ),
-                const SizedBox(height: 12.0),
-                const Icon(
-                  Icons.block,
-                  size: 48.0,
-                  color: Colors.white,
-                ),
-              ],
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              color: Colors.black.withOpacity(.3),
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'NSFW',
+                    style: Theme.of(context)
+                        .textTheme
+                        .title
+                        .copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(height: 12.0),
+                  const Icon(
+                    Icons.block,
+                    size: 48.0,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
