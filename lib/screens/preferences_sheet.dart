@@ -72,7 +72,7 @@ class PreferencesSheet extends StatelessWidget {
   }
 
   void _openPrivacyPolicy() async {
-    launch('https://reddigram.wolszon.me/privacy.html');
+    launch('https://reddigram.wolszon.me/privacy');
     ReddigramApp.analytics.logEvent(name: 'open_privacy_policy');
   }
 
@@ -134,7 +134,7 @@ class PreferencesSheet extends StatelessWidget {
               .body2
               .copyWith(color: Theme.of(context).disabledColor),
           children: [
-            const TextSpan(text: 'Reddigram • '),
+            const TextSpan(text: 'Glance • '),
             TextSpan(
               text: 'Privacy policy',
               style: const TextStyle(
