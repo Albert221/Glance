@@ -1,23 +1,26 @@
 package me.wolszon.reddigram
 
 import android.Manifest
-import android.content.Intent
+import android.app.DownloadManager
+import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
-import me.wolszon.reddigram.DownloadPhotoService.Companion.EXTRA_URL
+import java.io.File
 
 class MainActivity : FlutterActivity() {
     private var photoDownloadUrl: String? = null
 
     companion object {
         private const val CHANNEL = "me.wolszon.reddigram"
-        private const val WRITE_STORAGE_REQUEST_CODE = 2
+        private const val WRITE_STORAGE_DOWNLOAD_PHOTO_CODE = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,33 +39,39 @@ class MainActivity : FlutterActivity() {
                     result.success(null)
 
                     photoDownloadUrl = photoUrl
-                    startDownloadPhotoService()
+                    downloadPhoto(photoUrl)
                 }
                 else -> result.notImplemented()
             }
         }
     }
 
-    private fun startDownloadPhotoService() {
+    private fun downloadPhoto(url: String) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    WRITE_STORAGE_REQUEST_CODE)
+                    WRITE_STORAGE_DOWNLOAD_PHOTO_CODE)
         } else {
-            Intent(this, DownloadPhotoService::class.java).also {
-                it.putExtra(EXTRA_URL, photoDownloadUrl)
-                ContextCompat.startForegroundService(this, it)
+            val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val photoUri = Uri.parse(url)
+
+            val request = DownloadManager.Request(photoUri).apply {
+                setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                        "Glance" + File.separator + photoUri.lastPathSegment)
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             }
+
+            downloadManager.enqueue(request)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
-            WRITE_STORAGE_REQUEST_CODE -> {
+            WRITE_STORAGE_DOWNLOAD_PHOTO_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDownloadPhotoService()
+                    downloadPhoto(photoDownloadUrl!!)
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
