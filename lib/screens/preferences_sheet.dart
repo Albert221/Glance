@@ -14,9 +14,9 @@ class PreferencesSheet extends StatelessWidget {
     if (await _showRedditBugWarningAlert(context) != true) return;
 
     launch('https://www.reddit.com/api/v1/authorize'
-        '?client_id=${ReddigramConsts.oauthClientId}&response_type=code'
+        '?client_id=${GlanceConsts.oauthClientId}&response_type=code'
         '&state=x&scope=read+mysubreddits+vote+identity&duration=permanent'
-        '&redirect_uri=${ReddigramConsts.oauthRedirectUrl}');
+        '&redirect_uri=${GlanceConsts.oauthRedirectUrl}');
   }
 
   Future<bool> _showRedditBugWarningAlert(BuildContext context) async {

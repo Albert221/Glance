@@ -64,7 +64,7 @@ class RedditRepository {
 
   Future<RedditTokens> refreshAccessToken([String refreshToken]) {
     final basicAuth = 'Basic ' +
-        base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
+        base64.encode(utf8.encode('${GlanceConsts.oauthClientId}:'));
 
     return _post(
       '/api/v1/access_token',
@@ -101,12 +101,12 @@ class RedditRepository {
 
   Future<RedditTokens> retrieveTokens(String code) async {
     final basicAuth = 'Basic ' +
-        base64.encode(utf8.encode('${ReddigramConsts.oauthClientId}:'));
+        base64.encode(utf8.encode('${GlanceConsts.oauthClientId}:'));
 
     return _post(
       '/api/v1/access_token',
       data: 'grant_type=authorization_code&code=$code'
-          '&redirect_uri=${ReddigramConsts.oauthRedirectUrl}',
+          '&redirect_uri=${GlanceConsts.oauthRedirectUrl}',
       headers: {'Authorization': basicAuth},
     ).then((response) {
       return _tokens = RedditTokens(
