@@ -1,16 +1,32 @@
-# reddigram
+<div align="center">
+    <h1>Glance</h1>
+    <a href="https://play.google.com/store/apps/details?id=me.wolszon.reddigram">
+        <img alt="Download on Google Play" src="https://play.google.com/intl/en_us/badges/images/badge_new.png">
+    </a>
+</div>
 
-Instagram but Reddit.
+## About the app
 
-## Getting Started
+![Screens preview](media/screens_preview.jpg)
 
-This project is a starting point for a Flutter application.
+Glance is an unofficial client for Reddit. However, it allows you to only browse through media posts such as photos and videos. It's purpose is mainly to lurk majestic photos subreddits as well as memes, videos and gifs.
 
-A few resources to get you started if this is your first Flutter project:
+### Features
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+- Subscribing to subs (separately from your Reddit account)
+    - Importing subscriptions from your Reddit account
+- Upvoting (click the arrow or double-tap)
+- Downloading photos
+- Browsing only certain subreddit
+- Dark mode
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Related websites
+
+- [Landing page](https://reddigram.wolszon.me)
+- [r/GlanceApp](https://www.reddit.com/r/GlanceApp/)
+
+## Related repositories
+
+- [Glance API repository](https://github.com/Albert221/GlanceApi)
+- [Landing page repository](https://github.com/Albert221/GlanceLanding)
+
