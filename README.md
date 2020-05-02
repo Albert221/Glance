@@ -8,6 +8,7 @@
 ## About the app
 
 ![Screens preview](media/screens_preview.jpg)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAlbert221%2FGlance.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FAlbert221%2FGlance?ref=badge_shield)
 
 Glance is an unofficial client for Reddit. However, it allows you to only browse through media posts such as photos and videos. It's purpose is mainly to lurk majestic photos subreddits as well as memes, videos and gifs.
 
@@ -30,3 +31,7 @@ Glance is an unofficial client for Reddit. However, it allows you to only browse
 - [Glance API repository](https://github.com/Albert221/GlanceApi)
 - [Landing page repository](https://github.com/Albert221/GlanceLanding)
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAlbert221%2FGlance.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FAlbert221%2FGlance?ref=badge_large)
